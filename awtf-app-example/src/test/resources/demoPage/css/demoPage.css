@@ -1,0 +1,146 @@
+body {
+	background-color: #FFFFFF;
+	min-width: 1200px;
+}
+
+p {
+	margin-top: 0px;
+	margin-bottom: 0px;
+}
+
+.error {
+	font-weight: bold;
+	color: red;
+}
+
+legend {
+	font-weight: bold;
+}
+
+.comments {
+	font-style: italic;
+}
+
+div.form-row {
+	margin-bottom: 5px;
+}
+
+label.form-label {
+	font-weight: bold;
+	vertical-align: top;
+}
+
+textarea {
+	resize: none;
+}
+
+#globalSearch {
+	vertical-align: top;
+}
+
+input[type=button].disabled, button.disabled {
+	color: graytext;
+}
+
+.error-box {
+	color: red;
+	font-size: 18px;
+	font-weight: bold;
+	border-width: 1px;
+	border-style: solid;
+	border-color: red;
+	border-width: 2px;
+	padding: 5px;
+	margin: 5px;
+}
+
+div.load-mask {
+	float: left;
+}
+
+.load-mask-large {
+	background-image: url("../images/ajax_loader_gray_256.gif");
+	height: 256px;
+	width: 256px;
+}
+
+.load-mask-medium {
+	background-image: url("../images/ajax_loader_gray_128.gif");
+	height: 128px;
+	width: 128px;
+}
+
+.load-mask-small {
+	background-image: url("../images/ajax_loader_gray_32.gif");
+	height: 32px;
+	width: 32px;
+}
+
+.info-icon, .help-icon {
+	cursor: pointer;
+}
+
+.tooltip {
+	position: absolute;
+	display: none;
+	color: #363636;
+	border: 1px solid #36648B;
+	background-color: #FDFCDB;
+	padding: 5px;
+}
+
+.modal-mask {
+	position: fixed;
+	top: 0px;
+	left: 0px;
+	background-color: #000000;
+	opacity: 0.20;
+	z-index: 100;
+	width: 100%;
+	height: 100%;
+}
+
+.modal {
+	display: none;
+	position: fixed;
+	top: 120px;
+	left: 50%;
+	margin-left: -150px;
+	margin-right: -150px;
+	width: 300px;
+	z-index: 101;
+}
+
+.modal-header {
+	height: 28px;
+}
+
+.modal-header-title {
+	overflow: hidden;
+	color: #FFFFFF;
+	background-color: #36648B;
+	font-weight: bold;
+	line-height: 28px;
+	padding-left: 6px;
+}
+
+.modal-body {
+	padding: 0px 3px 0px 3px;
+	background-color: #36648B;
+}
+
+.modal-content {
+	padding: 10px 10px 10px 10px;
+	border: 1px solid #CFCFCF;
+	background-color: #FFFFFF;
+}
+
+.modal-footer {
+    height: 3px;
+}
+
+.modal-footer-title {
+    overflow: hidden;
+    background-color: #36648B;
+    height: 3px;
+}
