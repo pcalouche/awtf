@@ -1,7 +1,8 @@
 $(function() {
-//	setTimeout(function() {
-//		$(".load-mask-large, .load-mask-medium, .load-mask-small").hide();
-//	}, 59000);
+// setTimeout(function() {
+// $(".load-mask-large, .load-mask-medium, .load-mask-small").hide();
+// }, 59000);
+	
 	setTimeout(function() {
 		$(".load-mask-large, .load-mask-medium, .load-mask-small").hide();
 	}, 1000);
@@ -39,6 +40,16 @@ $(function() {
 		showModal($(".modal"), false);
 	});
 
+	$("div.row-expander").on("click", function(event, data) {
+		var div = $(this);
+		if (div.hasClass("expanded")) {
+			div.removeClass("expanded").addClass("collapsed");
+			div.parents("tr").next("tr").addClass("hidden-row");		}
+		else { 
+			div.removeClass("collapsed").addClass("expanded");
+			div.parents("tr").next("tr").removeClass("hidden-row");
+		}
+	});
 });
 
 function showModal(modal, show) {

@@ -154,3 +154,24 @@ th, td {
 	padding: 5px;
 	font-size: 20px;
 }
+
+div.row-expander {
+	background-position: center center;
+	text-align: center;
+}
+
+div.expanded:after {
+	content: "-";
+}
+
+div.collapsed:after {
+	content: "+";
+}
+
+tr.hidden-row {
+	display: none;
+}
+
+td.row-details {
+	padding-left: 35px;
+}
