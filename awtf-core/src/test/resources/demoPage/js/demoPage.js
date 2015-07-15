@@ -1,5 +1,9 @@
 $(function() {
-// setTimeout(function() {
+	$("button[value=toggleErrorMessages]").on("click", function (event , data) {
+		$(".error").toggle();
+	});
+	
+	// setTimeout(function() {
 // $(".load-mask-large, .load-mask-medium, .load-mask-small").hide();
 // }, 59000);
 	

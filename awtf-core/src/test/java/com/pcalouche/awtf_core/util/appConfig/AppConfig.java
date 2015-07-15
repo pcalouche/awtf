@@ -2,6 +2,7 @@ package com.pcalouche.awtf_core.util.appConfig;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ResourceBundle;
 
 import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.WebElement;
@@ -13,8 +14,10 @@ public class AppConfig {
 	private AppElement modalLocator;
 	private AppElement tooltipLocator;
 	private List<AppElement> appWebElements = new ArrayList<AppElement>();
-	private List<RowActionLocator> rowActionLocators = new ArrayList<RowActionLocator>();
+	private List<RowActionDefinition> rowActionDefinitions = new ArrayList<RowActionDefinition>();
 	private List<String> errorMessageClasses = new ArrayList<String>();
+	private String messageBundleLocation;
+	private ResourceBundle messageBundle;
 
 	public AppConfig() {
 
@@ -81,18 +84,18 @@ public class AppConfig {
 	}
 
 	/**
-	 * @return the rowActionLocators
+	 * @return the rowActionDefinitions
 	 */
-	public List<RowActionLocator> getRowActionLocators() {
-		return rowActionLocators;
+	public List<RowActionDefinition> getRowActionDefinitions() {
+		return rowActionDefinitions;
 	}
 
 	/**
-	 * @param rowActionLocators
-	 *            the rowActionLocators to set
+	 * @param rowActionDefinitions
+	 *            the rowActionDefinitions to set
 	 */
-	public void setRowActionLocators(List<RowActionLocator> rowActionLocators) {
-		this.rowActionLocators = rowActionLocators;
+	public void setRowActionDefinitions(List<RowActionDefinition> rowActionDefinitions) {
+		this.rowActionDefinitions = rowActionDefinitions;
 	}
 
 	/**
@@ -100,6 +103,31 @@ public class AppConfig {
 	 */
 	public List<String> getErrorMessageClasses() {
 		return errorMessageClasses;
+	}
+
+	/**
+	 * @return the messageBundleLocation
+	 */
+	public String getMessageBundleLocation() {
+		return messageBundleLocation;
+	}
+
+	/**
+	 * @param messageBundleLocation
+	 *            the messageBundleLocation to set
+	 */
+	public void setMessageBundleLocation(String messageBundleLocation) {
+		this.messageBundleLocation = messageBundleLocation;
+	}
+
+	/**
+	 * @return the messageBundle
+	 */
+	public ResourceBundle getMessageBundle() {
+		if (messageBundle == null) {
+			messageBundle = ResourceBundle.getBundle(messageBundleLocation);
+		}
+		return messageBundle;
 	}
 
 	/**
@@ -125,9 +153,9 @@ public class AppConfig {
 		return foundBaseWebElement;
 	}
 
-	public RowActionLocator findRowActionLocator(RowAction rowAction) {
-		RowActionLocator foundRowActionLocator = null;
-		for (RowActionLocator rowActionLocator : rowActionLocators) {
+	public RowActionDefinition findRowActionLocator(RowAction rowAction) {
+		RowActionDefinition foundRowActionLocator = null;
+		for (RowActionDefinition rowActionLocator : rowActionDefinitions) {
 			if (rowActionLocator.getRowAction() == rowAction) {
 				foundRowActionLocator = rowActionLocator;
 				break;

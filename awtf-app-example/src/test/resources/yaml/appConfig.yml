@@ -1,0 +1,11 @@
+!!com.pcalouche.awtf_core.util.appConfig.AppConfig
+appWebElements: [
+  ]
+errorMessageClasses: [
+  ]
+loadingIndicatorLocator: null
+messageBundleLocation: messages_en
+modalLocator: null
+rowActionDefinitions: [
+  ]
+tooltipLocator: null

@@ -43,13 +43,13 @@ public class AbstractSteps {
 
 	@Then("^I take a screenshot$")
 	public void iTakeAScreenshot() {
-		BrowserInstance.takeAScreenShot();
+		StepsUtil.takeAScreenShot();
 	}
 
 	@Then("^I click on \"(.*?)\"$")
 	public void iClickOn(String text) throws Throwable {
 		if (BrowserInstance.getTestEnvironmentConfig().isScreenshotBeforeClick()) {
-			BrowserInstance.takeAScreenShot();
+			StepsUtil.takeAScreenShot();
 		}
 		// Determine what parent locator to use based on what is currently displayed on the UI
 		String parentLocatorToUse = StepsUtil.isModalDisplayed() ? BrowserInstance.getAppConfig().getModalLocator().getLocator() : "";
@@ -72,20 +72,10 @@ public class AbstractSteps {
 		StepsUtil.handleFormElementInput(StepsUtil.findFormElementByDescription(description), value);
 	}
 
-	// @Then("^I click on the (?:radio|checkbox) option that contains \"(.*?)\"$")
-	// public void i_click_on_the_radio_checkbox_option_that_contains(String description) {
-	// StepsUtil.handleFormElementInput(StepsUtil.findFormElementByDescription(description), null, false);
-	// }
-
 	@Then("^I \"(.*?)\" the \"(.*?)\" (?:radio button|checkbox)$")
 	public void iTheRadioButtonCheckbox(String actionValue, String description) {
 		StepsUtil.handleFormElementInput(StepsUtil.findFormElementByDescription(description), actionValue);
 	}
-
-	// @Then("^I \"(.*?)\" the (?:radio button|checkbox) that contains \"(.*?)\"$")
-	// public void i_the_radio_button_checkbox_that_contains(String actionValue, String description) {
-	// StepsUtil.handleFormElementInput(StepsUtil.findFormElementByDescription(description), actionValue);
-	// }
 
 	@Then("^I input \"(.*?)\" as value containing \"(.*?)\"$")
 	public void iInputAsValueContaining(String description, String value) {
@@ -127,7 +117,13 @@ public class AbstractSteps {
 	@Then("^I \"(.*?)\" \"(.*?)\" in the \"(.*?)\" dropdown$")
 	public void iInTheDropdown(String action, String value, String description) {
 		WebElement inputField = StepsUtil.findFormElementByDescription(description);
-		StepsUtil.verifySelectOption(action, new Select(inputField), description, value);
+		StepsUtil.verifySelectOption(action, new Select(inputField), description, value, true);
+	}
+
+	@Then("^I \"(.*?)\" an option containing \"(.*?)\" in the \"(.*?)\" dropdown$")
+	public void iAnOptionContainingInTheDropdown(String action, String value, String description) throws Throwable {
+		WebElement inputField = StepsUtil.findFormElementByDescription(description);
+		StepsUtil.verifySelectOption(action, new Select(inputField), description, value, false);
 	}
 
 	@Then("^I see \"(.*?)\" contains \"(.*?)\" (\\d+) times?$")
@@ -287,7 +283,7 @@ public class AbstractSteps {
 			actionableRowElements = StepsUtil.findActionableRowElements(rowAction, criteria, null);
 			assertTrue("No matching rows found", !actionableRowElements.isEmpty());
 			if (BrowserInstance.getTestEnvironmentConfig().isScreenshotBeforeClick()) {
-				BrowserInstance.takeAScreenShot();
+				StepsUtil.takeAScreenShot();
 			}
 			for (WebElement actionableRowElement : actionableRowElements) {
 				BrowserInstance.getWebDriverWait().until(ExpectedConditions.elementToBeClickable(actionableRowElement)).click();

@@ -11,6 +11,7 @@ import cucumber.api.Scenario;
  *
  */
 public class MyBrowserInstance extends BrowserInstance {
+	// Objects like AppConfig or TestEnvironmentConfig could be extended with additional fields as needed or entirely new objects can be added here to suite your applciation's configuration needs.
 	public MyBrowserInstance() {
 		super();
 	}
@@ -25,5 +26,12 @@ public class MyBrowserInstance extends BrowserInstance {
 	public void teardown(Scenario scenario) {
 		// Just calling super here, but this can be completely changed to do whatever you need
 		super.teardown(scenario);
+	}
+
+	@Override
+	protected void setupWebDriver() {
+		// Just calling super here, but this can be completely changed to do whatever you need
+		super.setupWebDriver();
+		logger.debug("Would call some additional code here");
 	}
 }

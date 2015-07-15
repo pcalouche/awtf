@@ -2,7 +2,6 @@ package com.pcalouche.awtf_core;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.ResourceBundle;
 
 import org.apache.commons.lang3.time.StopWatch;
 import org.apache.logging.log4j.LogManager;
@@ -10,9 +9,12 @@ import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.OutputType;
+import org.openqa.selenium.Point;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriverService;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -32,7 +34,6 @@ import cucumber.api.Scenario;
 public class BrowserInstance {
 	protected static final Logger logger = LogManager.getLogger();
 	protected static TestEnvironmentConfig testEnvironmentConfig;
-	protected static ResourceBundle messageBundle = ResourceBundle.getBundle("messages_en");
 	protected static AppConfig appConfig;
 	protected static WebDriver webDriver;
 	protected static WebDriverWait webDriverWait;
@@ -49,51 +50,50 @@ public class BrowserInstance {
 		String testEnvironment;
 		if (System.getProperty("testEnvironment") != null) {
 			testEnvironment = System.getProperty("testEnvironment");
-			logger.info("Test Environment received from Command Line as: " + testEnvironment);
+			logger.info("Test environment received from Command Line as: " + testEnvironment);
 		} else if (System.getenv("testEnvironment") != null) {
 			testEnvironment = System.getenv("testEnvironment");
-			logger.info("Test Environment received from Enviroment Variable as: " + testEnvironment);
+			logger.info("Test environment received from Enviroment Variable as: " + testEnvironment);
 		} else {
-			logger.info("Test Environment not specified in Command Line or Enviroment Varaible.  Defaulting to localhost testEnvironment");
+			logger.info("Test enviroment not specified in Command Line or Enviroment Variable, defaulting to localhost test environment");
 			testEnvironment = "localhost";
 		}
 
 		testEnvironmentConfig = (TestEnvironmentConfig) YamlHelper.loadFromInputStream(String.format("/yaml/testEnvironments/TestEnvironmentConfig.%s.yml", testEnvironment));
 		appConfig = (AppConfig) YamlHelper.loadFromInputStream("/yaml/appConfig.yml");
 
+		// If browser instance is extended this can be overridden easily to allow for customer browser setup
+		this.setupWebDriver();
+	}
+
+	protected void setupWebDriver() {
+		// Set common desired capabilities for our browsers
+		DesiredCapabilities desiredCapabilities = new DesiredCapabilities();
+		desiredCapabilities.setJavascriptEnabled(true);
+		desiredCapabilities.setCapability("takesScreenshot", true);
+		desiredCapabilities.setCapability("acceptSslCerts", true);
 		switch (testEnvironmentConfig.getBrowser()) {
 		case phantomJS:
-			DesiredCapabilities phantomCapabilities = new DesiredCapabilities();
-			phantomCapabilities.setJavascriptEnabled(true);
-			phantomCapabilities.setCapability("takesScreenshot", true);
-			phantomCapabilities.setCapability("acceptSslCerts", true);
-			phantomCapabilities.setCapability(PhantomJSDriverService.PHANTOMJS_CLI_ARGS, new String[] { "--web-security=no", "--ignore-ssl-errors=yes", "--webdriver-loglevel=NONE" });
-			webDriver = new PhantomJSDriver(phantomCapabilities);
+			desiredCapabilities.setCapability(PhantomJSDriverService.PHANTOMJS_CLI_ARGS, new String[] { "--web-security=no", "--ignore-ssl-errors=yes", "--webdriver-loglevel=NONE" });
+			webDriver = new PhantomJSDriver(desiredCapabilities);
 			break;
 		case firefox:
-			DesiredCapabilities ffCapabilities = new DesiredCapabilities();
-			ffCapabilities.setJavascriptEnabled(true);
-			ffCapabilities.setCapability("takesScreenshot", true);
-			ffCapabilities.setCapability("acceptSslCerts", true);
-			webDriver = new FirefoxDriver(ffCapabilities);
+			webDriver = new FirefoxDriver(desiredCapabilities);
 			break;
 		case internetExplorer:
-			// DesiredCapabilities ieCapabilities = new DesiredCapabilities();
-			// ieCapabilities.setJavascriptEnabled(true);
-			// ieCapabilities.setCapability("takesScreenshot", true);
-			// ieCapabilities.setCapability("acceptSslCerts", true);
-			// webDriver = new InternetExplorerDriver(ieCapabilities);
+			webDriver = new InternetExplorerDriver(desiredCapabilities);
 			break;
 		case chrome:
+			webDriver = new ChromeDriver(desiredCapabilities);
 			break;
 		case safari:
 			break;
 		default:
 			break;
 		}
-		// Set window size. Sometimes phantom needs this because it has issues interacting with certain elements if it its window size is set to the default (400, 300)
-		// TODO play with screenshot settings
+		// Set window size and position
 		webDriver.manage().window().setSize(new Dimension(1280, 1024));
+		webDriver.manage().window().setPosition(new Point(0, 0));
 	}
 
 	public void setup(Scenario scenario) {
@@ -126,7 +126,6 @@ public class BrowserInstance {
 	public void teardown(Scenario scenario) {
 		try {
 			stopWatch.stop();
-			stopWatch.reset();
 			logger.debug(String.format("Scenario: \"%s\" completed in %.3f seconds", scenario.getName(), stopWatch.getTime() / 1000.00));
 			scenario.write(String.format("Completed in %.3f seconds.", stopWatch.getTime() / 1000.00));
 			if (BrowserInstance.testEnvironmentConfig.isScreenshotOnScenarioCompletion() || scenario.isFailed()) {
@@ -141,10 +140,6 @@ public class BrowserInstance {
 
 	public static TestEnvironmentConfig getTestEnvironmentConfig() {
 		return testEnvironmentConfig;
-	}
-
-	public static ResourceBundle getMessageBundle() {
-		return messageBundle;
 	}
 
 	public static AppConfig getAppConfig() {
@@ -173,9 +168,5 @@ public class BrowserInstance {
 
 	public static Map<String, String> getTempMap() {
 		return tempMap;
-	}
-
-	public static void takeAScreenShot() {
-		BrowserInstance.getCurrentScenario().embed(((TakesScreenshot) BrowserInstance.getWebDriver()).getScreenshotAs(OutputType.BYTES), "image/png");
 	}
 }

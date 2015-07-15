@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.pcalouche</groupId>
 	<artifactId>awtf-core</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0</version>
 	<packaging>jar</packaging>
 	<name>AWTF Core Project</name>
 
@@ -36,10 +36,9 @@
 			<artifactId>selenium-java</artifactId>
 			<version>${selenium.version}</version>
 		</dependency>
-		<!-- FireFox driver -->
 		<dependency>
 			<groupId>org.seleniumhq.selenium</groupId>
-			<artifactId>selenium-firefox-driver</artifactId>
+			<artifactId>selenium-remote-driver</artifactId>
 			<version>${selenium.version}</version>
 		</dependency>
 		<!-- PhantomJS Driver -->

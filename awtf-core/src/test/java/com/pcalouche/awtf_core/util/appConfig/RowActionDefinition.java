@@ -2,14 +2,14 @@ package com.pcalouche.awtf_core.util.appConfig;
 
 import com.pcalouche.awtf_core.util.enums.RowAction;
 
-public class RowActionLocator extends AppElement {
+public class RowActionDefinition extends AppElement {
 	private RowAction rowAction;
 
-	public RowActionLocator() {
+	public RowActionDefinition() {
 		super();
 	}
 
-	public RowActionLocator(String description, String locator, AppElementLocatorType locatorType, RowAction rowAction) {
+	public RowActionDefinition(String description, String locator, AppElementLocatorType locatorType, RowAction rowAction) {
 		super(description, locator, locatorType);
 		if (!locatorType.equals(AppElementLocatorType.xpath)) {
 			throw new IllegalArgumentException("Framework currently supports RowAcionLocator of type xpath");

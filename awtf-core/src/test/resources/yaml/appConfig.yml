@@ -51,12 +51,13 @@ loadingIndicatorLocator: {
   locator: '.load-mask-large, .load-mask-medium, .load-mask-small',
   locatorType: css
 }
+messageBundleLocation: messages_en
 modalLocator: {
   description: Modal Locator,
   locator: '//*[contains(@class,''modal'')]',
   locatorType: xpath
 }
-rowActionLocators:
+rowActionDefinitions:
 - {
   description: select,
   locator: './/input[@type=''checkbox'' or @type=''radio'']',
