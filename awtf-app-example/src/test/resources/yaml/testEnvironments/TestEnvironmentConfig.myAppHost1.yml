@@ -1,5 +1,5 @@
 !!com.pcalouche.awtf_core.TestEnvironmentConfig {
-  browser: phantomJS,
+  browser: chrome,
   secondsToWait: 15,
   #url: 'https://localhost:7002/CCPCustomerWeb/fakeLogin/userLogin.do',
   #url: 'file:///C:/Users/Philip/git/awtf/awtf/src/test/resources/demoPage/demoPage.html',

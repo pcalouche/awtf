@@ -12,7 +12,7 @@ import cucumber.api.java.Before;
  */
 public class MyAppHooks {
 	// This instance will be used by the current scenario
-	MyBrowserInstance browserInstance = new MyBrowserInstance();
+	MyTestInstance browserInstance = new MyTestInstance();
 
 	@Before
 	public void setup(Scenario scenario) {

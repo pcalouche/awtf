@@ -16,6 +16,10 @@ Feature: Provide steps to interact and verify form elements
     Then I input "Dropdown 2" as value containing "Pay to 345345423"
     Then I see "Dropdown 2" has value containing "Pay to 345345423"
     Then I "see" "Option 2" in the "Dropdown 1" dropdown
+    Then I input "Multi Select" as "Audi"
+    Then I input "Multi Select" as "Saab"
+    Then I see "Multi Select" has value of "Audi"
+    Then I see "Multi Select" has value of "Saab"
     Then I "do not see" "Option 4" in the "Dropdown 1" dropdown
     Then I "see" an option containing "Option" in the "Dropdown 1" dropdown
     Then I "do not see" an option containing "Option 4" in the "Dropdown 1" dropdown

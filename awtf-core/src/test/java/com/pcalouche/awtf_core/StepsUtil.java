@@ -5,12 +5,9 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import gherkin.formatter.model.DataTableRow;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
-import java.util.TimeZone;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -46,7 +43,7 @@ public class StepsUtil {
 	 * Helper method that take a screenshot
 	 */
 	public static void takeAScreenShot() {
-		BrowserInstance.getCurrentScenario().embed(((TakesScreenshot) BrowserInstance.getWebDriver()).getScreenshotAs(OutputType.BYTES), "image/png");
+		TestInstance.getCurrentScenario().embed(((TakesScreenshot) TestInstance.getWebDriver()).getScreenshotAs(OutputType.BYTES), "image/png");
 	}
 
 	/**
@@ -58,7 +55,7 @@ public class StepsUtil {
 	 */
 	public static boolean elementExists(By locator) {
 		try {
-			BrowserInstance.getWebDriver().findElement(locator);
+			TestInstance.getWebDriver().findElement(locator);
 			return true;
 		} catch (NoSuchElementException e) {
 			return false;
@@ -113,19 +110,19 @@ public class StepsUtil {
 		 * attribute. The input that has an ID that matches the for attribute value will be returned.
 		 */
 		if (description.startsWith("[") && description.endsWith("]")) {
-			AppElement appElement = BrowserInstance.getAppConfig().findAppWebElement(description.substring(1, description.length() - 1));
-			return BrowserInstance.getWebDriverWait().until(ExpectedConditions.presenceOfElementLocated(appElement.getByLocator()));
+			AppElement appElement = TestInstance.getAppConfig().findAppWebElement(description.substring(1, description.length() - 1));
+			return TestInstance.getWebDriverWait().until(ExpectedConditions.presenceOfElementLocated(appElement.getByLocator()));
 		} else {
 			// Determine what parent locator to use based on what is currently displayed on the UI
-			String parentLocatorToUse = StepsUtil.isModalDisplayed() ? BrowserInstance.getAppConfig().getModalLocator().getLocator() : "";
+			String parentLocatorToUse = StepsUtil.isModalDisplayed() ? TestInstance.getAppConfig().getModalLocator().getLocator() : "";
 			String locator = String.format("%s//label[contains(normalize-space(string()),'%s')][@for!='']", parentLocatorToUse, description);
 			// Find all matching label elements on the page
-			List<WebElement> fieldLabels = BrowserInstance.getWebDriverWait().until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.xpath(locator)));
+			List<WebElement> fieldLabels = TestInstance.getWebDriverWait().until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.xpath(locator)));
 			WebElement inputField = null;
 			for (WebElement fieldLabel : fieldLabels) {
 				// Act on the first non hidden label and return the form input it is associated with
 				if (fieldLabel.isDisplayed()) {
-					inputField = BrowserInstance.getWebDriver().findElement(By.id(fieldLabel.getAttribute("for")));
+					inputField = TestInstance.getWebDriver().findElement(By.id(fieldLabel.getAttribute("for")));
 					break;
 				}
 			}
@@ -147,17 +144,17 @@ public class StepsUtil {
 		 * attribute. The input that has an ID that matches the for attribute value will be returned.
 		 */
 		if (description.startsWith("[") && description.endsWith("]")) {
-			AppElement appElement = BrowserInstance.getAppConfig().findAppWebElement(description.substring(1, description.length() - 1));
-			return BrowserInstance.getWebDriverWait().until(ExpectedConditions.presenceOfAllElementsLocatedBy(appElement.getByLocator()));
+			AppElement appElement = TestInstance.getAppConfig().findAppWebElement(description.substring(1, description.length() - 1));
+			return TestInstance.getWebDriverWait().until(ExpectedConditions.presenceOfAllElementsLocatedBy(appElement.getByLocator()));
 		} else {
 			// Determine what parent locator to use based on what is currently displayed on the UI
-			String parentLocatorToUse = StepsUtil.isModalDisplayed() ? BrowserInstance.getAppConfig().getModalLocator().getLocator() : "";
+			String parentLocatorToUse = StepsUtil.isModalDisplayed() ? TestInstance.getAppConfig().getModalLocator().getLocator() : "";
 			String locator = String.format("%s//label[contains(normalize-space(string()),'%s')][@for!='']", parentLocatorToUse, description);
 			// Find all matching label elements on the page
-			List<WebElement> fieldLabels = BrowserInstance.getWebDriverWait().until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.xpath(locator)));
+			List<WebElement> fieldLabels = TestInstance.getWebDriverWait().until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.xpath(locator)));
 			List<WebElement> webElements = new ArrayList<WebElement>();
 			for (WebElement fieldLabel : fieldLabels) {
-				webElements.add(BrowserInstance.getWebDriver().findElement(By.id(fieldLabel.getAttribute("for"))));
+				webElements.add(TestInstance.getWebDriver().findElement(By.id(fieldLabel.getAttribute("for"))));
 			}
 			return webElements;
 		}
@@ -180,7 +177,7 @@ public class StepsUtil {
 			return;
 		}
 		// Make sure it is enabled before setting any values. This is useful for things like a select that is disabled until an AJAX call to load its data has finished.
-		BrowserInstance.getWebDriverWait().until(ExpectedConditions.elementToBeClickable(formElement));
+		TestInstance.getWebDriverWait().until(ExpectedConditions.elementToBeClickable(formElement));
 		HTMLFormElement htmlFormElement = HTMLFormElement.valueOf(formElement.getTagName());
 		switch (htmlFormElement) {
 		case input:
@@ -228,7 +225,7 @@ public class StepsUtil {
 		 * these types of inputs.
 		 */
 		try {
-			BrowserInstance.getJsExecutor().executeScript("arguments[0].blur()", formElement);
+			TestInstance.getJsExecutor().executeScript("arguments[0].blur()", formElement);
 		} catch (StaleElementReferenceException e) {
 
 		}
@@ -254,7 +251,7 @@ public class StepsUtil {
 		}
 
 		// Make sure it is visible before verifying any values.
-		BrowserInstance.getWebDriverWait().until(ExpectedConditions.visibilityOf(formElement));
+		TestInstance.getWebDriverWait().until(ExpectedConditions.visibilityOf(formElement));
 		HTMLFormElement htmlTag = HTMLFormElement.valueOf(formElement.getTagName());
 		switch (htmlTag) {
 		case input:
@@ -318,8 +315,8 @@ public class StepsUtil {
 
 	/**
 	 *
-	 * @param action
-	 *            the action to verify. valid values are just "see" and "do not see" right now
+	 * @param verificationToPerform
+	 *            the verification to perform. valid values are just "see" and "do not see" right now
 	 * @param select
 	 *            the select to verify the option for
 	 * @param description
@@ -329,8 +326,8 @@ public class StepsUtil {
 	 * @param matchValueExactly
 	 *            true to match the value exactly
 	 */
-	public static void verifySelectOption(String action, Select select, String description, String value, boolean matchValueExactly) {
-		String parsedValue = StepsUtil.parseText(value);
+	public static void verifySelectOption(String verificationToPerform, Select select, String description, String value, boolean matchValueExactly) {
+		String parsedValue = TestInstance.getCoreStepHandler().parseText(value);
 		boolean valueFound = false;
 		for (WebElement webElement : select.getOptions()) {
 			if (matchValueExactly) {
@@ -342,9 +339,9 @@ public class StepsUtil {
 				break;
 			}
 		}
-		if (action.equals("see")) {
+		if (verificationToPerform.equals("see")) {
 			assertTrue(String.format("Expected value: %s was not found in any of the the %s dropdown options.", parsedValue, description), valueFound);
-		} else if (action.equals("do not see")) {
+		} else if (verificationToPerform.equals("do not see")) {
 			assertTrue(String.format("Unexpected value: %s was found in the %s dropdown options.", parsedValue, description), !valueFound);
 		} else {
 			fail(String.format("Bad action.  Valid actions are: %s", "see, do not see"));
@@ -364,7 +361,7 @@ public class StepsUtil {
 	 */
 	public static void verifyDescriptionValueCombination(String description, String value, boolean matchValueExactly) {
 		// Get parsed value for locators and testing
-		String parsedValue = StepsUtil.parseText(value);
+		String parsedValue = TestInstance.getCoreStepHandler().parseText(value);
 		AppElement appElement = null;
 		List<WebElement> webElements = null;
 		String matchExactlyErrorFormat = "Could not find %s with value of %s";
@@ -374,11 +371,11 @@ public class StepsUtil {
 		 * attribute. The input that has an ID that matches the for attribute value will be returned.
 		 */
 		if (description.startsWith("[") && description.endsWith("]")) {
-			appElement = BrowserInstance.getAppConfig().findAppWebElement(description.substring(1, description.length() - 1));
-			webElements = BrowserInstance.getWebDriverWait().until(ExpectedConditions.presenceOfAllElementsLocatedBy(appElement.getByLocator()));
+			appElement = TestInstance.getAppConfig().findAppWebElement(description.substring(1, description.length() - 1));
+			webElements = TestInstance.getWebDriverWait().until(ExpectedConditions.presenceOfAllElementsLocatedBy(appElement.getByLocator()));
 		} else {
 			// Determine what parent locator to use based on what is currently displayed on the UI
-			String parentLocatorToUse = StepsUtil.isModalDisplayed() ? BrowserInstance.getAppConfig().getModalLocator().getLocator() : "";
+			String parentLocatorToUse = StepsUtil.isModalDisplayed() ? TestInstance.getAppConfig().getModalLocator().getLocator() : "";
 			String labelWithForAttributeLocator = String.format("%s//label[contains(normalize-space(string()), '%s')][@for!='']", parentLocatorToUse, description);
 			String basicNameWithValueLocator;
 			if (matchValueExactly) {
@@ -389,7 +386,7 @@ public class StepsUtil {
 						description, parsedValue);
 			}
 			String locator = String.format("%s|%s", labelWithForAttributeLocator, basicNameWithValueLocator);
-			webElements = BrowserInstance.getWebDriverWait().until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.xpath(locator)));
+			webElements = TestInstance.getWebDriverWait().until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.xpath(locator)));
 		}
 
 		// Now go through the web element results and note if it is displayed and then depending on its properties perform additional verification
@@ -399,7 +396,7 @@ public class StepsUtil {
 				isDisplayed = true;
 				if (StringUtils.isNotBlank(webElement.getAttribute("for"))) {
 					logger.info("Testing for attribute case for " + description);
-					verifyFormElementValue(BrowserInstance.getWebDriver().findElement(By.id(webElement.getAttribute("for"))), parsedValue, matchValueExactly);
+					verifyFormElementValue(TestInstance.getWebDriver().findElement(By.id(webElement.getAttribute("for"))), parsedValue, matchValueExactly);
 				} else if (appElement != null) {
 					if (HTMLFormElement.isFormElement(webElement.getTagName())) {
 						logger.info("Testing AppWebElement input case for " + description);
@@ -468,7 +465,7 @@ public class StepsUtil {
 		} else {
 			locator = String.format("//td[contains(normalize-space(string()), '%s')]/ancestor::tr", text);
 		}
-		return BrowserInstance.getWebDriverWait().until(ExpectedConditions.visibilityOfElementLocated(By.xpath(locator)));
+		return TestInstance.getWebDriverWait().until(ExpectedConditions.visibilityOfElementLocated(By.xpath(locator)));
 	}
 
 	public static WebElement findTableRowContainingText(String text) {
@@ -493,9 +490,9 @@ public class StepsUtil {
 		for (int i = 1; i < dataTableRowList.size(); i++) {
 			// First find matching cells that meet the first criterion to narrow things down faster
 			List<String> rowCriteria = dataTableRowList.get(i).getCells();
-			String firstCriterion = parseText(rowCriteria.get(0));
+			String firstCriterion = TestInstance.getCoreStepHandler().parseText(rowCriteria.get(0));
 			// Determine what parent locator to use based on what is currently displayed on the UI
-			String parentLocatorToUse = StepsUtil.isModalDisplayed() ? BrowserInstance.getAppConfig().getModalLocator().getLocator() : "";
+			String parentLocatorToUse = StepsUtil.isModalDisplayed() ? TestInstance.getAppConfig().getModalLocator().getLocator() : "";
 			String locator;
 			if (StringUtils.isNotEmpty(tableId)) {
 				locator = String.format("%s//table[@id='%s']//tr//td[normalize-space(string())='%s']", parentLocatorToUse, tableId, firstCriterion);
@@ -504,7 +501,7 @@ public class StepsUtil {
 			}
 			List<WebElement> matchedCells;
 			try {
-				matchedCells = BrowserInstance.getWebDriverWait().until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.xpath(locator)));
+				matchedCells = TestInstance.getWebDriverWait().until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.xpath(locator)));
 			} catch (TimeoutException e) {
 				matchedCells = new ArrayList<WebElement>();
 			}
@@ -527,7 +524,8 @@ public class StepsUtil {
 				// Start at 1 because we already tested 0 with the initial query
 				for (int j = 1; j < dataTableRowList.get(i).getCells().size(); j++) {
 					try {
-						WebElement rowCell = initiallyMatchedRow.findElement(By.xpath(String.format(".//td[normalize-space(string())='%s']", parseText(rowCriteria.get(j)))));
+						WebElement rowCell = initiallyMatchedRow.findElement(By.xpath(String.format(".//td[normalize-space(string())='%s']",
+								TestInstance.getCoreStepHandler().parseText(rowCriteria.get(j)))));
 						logger.debug(rowCell.getText() + " found");
 						// Have to check if this is displayed because the old UI likes to put data that could match in hidden cells.
 						if (!rowCell.isDisplayed()) {
@@ -597,7 +595,7 @@ public class StepsUtil {
 	 */
 	public static List<WebElement> findActionableRowElements(RowAction rowAction, DataTable criteria, String tableId) {
 		List<WebElement> matchedRows = StepsUtil.findTableRowsWithMatchingCriteria(rowAction, criteria, tableId);
-		By locator = BrowserInstance.getAppConfig().findRowActionLocator(rowAction).getByLocator();
+		By locator = TestInstance.getAppConfig().findRowActionLocator(rowAction).getByLocator();
 		List<WebElement> actionableRowElements = new ArrayList<WebElement>();
 		for (WebElement matchedRow : matchedRows) {
 			try {
@@ -640,8 +638,8 @@ public class StepsUtil {
 	public static boolean isModalDisplayed() {
 		boolean modalDisplayed = false;
 		// Assumption is modals will always pre-exist on the page even though they may not be visible.
-		if (BrowserInstance.getAppConfig().getModalLocator() != null) {
-			List<WebElement> modals = BrowserInstance.getWebDriver().findElements(BrowserInstance.getAppConfig().getModalLocator().getByLocator());
+		if (TestInstance.getAppConfig().getModalLocator() != null) {
+			List<WebElement> modals = TestInstance.getWebDriver().findElements(TestInstance.getAppConfig().getModalLocator().getByLocator());
 			for (WebElement modal : modals) {
 				if (modal.isDisplayed()) {
 					modalDisplayed = true;
@@ -656,11 +654,11 @@ public class StepsUtil {
 	 * Helper method that waits for all load masks to be gone from the page.
 	 */
 	public static void waitForLoadMasks() {
-		By locator = BrowserInstance.getAppConfig().getLoadingIndicatorLocator().getByLocator();
+		By locator = TestInstance.getAppConfig().getLoadingIndicatorLocator().getByLocator();
 		logger.info(locator);
 		List<WebElement> loadMasks = null;
 		try {
-			loadMasks = BrowserInstance.getWebDriverWait().until(ExpectedConditions.presenceOfAllElementsLocatedBy(locator));
+			loadMasks = TestInstance.getWebDriverWait().until(ExpectedConditions.presenceOfAllElementsLocatedBy(locator));
 		} catch (TimeoutException e) {
 			logger.info("here");
 			// If not loading on the page, just return
@@ -669,7 +667,7 @@ public class StepsUtil {
 		// Have to check for state element in case load mask is removed from page during a page transition
 		for (WebElement loadMask : loadMasks) {
 			try {
-				BrowserInstance.getWebDriverWait().until(ExpectedConditions.not(ExpectedConditions.visibilityOf(loadMask)));
+				TestInstance.getWebDriverWait().until(ExpectedConditions.not(ExpectedConditions.visibilityOf(loadMask)));
 			} catch (StaleElementReferenceException e) {
 				return;
 			}
@@ -683,12 +681,12 @@ public class StepsUtil {
 	 *            the message text to search for
 	 * @return list of web elements with matching text
 	 */
-	public static List<WebElement> findMatchingChildElemenstWithText(String messageTextToUse) {
+	public static List<WebElement> findMatchingChildElementsWithText(String messageTextToUse) {
 		String locator = String.format("//body//*[contains(normalize-space(string()), '%s')]", messageTextToUse);
 		// This will return the parents elements that have the text as well.
 		List<WebElement> webElements;
 		try {
-			webElements = BrowserInstance.getWebDriverWait().until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.xpath(locator)));
+			webElements = TestInstance.getWebDriverWait().until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.xpath(locator)));
 		} catch (TimeoutException e) {
 			logger.debug("no matching web elements found, returning empty list");
 			return new ArrayList<WebElement>();
@@ -704,80 +702,5 @@ public class StepsUtil {
 			}
 		}
 		return webElements;
-	}
-
-	/**
-	 * Helper method to parse text to get the actual text to use. If the text to parse is surround by [] such [Message_Text] then the text will be looked up from a resource bundle based on that key.
-	 * If the text to parse is not surrounded by [] it is just returned in its original form. Other text substitutions may happen to the text based on codes inside the message. The convention for
-	 * substitutions inside the text is that they should be surrounded by {}. These should go in the customParseText method.
-	 *
-	 * @param text
-	 *            the text to parse
-	 * @return the text to use
-	 */
-	public static String parseText(String text) {
-		String returnText = null;
-		// See if message needs to pulled from resource bundle or not
-		if (text.startsWith("[") && text.endsWith("]")) {
-			returnText = BrowserInstance.getAppConfig().getMessageBundle().getString(text.substring(1, text.length() - 1));
-			// Log to scenario to help with review
-			if (BrowserInstance.getCurrentScenario() != null) {
-				BrowserInstance.getCurrentScenario().write(String.format("%s is: %s<br>", text, returnText));
-			}
-		} else {
-			returnText = text;
-		}
-		// Perform any custom text parsing for the given application here
-		return StepsUtil.customParseText(returnText);
-	}
-
-	/**
-	 * Method performs custom text parsing for the given application. The contents of this method provides examples of what can be done.
-	 * 
-	 * @param text
-	 *            the text to do custom text parsing on
-	 * @return the custom parsed text
-	 */
-	public static String customParseText(String text) {
-		String returnText = text;
-		// Perform any other substitutions as needed.
-		if (returnText.contains("{MM/DD/YYYY}")) {
-			SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy");
-			format.setTimeZone(TimeZone.getTimeZone("America/New_York"));
-			returnText = returnText.replace("{MM/DD/YYYY}", format.format(Calendar.getInstance().getTime()));
-			// Log to scenario to help with review
-			if (BrowserInstance.getCurrentScenario() != null) {
-				BrowserInstance.getCurrentScenario().write(String.format("%s is: %s<br>", "{MM/DD/YYYY}", format.format(Calendar.getInstance().getTime())));
-			}
-		}
-		if (returnText.contains("{Confirmation Code}")) {
-			returnText = returnText.replace("{Confirmation Code}", BrowserInstance.getTempMap().get("lastConfirmationCode"));
-			// Log to scenario to help with review
-			if (BrowserInstance.getCurrentScenario() != null) {
-				BrowserInstance.getCurrentScenario().write(String.format("%s is: %s<br>", "{Confirmation Code}", BrowserInstance.getTempMap().get("lastConfirmationCode")));
-			}
-		}
-		if (returnText.contains("{Service Request ID}")) {
-			returnText = returnText.replace("{Service Request ID}", BrowserInstance.getTempMap().get("lastServiceRequestID"));
-			// Log to scenario to help with review
-			if (BrowserInstance.getCurrentScenario() != null) {
-				BrowserInstance.getCurrentScenario().write(String.format("%s is: %s<br>", "{Service Request ID}", BrowserInstance.getTempMap().get("lastServiceRequestID")));
-			}
-		}
-		if (returnText.contains("{Requested Effective Date}")) {
-			returnText = returnText.replace("{Requested Effective Date}", BrowserInstance.getTempMap().get("Requested Effective Date"));
-			// Log to scenario to help with review
-			if (BrowserInstance.getCurrentScenario() != null) {
-				BrowserInstance.getCurrentScenario().write(String.format("%s is: %s<br>", "{Requested Effective Date}", BrowserInstance.getTempMap().get("Requested Effective Date")));
-			}
-		}
-		if (returnText.contains("{Effective Date}")) {
-			returnText = returnText.replace("{Effective Date}", BrowserInstance.getTempMap().get("Effective Date"));
-			// Log to scenario to help with review
-			if (BrowserInstance.getCurrentScenario() != null) {
-				BrowserInstance.getCurrentScenario().write(String.format("%s is: %s<br>", "{Effective Date}", BrowserInstance.getTempMap().get("Effective Date")));
-			}
-		}
-		return returnText;
 	}
 }

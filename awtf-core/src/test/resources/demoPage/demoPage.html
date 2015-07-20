@@ -48,6 +48,14 @@
 				this case Current Balance is the dynamic data, but the constant would be the account number.)</label>
 		</div>
 		<div class="form-row">
+			<label class="form-label" for="multiSelect">Multi Select:</label> <select id="multiSelect" name="multiSelect" multiple="multiple">
+				<option value="volvo">Volvo</option>
+				<option value="saab">Saab</option>
+				<option value="opel">Opel</option>
+				<option value="audi">Audi</option>
+			</select>
+		</div>
+		<div class="form-row">
 			<label class="form-label" for="radio1">Radio Option 1:</label><input type="radio" id="radio1" name="radioOptions">
 		</div>
 		<div class="form-row">
@@ -127,6 +135,7 @@
 		<legend>Testing Loading Indicator</legend>
 		<p class="comments">Demonstrates how to explicitly wait for a loading indicator to disappear before moving on. Multiple loading indicator classes can be loaded into the App Config's loading
 			indicator if the application has multiple loading indicators.</p>
+		<button value="startLoadMasks">Start Load Masks</button>
 		<div class="load-mask load-mask-large"></div>
 		<div class="load-mask load-mask-medium"></div>
 		<div class="load-mask load-mask-small"></div>

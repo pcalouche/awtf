@@ -12,15 +12,15 @@ import cucumber.api.java.Before;
  */
 public class Hooks {
 	// This instance will be used by the current scenario
-	BrowserInstance browserInstance = new BrowserInstance();
+	TestInstance testInstance = new TestInstance();
 
 	@Before
 	public void setup(Scenario scenario) {
-		browserInstance.setup(scenario);
+		testInstance.setup(scenario);
 	}
 
 	@After
 	public void teardown(Scenario scenario) {
-		browserInstance.teardown(scenario);
+		testInstance.teardown(scenario);
 	}
 }

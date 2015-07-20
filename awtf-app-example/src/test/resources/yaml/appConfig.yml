@@ -3,7 +3,11 @@ appWebElements: [
   ]
 errorMessageClasses: [
   ]
-loadingIndicatorLocator: null
+loadingIndicatorLocator: {
+  description: Loading Locator,
+  locator: '.load-mask-large, .load-mask-medium, .load-mask-small',
+  locatorType: css
+}
 messageBundleLocation: messages_en
 modalLocator: null
 rowActionDefinitions: [

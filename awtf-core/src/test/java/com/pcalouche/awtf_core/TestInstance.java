@@ -3,6 +3,7 @@ package com.pcalouche.awtf_core;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.StopWatch;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -26,14 +27,15 @@ import com.pcalouche.awtf_core.util.enums.WaitTag;
 import cucumber.api.Scenario;
 
 /**
- * This class creates a browser instance that all step definitions can leverage to interact with a page.
+ * This class creates a test instance to encapsulate all that is needed to run a test.
  *
  * @author Philip Calouche
  *
  */
-public class BrowserInstance {
-	protected static final Logger logger = LogManager.getLogger();
+public class TestInstance {
+	protected final Logger logger = LogManager.getLogger();
 	protected static TestEnvironmentConfig testEnvironmentConfig;
+	protected static CoreStepHandler coreStepHandler;
 	protected static AppConfig appConfig;
 	protected static WebDriver webDriver;
 	protected static WebDriverWait webDriverWait;
@@ -46,7 +48,7 @@ public class BrowserInstance {
 	 */
 	private static Map<String, String> tempMap = new HashMap<String, String>();
 
-	public BrowserInstance() {
+	public TestInstance() {
 		String testEnvironment;
 		if (System.getProperty("testEnvironment") != null) {
 			testEnvironment = System.getProperty("testEnvironment");
@@ -61,8 +63,25 @@ public class BrowserInstance {
 
 		testEnvironmentConfig = (TestEnvironmentConfig) YamlHelper.loadFromInputStream(String.format("/yaml/testEnvironments/TestEnvironmentConfig.%s.yml", testEnvironment));
 		appConfig = (AppConfig) YamlHelper.loadFromInputStream("/yaml/appConfig.yml");
-
-		// If browser instance is extended this can be overridden easily to allow for customer browser setup
+		/*
+		 * Create an instance of the class that will handle the core steps. This defaults to com.pcalouche.awtf_core.CoreStepHandler. This class can be extended with your own version if you need to
+		 * override or add to what is in CoreStepHandler
+		 */
+		if (StringUtils.isEmpty(testEnvironmentConfig.getCoreStepHandlerClass())) {
+			coreStepHandler = new CoreStepHandler();
+		} else {
+			try {
+				Class<?> c = Class.forName(testEnvironmentConfig.getCoreStepHandlerClass());
+				coreStepHandler = (CoreStepHandler) c.newInstance();
+			} catch (ClassNotFoundException e) {
+				e.printStackTrace();
+			} catch (InstantiationException e) {
+				e.printStackTrace();
+			} catch (IllegalAccessException e) {
+				e.printStackTrace();
+			}
+		}
+		// If test instance is extended this can be overridden easily to allow for customer browser setup
 		this.setupWebDriver();
 	}
 
@@ -94,6 +113,8 @@ public class BrowserInstance {
 		// Set window size and position
 		webDriver.manage().window().setSize(new Dimension(1280, 1024));
 		webDriver.manage().window().setPosition(new Point(0, 0));
+		// Set the JavaScript Executor
+		jsExecutor = (JavascriptExecutor) webDriver;
 	}
 
 	public void setup(Scenario scenario) {
@@ -109,11 +130,11 @@ public class BrowserInstance {
 				}
 			}
 			webDriverWait = new WebDriverWait(webDriver, secondsToWait);
-			jsExecutor = (JavascriptExecutor) webDriver;
+			stopWatch.reset();
 			stopWatch.start();
 			logger.info(String.format("Starting Scenario: \"%s\"", scenario.getName()));
 			if (displayWaitTag) {
-				logger.info(String.format("Wait Tag was set to: %d seconds", secondsToWait));
+				logger.info(String.format("Wait Tag was set to: %d seconds based on given tag.", secondsToWait));
 			}
 			// Store a reference to the current scenario, so it can be accessed to do things like embed additional screenshots into a scenario.
 			currentScenario = scenario;
@@ -128,7 +149,7 @@ public class BrowserInstance {
 			stopWatch.stop();
 			logger.debug(String.format("Scenario: \"%s\" completed in %.3f seconds", scenario.getName(), stopWatch.getTime() / 1000.00));
 			scenario.write(String.format("Completed in %.3f seconds.", stopWatch.getTime() / 1000.00));
-			if (BrowserInstance.testEnvironmentConfig.isScreenshotOnScenarioCompletion() || scenario.isFailed()) {
+			if (TestInstance.testEnvironmentConfig.isScreenshotOnScenarioCompletion() || scenario.isFailed()) {
 				scenario.embed(((TakesScreenshot) webDriver).getScreenshotAs(OutputType.BYTES), "image/png");
 			}
 		} catch (Exception e) {
@@ -140,6 +161,10 @@ public class BrowserInstance {
 
 	public static TestEnvironmentConfig getTestEnvironmentConfig() {
 		return testEnvironmentConfig;
+	}
+
+	public static CoreStepHandler getCoreStepHandler() {
+		return coreStepHandler;
 	}
 
 	public static AppConfig getAppConfig() {

@@ -9,6 +9,7 @@ public class TestEnvironmentConfig {
 	private String url;
 	private boolean screenshotBeforeClick;
 	private boolean screenshotOnScenarioCompletion;
+	private String coreStepHandlerClass;
 
 	/**
 	 * Needed for YAML loading of this object, but not useful for anything else
@@ -89,5 +90,20 @@ public class TestEnvironmentConfig {
 	 */
 	public void setScreenshotOnScenarioCompletion(boolean screenshotOnScenarioCompletion) {
 		this.screenshotOnScenarioCompletion = screenshotOnScenarioCompletion;
+	}
+
+	/**
+	 * @return the coreStepHandlerClass
+	 */
+	public String getCoreStepHandlerClass() {
+		return coreStepHandlerClass;
+	}
+
+	/**
+	 * @param coreStepHandlerClass
+	 *            the coreStepHandlerClass to set
+	 */
+	public void setCoreStepHandlerClass(String coreStepHandlerClass) {
+		this.coreStepHandlerClass = coreStepHandlerClass;
 	}
 }

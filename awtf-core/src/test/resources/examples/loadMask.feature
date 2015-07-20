@@ -5,4 +5,5 @@ Feature: Provide step to check if all loading mask/indicators are no longer visi
   @loadMask @wait60sec
   Scenario: Demonstrate waiting for load masks/indicators to complete
     Given I go to the demo page
+    Then I click on "Start Load Masks"
     Then I wait for all load masks to disappear
