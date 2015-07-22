@@ -3,10 +3,7 @@ package com.pcalouche.awtf_core;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.List;
-import java.util.TimeZone;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -477,7 +474,8 @@ public class CoreStepHandler {
 	/**
 	 * Method to parse text to get the actual text to use. If the text to parse is surround by [] such [Message_Text] then the text will be looked up from a resource bundle based on that key. If the
 	 * text to parse is not surrounded by [] it is just returned in its original form. Other text substitutions may happen to the text based on codes inside the message. The convention for
-	 * substitutions inside the text is that they should be surrounded by {}. These should go in the customParseText method.
+	 * substitutions inside the text is that they should be surrounded by {}. However, this method can be completely overridden as needed with your own step handler. It recommended to avoid using <>
+	 * as a delimiter because Cucumber uses that itself in the feature files for substitution.
 	 *
 	 * @param text
 	 *            the text to parse
@@ -494,57 +492,6 @@ public class CoreStepHandler {
 			}
 		} else {
 			returnText = text;
-		}
-		// Perform any custom text parsing for the given application here
-		return customParseText(returnText);
-	}
-
-	/**
-	 * Method performs custom text parsing for the given application. The contents of this method provides examples of what can be done.
-	 * 
-	 * @param text
-	 *            the text to do custom text parsing on
-	 * @return the custom parsed text
-	 */
-	public String customParseText(String text) {
-		String returnText = text;
-		// Perform any other substitutions as needed.
-		if (returnText.contains("{MM/DD/YYYY}")) {
-			SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy");
-			format.setTimeZone(TimeZone.getTimeZone("America/New_York"));
-			returnText = returnText.replace("{MM/DD/YYYY}", format.format(Calendar.getInstance().getTime()));
-			// Log to scenario to help with review
-			if (TestInstance.getCurrentScenario() != null) {
-				TestInstance.getCurrentScenario().write(String.format("%s is: %s<br>", "{MM/DD/YYYY}", format.format(Calendar.getInstance().getTime())));
-			}
-		}
-		if (returnText.contains("{Confirmation Code}")) {
-			returnText = returnText.replace("{Confirmation Code}", TestInstance.getTempMap().get("lastConfirmationCode"));
-			// Log to scenario to help with review
-			if (TestInstance.getCurrentScenario() != null) {
-				TestInstance.getCurrentScenario().write(String.format("%s is: %s<br>", "{Confirmation Code}", TestInstance.getTempMap().get("lastConfirmationCode")));
-			}
-		}
-		if (returnText.contains("{Service Request ID}")) {
-			returnText = returnText.replace("{Service Request ID}", TestInstance.getTempMap().get("lastServiceRequestID"));
-			// Log to scenario to help with review
-			if (TestInstance.getCurrentScenario() != null) {
-				TestInstance.getCurrentScenario().write(String.format("%s is: %s<br>", "{Service Request ID}", TestInstance.getTempMap().get("lastServiceRequestID")));
-			}
-		}
-		if (returnText.contains("{Requested Effective Date}")) {
-			returnText = returnText.replace("{Requested Effective Date}", TestInstance.getTempMap().get("Requested Effective Date"));
-			// Log to scenario to help with review
-			if (TestInstance.getCurrentScenario() != null) {
-				TestInstance.getCurrentScenario().write(String.format("%s is: %s<br>", "{Requested Effective Date}", TestInstance.getTempMap().get("Requested Effective Date")));
-			}
-		}
-		if (returnText.contains("{Effective Date}")) {
-			returnText = returnText.replace("{Effective Date}", TestInstance.getTempMap().get("Effective Date"));
-			// Log to scenario to help with review
-			if (TestInstance.getCurrentScenario() != null) {
-				TestInstance.getCurrentScenario().write(String.format("%s is: %s<br>", "{Effective Date}", TestInstance.getTempMap().get("Effective Date")));
-			}
 		}
 		return returnText;
 	}

@@ -32,6 +32,5 @@ public class MyTestInstance extends TestInstance {
 	protected void setupWebDriver() {
 		// Just calling super here, but this can be completely changed to do whatever you need
 		super.setupWebDriver();
-		logger.debug("Would call some additional code here");
 	}
 }

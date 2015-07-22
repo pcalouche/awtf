@@ -1,5 +1,5 @@
 !!com.pcalouche.awtf_core.TestEnvironmentConfig {
-  browser: firefox,
+  browser: phantomJS,
   secondsToWait: 15,
   url: '/src/test/resources/demoPage/demoPage.html',
   screenshotBeforeClick: false,

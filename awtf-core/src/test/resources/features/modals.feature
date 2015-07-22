@@ -10,6 +10,7 @@ Feature: Provide steps to interact with modals
     Given I go to the demo page
     Then I click on "Show Modal"
     Then I wait for the "Test" modal to appear
-    Then I input "Text Field 3" as "Modal Text Field Input"
+    Then I input "Text Field 1" as "Text Field 1 Modal Input"
+    Then I take a screenshot
     Then I click on "Close"
     Then I wait for the "Test" modal to disappear
