@@ -1,5 +1,7 @@
 package com.pcalouche.awtf_app_example;
 
+import org.apache.logging.log4j.LogManager;
+
 import com.pcalouche.awtf_core.TestInstance;
 
 import cucumber.api.Scenario;
@@ -13,7 +15,7 @@ import cucumber.api.Scenario;
 public class MyAppTestInstance extends TestInstance {
 	// Objects like AppConfig or TestEnvironmentConfig could be extended with additional fields as needed or entirely new objects can be added here to suite your applciation's configuration needs.
 	public MyAppTestInstance() {
-		super();
+		logger = LogManager.getLogger();
 	}
 
 	@Override

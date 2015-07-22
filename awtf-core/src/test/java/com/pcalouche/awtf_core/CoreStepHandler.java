@@ -23,7 +23,7 @@ import com.pcalouche.awtf_core.util.enums.RowAction;
 import cucumber.api.DataTable;
 
 public class CoreStepHandler {
-	protected static Logger logger = LogManager.getLogger();
+	protected Logger logger = LogManager.getLogger();
 
 	/**
 	 * Method to handle taking a screen shot during a scenario

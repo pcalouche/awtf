@@ -33,7 +33,7 @@ import cucumber.api.Scenario;
  *
  */
 public class TestInstance {
-	protected final Logger logger = LogManager.getLogger();
+	protected Logger logger = LogManager.getLogger();
 	protected static TestEnvironmentConfig testEnvironmentConfig;
 	protected static CoreStepHandler coreStepHandler;
 	protected static AppConfig appConfig;

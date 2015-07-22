@@ -4,12 +4,20 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.TimeZone;
 
+import org.apache.logging.log4j.LogManager;
+
 import com.pcalouche.awtf_core.CoreStepHandler;
 import com.pcalouche.awtf_core.TestInstance;
 
 public class MyAppStepHandler extends CoreStepHandler {
+
+	public MyAppStepHandler() {
+		logger = LogManager.getLogger();
+	}
+
 	@Override
 	public String parseText(String text) {
+		logger.info("overridden parseText");
 		// Calling super version to use that parsing as a start.
 		String returnText = super.parseText(text);
 		// Perform any other substitutions as needed.
