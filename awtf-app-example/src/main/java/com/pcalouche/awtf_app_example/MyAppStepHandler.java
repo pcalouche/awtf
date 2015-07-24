@@ -17,7 +17,6 @@ public class MyAppStepHandler extends CoreStepHandler {
 
 	@Override
 	public String parseText(String text) {
-		logger.info("overridden parseText");
 		// Calling super version to use that parsing as a start.
 		String returnText = super.parseText(text);
 		// Perform any other substitutions as needed.
