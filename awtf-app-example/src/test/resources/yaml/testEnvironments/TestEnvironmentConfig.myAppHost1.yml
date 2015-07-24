@@ -1,5 +1,5 @@
 !!com.pcalouche.awtf_core.TestEnvironmentConfig {
-  browser: chrome,
+  browser: firefox,
   secondsToWait: 15,
   url: '/src/test/resources/appExamplePage/appExamplePage.html',
   screenshotBeforeClick: false,
