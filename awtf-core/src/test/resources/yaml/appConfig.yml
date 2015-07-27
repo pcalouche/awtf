@@ -20,6 +20,11 @@ appWebElements:
   locator: .error-box,
   locatorType: css
 }
+- {
+  description: Test Span App Element,
+  locator: '#testSpanAppElement',
+  locatorType: css
+}
 - !!com.pcalouche.awtf_core.util.appConfig.Modal {
   description: Test,
   locator: '#testModal',

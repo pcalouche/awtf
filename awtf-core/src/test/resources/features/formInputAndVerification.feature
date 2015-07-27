@@ -6,7 +6,7 @@ Feature: Provide steps to interact and verify form elements
   If more precise location is needed, an App Element or a custom step definition may be the right choice .
 
   @formInputAndVerification
-  Scenario: Demonstart
+  Scenario: Demonstrate interacting and verifying form elements
     Given I go to the demo page
     Then I input "Text Field 1" as "some input"
     Then I see "Text Field 1" has value of "some input"
@@ -49,3 +49,7 @@ Feature: Provide steps to interact and verify form elements
     Then I input "[Account History Dropdown]" as "60 Days"
     Then I see "[Account History Dropdown]" has value of "60 Days"
     Then I see "Address 1" has value of "14321 Runner St"
+    Then I see "[Test Span App Element]" has value of "App Element that is not a form element value test"
+    Then I see "[Test Span App Element]" has value containing "App Element that"
+    Then I see "[Test Span App Element]" has value of "[testSpanElementMessage]"
+    Then I see "[Test Span App Element]" has value containing "[testSpanElementMessagePartial]"

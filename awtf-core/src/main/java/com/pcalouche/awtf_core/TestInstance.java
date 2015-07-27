@@ -36,6 +36,7 @@ public class TestInstance {
 	protected Logger logger = LogManager.getLogger();
 	protected static TestEnvironmentConfig testEnvironmentConfig;
 	protected static CoreStepHandler coreStepHandler;
+	protected static StepsUtil stepsUtil;
 	protected static AppConfig appConfig;
 	protected static WebDriver webDriver;
 	protected static WebDriverWait webDriverWait;
@@ -73,12 +74,17 @@ public class TestInstance {
 			try {
 				Class<?> c = Class.forName(testEnvironmentConfig.getCoreStepHandlerClass());
 				coreStepHandler = (CoreStepHandler) c.newInstance();
+				c = Class.forName(testEnvironmentConfig.getStepsUtilClass());
+				stepsUtil = (StepsUtil) c.newInstance();
 			} catch (ClassNotFoundException e) {
 				e.printStackTrace();
+				System.exit(1);
 			} catch (InstantiationException e) {
 				e.printStackTrace();
+				System.exit(1);
 			} catch (IllegalAccessException e) {
 				e.printStackTrace();
+				System.exit(1);
 			}
 		}
 		// If test instance is extended this can be overridden easily to allow for customer browser setup
@@ -159,38 +165,72 @@ public class TestInstance {
 		}
 	}
 
+	/**
+	 * @return the testEnvironmentConfig
+	 */
 	public static TestEnvironmentConfig getTestEnvironmentConfig() {
 		return testEnvironmentConfig;
 	}
 
+	/**
+	 * @return the coreStepHandler
+	 */
 	public static CoreStepHandler getCoreStepHandler() {
 		return coreStepHandler;
 	}
 
+	/**
+	 * @return the stepsUtils
+	 */
+	public static StepsUtil getStepsUtil() {
+		return stepsUtil;
+	}
+
+	/**
+	 * @return the appConfig
+	 */
 	public static AppConfig getAppConfig() {
 		return appConfig;
 	}
 
+	/**
+	 * @return the webDriver
+	 */
 	public static WebDriver getWebDriver() {
 		return webDriver;
 	}
 
+	/**
+	 * @return the webDriverWait
+	 */
 	public static WebDriverWait getWebDriverWait() {
 		return webDriverWait;
 	}
 
+	/**
+	 * @return the jsExecutor
+	 */
 	public static JavascriptExecutor getJsExecutor() {
 		return jsExecutor;
 	}
 
+	/**
+	 * @return the currentScenario
+	 */
 	public static Scenario getCurrentScenario() {
 		return currentScenario;
 	}
 
+	/**
+	 * @return the stopWatch
+	 */
 	public static StopWatch getStopWatch() {
 		return stopWatch;
 	}
 
+	/**
+	 * @return the tempMap
+	 */
 	public static Map<String, String> getTempMap() {
 		return tempMap;
 	}

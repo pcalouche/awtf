@@ -11,10 +11,10 @@ import cucumber.api.junit.Cucumber;
  * packages to look for in the glue option.
  * 
  * @author Philip Calouche
- *
+ * 
  */
 @RunWith(Cucumber.class)
-@CucumberOptions(glue = { "com.pcalouche.awtf_core.stepDefinitions", "com.pcalouche.awtf_app_example" }, plugin = { "html:target/cucumber/myAppTestRunner",
-		"json:target/cucumber/myAppTestRunner.json", "rerun:target/cucumber/myAppTestRunnerRerun.txt" }, features = { "classpath:" }, tags = { "~@pending", "@myAppExampleFeature" }, snippets = SnippetType.CAMELCASE)
+@CucumberOptions(glue = { "com.pcalouche.awtf_core.stepDefinitions", "com.pcalouche.awtf_app_example" }, plugin = { "html:target/cucumber/myAppTestRunner", "json:target/cucumber/myAppTestRunner.json",
+		"rerun:target/cucumber/myAppTestRunnerRerun.txt" }, features = { "classpath:" }, tags = { "~@pending", "@myAppExampleFeature" }, snippets = SnippetType.CAMELCASE)
 public class MyAppTestRunner {
 }

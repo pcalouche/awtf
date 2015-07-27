@@ -27,6 +27,7 @@ public class AppConfigDriver {
 		appWebElements.add(new AppElement("Account History Dropdown", "#accountHistoryDropdown", AppElementLocatorType.css));
 		appWebElements.add(new AppElement("Animal Dropdown", "#animalDropdown", AppElementLocatorType.css));
 		appWebElements.add(new AppElement("Error Box", ".error-box", AppElementLocatorType.css));
+		appWebElements.add(new AppElement("Test Span App Element", "#testSpanAppElement", AppElementLocatorType.css));
 		// Modals
 		appWebElements.add(new Modal("Test", "#testModal", AppElementLocatorType.css));
 		// Elements with Tooltip

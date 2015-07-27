@@ -4,12 +4,13 @@ import com.pcalouche.awtf_core.util.enums.BrowserType;
 
 public class TestEnvironmentConfig {
 
-	private BrowserType browser;
-	private int secondsToWait;
+	private BrowserType browser = BrowserType.phantomJS;
+	private int secondsToWait = 15;
 	private String url;
-	private boolean screenshotBeforeClick;
-	private boolean screenshotOnScenarioCompletion;
-	private String coreStepHandlerClass;
+	private boolean screenshotBeforeClick = false;
+	private boolean screenshotOnScenarioCompletion = true;
+	private String coreStepHandlerClass = "com.pcalouche.awtf_core.CoreStepHandler";
+	private String stepsUtilClass = "com.pcalouche.awtf_core.StepsUtil";
 
 	/**
 	 * Needed for YAML loading of this object, but not useful for anything else
@@ -105,5 +106,20 @@ public class TestEnvironmentConfig {
 	 */
 	public void setCoreStepHandlerClass(String coreStepHandlerClass) {
 		this.coreStepHandlerClass = coreStepHandlerClass;
+	}
+
+	/**
+	 * @return the stepsUtilClass
+	 */
+	public String getStepsUtilClass() {
+		return stepsUtilClass;
+	}
+
+	/**
+	 * @param stepsUtilClass
+	 *            the stepsUtilClass to set
+	 */
+	public void setStepsUtilClass(String stepsUtilClass) {
+		this.stepsUtilClass = stepsUtilClass;
 	}
 }

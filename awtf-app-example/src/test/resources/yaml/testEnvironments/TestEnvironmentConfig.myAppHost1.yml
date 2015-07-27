@@ -4,5 +4,6 @@
   url: '/src/test/resources/appExamplePage/appExamplePage.html',
   screenshotBeforeClick: false,
   screenshotOnScenarioCompletion: true,
-  coreStepHandlerClass: 'com.pcalouche.awtf_app_example.MyAppStepHandler'
+  coreStepHandlerClass: 'com.pcalouche.awtf_app_example.MyAppStepHandler',
+  stepsUtilClass: 'com.pcalouche.awtf_app_example.MyAppStepsUtil'
 }

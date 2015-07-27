@@ -3,7 +3,6 @@ package com.pcalouche.awtf_core;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import gherkin.formatter.model.DataTableRow;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -29,6 +28,7 @@ import com.pcalouche.awtf_core.util.enums.HTMLInputType;
 import com.pcalouche.awtf_core.util.enums.RowAction;
 
 import cucumber.api.DataTable;
+import gherkin.formatter.model.DataTableRow;
 
 /**
  * This is a general Utility class for helper methods related to Cucumber and Selenium step testing.
@@ -37,12 +37,12 @@ import cucumber.api.DataTable;
  *
  */
 public class StepsUtil {
-	private static Logger logger = LogManager.getLogger();
+	protected Logger logger = LogManager.getLogger();
 
 	/**
 	 * Helper method that take a screenshot
 	 */
-	public static void takeAScreenShot() {
+	public void takeAScreenShot() {
 		TestInstance.getCurrentScenario().embed(((TakesScreenshot) TestInstance.getWebDriver()).getScreenshotAs(OutputType.BYTES), "image/png");
 	}
 
@@ -53,7 +53,7 @@ public class StepsUtil {
 	 *            the locator to search by
 	 * @return true if element is present, false otherwise
 	 */
-	public static boolean elementExists(By locator) {
+	public boolean elementExists(By locator) {
 		try {
 			TestInstance.getWebDriver().findElement(locator);
 			return true;
@@ -71,7 +71,7 @@ public class StepsUtil {
 	 *            the locator to search by
 	 * @return true if element is present, false otherwise
 	 */
-	public static boolean elementExists(WebElement parentWebElement, By locator) {
+	public boolean elementExists(WebElement parentWebElement, By locator) {
 		try {
 			parentWebElement.findElement(locator);
 			return true;
@@ -87,7 +87,7 @@ public class StepsUtil {
 	 * @param webElement
 	 *            the web element to click on
 	 */
-	public static void handleGeneralClick(WebElement webElement) {
+	public void handleGeneralClick(WebElement webElement) {
 		// See if the matching element has a anchor tag underneath it. If so click that instead of the element.
 		try {
 			WebElement linkElement = webElement.findElement(By.tagName("a"));
@@ -104,7 +104,7 @@ public class StepsUtil {
 	 *            the description to search by
 	 * @return the matching form element
 	 */
-	public static WebElement findFormElementByDescription(String description) {
+	public WebElement findFormElementByDescription(String description) {
 		/*
 		 * Parse description to see if it is surrounded by []. If it is then look up the form input from the App Config. If it isn't then look for a label with matching text and a non empty for
 		 * attribute. The input that has an ID that matches the for attribute value will be returned.
@@ -114,7 +114,7 @@ public class StepsUtil {
 			return TestInstance.getWebDriverWait().until(ExpectedConditions.presenceOfElementLocated(appElement.getByLocator()));
 		} else {
 			// Determine what parent locator to use based on what is currently displayed on the UI
-			String parentLocatorToUse = StepsUtil.isModalDisplayed() ? TestInstance.getAppConfig().getModalLocator().getLocator() : "";
+			String parentLocatorToUse = TestInstance.getStepsUtil().isModalDisplayed() ? TestInstance.getAppConfig().getModalLocator().getLocator() : "";
 			String locator = String.format("%s//label[contains(normalize-space(string()),'%s')][@for!='']", parentLocatorToUse, description);
 			// Find all matching label elements on the page
 			List<WebElement> fieldLabels = TestInstance.getWebDriverWait().until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.xpath(locator)));
@@ -138,7 +138,7 @@ public class StepsUtil {
 	 *            the description to search by
 	 * @return the matching form element
 	 */
-	public static List<WebElement> findFormElementsByDescription(String description) {
+	public List<WebElement> findFormElementsByDescription(String description) {
 		/*
 		 * Parse description to see if it is surrounded by []. If it is then look up the form input from the App Config. If it isn't then look for a label with matching text and a non empty for
 		 * attribute. The input that has an ID that matches the for attribute value will be returned.
@@ -148,7 +148,7 @@ public class StepsUtil {
 			return TestInstance.getWebDriverWait().until(ExpectedConditions.presenceOfAllElementsLocatedBy(appElement.getByLocator()));
 		} else {
 			// Determine what parent locator to use based on what is currently displayed on the UI
-			String parentLocatorToUse = StepsUtil.isModalDisplayed() ? TestInstance.getAppConfig().getModalLocator().getLocator() : "";
+			String parentLocatorToUse = TestInstance.getStepsUtil().isModalDisplayed() ? TestInstance.getAppConfig().getModalLocator().getLocator() : "";
 			String locator = String.format("%s//label[contains(normalize-space(string()),'%s')][@for!='']", parentLocatorToUse, description);
 			// Find all matching label elements on the page
 			List<WebElement> fieldLabels = TestInstance.getWebDriverWait().until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.xpath(locator)));
@@ -168,7 +168,7 @@ public class StepsUtil {
 	 * @param value
 	 *            the value to form field to
 	 */
-	public static void handleFormElementInput(WebElement formElement, Object value) {
+	public void handleFormElementInput(WebElement formElement, Object value) {
 		/*
 		 * Sometimes hidden fields are used to store the value of a disabled field since disabled field values are not submitted. One example is a disabled select because there is only one option to
 		 * choose. Selenium will throw an exception if we interact with a hidden input, so don't try and set it if the input is one.
@@ -241,7 +241,7 @@ public class StepsUtil {
 	 * @param matchValueExactly
 	 *            true to match the value exactly
 	 */
-	public static void verifyFormElementValue(WebElement formElement, Object value, boolean matchValueExactly) {
+	public void verifyFormElementValue(WebElement formElement, Object value, boolean matchValueExactly) {
 		/*
 		 * Sometimes hidden fields are used to store the value of a disabled field since disabled field values are not submitted. One example is a disabled select because there is only one option to
 		 * choose. Selenium will throw an exception if we interact with a hidden input, so don't try and set it if the input is one.
@@ -326,8 +326,8 @@ public class StepsUtil {
 	 * @param matchValueExactly
 	 *            true to match the value exactly
 	 */
-	public static void verifySelectOption(String verificationToPerform, Select select, String description, String value, boolean matchValueExactly) {
-		String parsedValue = TestInstance.getCoreStepHandler().parseText(value);
+	public void verifySelectOption(String verificationToPerform, Select select, String description, String value, boolean matchValueExactly) {
+		String parsedValue = TestInstance.getStepsUtil().parseText(value);
 		boolean valueFound = false;
 		for (WebElement webElement : select.getOptions()) {
 			if (matchValueExactly) {
@@ -359,9 +359,9 @@ public class StepsUtil {
 	 * @param matchValueExactly
 	 *            true to match the value exactly
 	 */
-	public static void verifyDescriptionValueCombination(String description, String value, boolean matchValueExactly) {
+	public void verifyDescriptionValueCombination(String description, String value, boolean matchValueExactly) {
 		// Get parsed value for locators and testing
-		String parsedValue = TestInstance.getCoreStepHandler().parseText(value);
+		String parsedValue = TestInstance.getStepsUtil().parseText(value);
 		AppElement appElement = null;
 		List<WebElement> webElements = null;
 		String matchExactlyErrorFormat = "Could not find %s with value of %s";
@@ -375,7 +375,7 @@ public class StepsUtil {
 			webElements = TestInstance.getWebDriverWait().until(ExpectedConditions.presenceOfAllElementsLocatedBy(appElement.getByLocator()));
 		} else {
 			// Determine what parent locator to use based on what is currently displayed on the UI
-			String parentLocatorToUse = StepsUtil.isModalDisplayed() ? TestInstance.getAppConfig().getModalLocator().getLocator() : "";
+			String parentLocatorToUse = TestInstance.getStepsUtil().isModalDisplayed() ? TestInstance.getAppConfig().getModalLocator().getLocator() : "";
 			String labelWithForAttributeLocator = String.format("%s//label[contains(normalize-space(string()), '%s')][@for!='']", parentLocatorToUse, description);
 			String basicNameWithValueLocator;
 			if (matchValueExactly) {
@@ -389,22 +389,19 @@ public class StepsUtil {
 			webElements = TestInstance.getWebDriverWait().until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.xpath(locator)));
 		}
 
-		// Now go through the web element results and note if it is displayed and then depending on its properties perform additional verification
+		// Now go through the web element results, check if it is displayed, and then depending on its properties perform additional verification
 		boolean isDisplayed = false;
 		for (WebElement webElement : webElements) {
 			if (webElement.isDisplayed()) {
 				isDisplayed = true;
 				if (StringUtils.isNotBlank(webElement.getAttribute("for"))) {
-					logger.info("Testing for attribute case for " + description);
 					verifyFormElementValue(TestInstance.getWebDriver().findElement(By.id(webElement.getAttribute("for"))), parsedValue, matchValueExactly);
 				} else if (appElement != null) {
-					if (HTMLFormElement.isFormElement(webElement.getTagName())) {
-						logger.info("Testing AppWebElement input case for " + description);
+					// Test if appElement is a form element and handle accordingly. If then try and match its text against the expected value as a last resort.
+					try {
+						HTMLFormElement.valueOf(webElement.getTagName());
 						verifyFormElementValue(webElement, parsedValue, matchValueExactly);
-					} else {
-						// If this is an App Element and not a form field try do a basic text match
-						// TODO test this case
-						logger.info("Testing AppWebElement getText() case for " + description);
+					} catch (IllegalArgumentException e) {
 						if (matchValueExactly) {
 							assertEquals(String.format(matchExactlyErrorFormat, appElement.getDescription(), parsedValue), parsedValue, webElement.getText());
 						} else {
@@ -433,7 +430,7 @@ public class StepsUtil {
 	 *            the web element state to test
 	 * @return true if it meets the given element state, false otherwise
 	 */
-	public static boolean elementHasCorrectState(WebElement webElement, HTMLElementState htmlElementState) {
+	public boolean elementHasCorrectState(WebElement webElement, HTMLElementState htmlElementState) {
 		switch (htmlElementState) {
 		case disabled:
 			return (!webElement.isEnabled() || webElement.getAttribute("class").contains("disabled"));
@@ -458,7 +455,7 @@ public class StepsUtil {
 	 *            the table ID to for the item in
 	 * @return the table row
 	 */
-	public static WebElement findTableRowContainingText(String text, String tableId) {
+	public WebElement findTableRowContainingText(String text, String tableId) {
 		String locator;
 		if (StringUtils.isNotEmpty(tableId)) {
 			locator = String.format("//table[@id='%s']//td[contains(normalize-space(string()), '%s')]/ancestor::tr", tableId, text);
@@ -468,7 +465,7 @@ public class StepsUtil {
 		return TestInstance.getWebDriverWait().until(ExpectedConditions.visibilityOfElementLocated(By.xpath(locator)));
 	}
 
-	public static WebElement findTableRowContainingText(String text) {
+	public WebElement findTableRowContainingText(String text) {
 		return findTableRowContainingText(text, null);
 	}
 
@@ -482,17 +479,17 @@ public class StepsUtil {
 	 *            the table ID of the table to search in
 	 * @return the matching table rows
 	 */
-	public static List<WebElement> findTableRowsWithMatchingCriteria(RowAction rowAction, DataTable criteria, String tableId) {
+	public List<WebElement> findTableRowsWithMatchingCriteria(RowAction rowAction, DataTable criteria, String tableId) {
 		// Wait for any load masks to be gone
-		StepsUtil.waitForLoadMasks();
+		TestInstance.getStepsUtil().waitForLoadMasks();
 		List<WebElement> matchedRows = new ArrayList<WebElement>();
 		List<DataTableRow> dataTableRowList = criteria.getGherkinRows();
 		for (int i = 1; i < dataTableRowList.size(); i++) {
 			// First find matching cells that meet the first criterion to narrow things down faster
 			List<String> rowCriteria = dataTableRowList.get(i).getCells();
-			String firstCriterion = TestInstance.getCoreStepHandler().parseText(rowCriteria.get(0));
+			String firstCriterion = TestInstance.getStepsUtil().parseText(rowCriteria.get(0));
 			// Determine what parent locator to use based on what is currently displayed on the UI
-			String parentLocatorToUse = StepsUtil.isModalDisplayed() ? TestInstance.getAppConfig().getModalLocator().getLocator() : "";
+			String parentLocatorToUse = TestInstance.getStepsUtil().isModalDisplayed() ? TestInstance.getAppConfig().getModalLocator().getLocator() : "";
 			String locator;
 			if (StringUtils.isNotEmpty(tableId)) {
 				locator = String.format("%s//table[@id='%s']//tr//td[normalize-space(string())='%s']", parentLocatorToUse, tableId, firstCriterion);
@@ -524,8 +521,8 @@ public class StepsUtil {
 				// Start at 1 because we already tested 0 with the initial query
 				for (int j = 1; j < dataTableRowList.get(i).getCells().size(); j++) {
 					try {
-						WebElement rowCell = initiallyMatchedRow.findElement(By.xpath(String.format(".//td[normalize-space(string())='%s']",
-								TestInstance.getCoreStepHandler().parseText(rowCriteria.get(j)))));
+						WebElement rowCell = initiallyMatchedRow
+								.findElement(By.xpath(String.format(".//td[normalize-space(string())='%s']", TestInstance.getStepsUtil().parseText(rowCriteria.get(j)))));
 						logger.debug(rowCell.getText() + " found");
 						// Have to check if this is displayed because the old UI likes to put data that could match in hidden cells.
 						if (!rowCell.isDisplayed()) {
@@ -577,7 +574,7 @@ public class StepsUtil {
 	 *            the data table that has the criteria to match on
 	 * @return the matching table rows
 	 */
-	public static List<WebElement> findTableRowsWithMatchingCriteria(RowAction rowAction, DataTable criteria) {
+	public List<WebElement> findTableRowsWithMatchingCriteria(RowAction rowAction, DataTable criteria) {
 		return findTableRowsWithMatchingCriteria(rowAction, criteria, null);
 	}
 
@@ -593,8 +590,8 @@ public class StepsUtil {
 	 *            the table ID of the table to search in
 	 * @return the matching checkable items in the table
 	 */
-	public static List<WebElement> findActionableRowElements(RowAction rowAction, DataTable criteria, String tableId) {
-		List<WebElement> matchedRows = StepsUtil.findTableRowsWithMatchingCriteria(rowAction, criteria, tableId);
+	public List<WebElement> findActionableRowElements(RowAction rowAction, DataTable criteria, String tableId) {
+		List<WebElement> matchedRows = TestInstance.getStepsUtil().findTableRowsWithMatchingCriteria(rowAction, criteria, tableId);
 		By locator = TestInstance.getAppConfig().findRowActionLocator(rowAction).getByLocator();
 		List<WebElement> actionableRowElements = new ArrayList<WebElement>();
 		for (WebElement matchedRow : matchedRows) {
@@ -620,7 +617,7 @@ public class StepsUtil {
 	 *            the data table that has the criteria to match on
 	 * @return the matching checkable items in the table
 	 */
-	public static List<WebElement> findActionableRowElements(RowAction rowAction, DataTable criteria) {
+	public List<WebElement> findActionableRowElements(RowAction rowAction, DataTable criteria) {
 		return findActionableRowElements(rowAction, criteria, null);
 	}
 
@@ -635,7 +632,7 @@ public class StepsUtil {
 	 *
 	 * @return true if a modal is displayed, false otherwise
 	 */
-	public static boolean isModalDisplayed() {
+	public boolean isModalDisplayed() {
 		boolean modalDisplayed = false;
 		// Assumption is modals will always pre-exist on the page even though they may not be visible.
 		if (TestInstance.getAppConfig().getModalLocator() != null) {
@@ -653,7 +650,7 @@ public class StepsUtil {
 	/**
 	 * Helper method that waits for all load masks to be gone from the page.
 	 */
-	public static void waitForLoadMasks() {
+	public void waitForLoadMasks() {
 		By locator = TestInstance.getAppConfig().getLoadingIndicatorLocator().getByLocator();
 		logger.info(locator);
 		List<WebElement> loadMasks = null;
@@ -681,7 +678,7 @@ public class StepsUtil {
 	 *            the message text to search for
 	 * @return list of web elements with matching text
 	 */
-	public static List<WebElement> findMatchingChildElementsWithText(String messageTextToUse) {
+	public List<WebElement> findMatchingChildElementsWithText(String messageTextToUse) {
 		String locator = String.format("//body//*[contains(normalize-space(string()), '%s')]", messageTextToUse);
 		// This will return the parents elements that have the text as well.
 		List<WebElement> webElements;
@@ -702,5 +699,30 @@ public class StepsUtil {
 			}
 		}
 		return webElements;
+	}
+
+	/**
+	 * Method to parse text to get the actual text to use. If the text to parse is surround by [] such [Message_Text] then the text will be looked up from a resource bundle based on that key. If the
+	 * text to parse is not surrounded by [] it is just returned in its original form. Other text substitutions may happen to the text based on codes inside the message. The convention for
+	 * substitutions inside the text is that they should be surrounded by {}. However, this method can be completely overridden as needed with your own step handler. It recommended to avoid using
+	 * <> as a delimiter because Cucumber uses that itself in the feature files for substitution.
+	 *
+	 * @param text
+	 *            the text to parse
+	 * @return the text to use
+	 */
+	public String parseText(String text) {
+		String returnText = null;
+		// See if message needs to pulled from resource bundle or not
+		if (text.startsWith("[") && text.endsWith("]")) {
+			returnText = TestInstance.getAppConfig().getMessageBundle().getString(text.substring(1, text.length() - 1));
+			// Log to scenario to help with review
+			if (TestInstance.getCurrentScenario() != null) {
+				TestInstance.getCurrentScenario().write(String.format("%s is: %s<br>", text, returnText));
+			}
+		} else {
+			returnText = text;
+		}
+		return returnText;
 	}
 }
