@@ -3,4 +3,9 @@ $(function() {
 		$("#loginPage").hide();
 		$("#mainPage").show();
 	});
+	
+	$("button[value='logout']").on("click", function(event, data) {
+		$("#mainPage").hide();
+		$("#logoutPage").show();
+	});
 });

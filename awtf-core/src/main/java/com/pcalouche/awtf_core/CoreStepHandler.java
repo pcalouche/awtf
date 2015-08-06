@@ -34,7 +34,7 @@ public class CoreStepHandler {
 
 	/**
 	 * Method to handle clicks for links and buttons
-	 * 
+	 *
 	 * @param text
 	 *            the text of the link or button
 	 */
@@ -42,10 +42,12 @@ public class CoreStepHandler {
 		if (TestInstance.getTestEnvironmentConfig().isScreenshotBeforeClick()) {
 			TestInstance.getStepsUtil().takeAScreenShot();
 		}
-		// Determine what parent locator to use based on what is currently displayed on the UI
+		// Determine what parent locator to use based on what is currently
+		// displayed on the UI
 		String parentLocatorToUse = TestInstance.getStepsUtil().isModalDisplayed() ? TestInstance.getAppConfig().getModalLocator().getLocator() : "";
 		String locator = String.format("%s//*[.='%s']|%s//input[@value='%s'][@type='submit' or @type='button']", parentLocatorToUse, text, parentLocatorToUse, text);
-		// In case there is more than one matching element, find the first visible one and click it
+		// In case there is more than one matching element, find the first
+		// visible one and click it
 		List<WebElement> webElements = TestInstance.getWebDriverWait().until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.xpath(locator)));
 		boolean visibleItemWasClicked = false;
 		for (WebElement webElement : webElements) {
@@ -60,7 +62,7 @@ public class CoreStepHandler {
 
 	/**
 	 * Method for handle input into form elements that aren't check boxes or radio buttons
-	 * 
+	 *
 	 * @param description
 	 *            the description of the form element to use
 	 * @param value
@@ -72,7 +74,7 @@ public class CoreStepHandler {
 
 	/**
 	 * Method to handle input for check boxes and radio buttons.
-	 * 
+	 *
 	 * @param actionValue
 	 *            action to perform on the check box or radio. Must be either "select" or "deselect"
 	 * @param description
@@ -84,7 +86,7 @@ public class CoreStepHandler {
 
 	/**
 	 * Method to handle input for a dropdown using just a partial text match
-	 * 
+	 *
 	 * @param description
 	 *            the description of the dropdown to use
 	 * @param value
@@ -105,7 +107,7 @@ public class CoreStepHandler {
 
 	/**
 	 * Method to handle inputting a string a given number of times into a form element
-	 * 
+	 *
 	 * @param textString
 	 *            the text string to input into the form element
 	 * @param numberOfTimes
@@ -119,7 +121,7 @@ public class CoreStepHandler {
 
 	/**
 	 * Method to handle input for form elements that represent a min to max range
-	 * 
+	 *
 	 * @param description
 	 *            the description of the form element to use
 	 * @param startValue
@@ -136,7 +138,7 @@ public class CoreStepHandler {
 
 	/**
 	 * Method to verify the value of a form element
-	 * 
+	 *
 	 * @param description
 	 *            the description of the form element to use
 	 * @param value
@@ -148,7 +150,7 @@ public class CoreStepHandler {
 
 	/**
 	 * Method to verify the value of a form element partially matches the given value
-	 * 
+	 *
 	 * @param description
 	 *            the description of the form element to use
 	 * @param value
@@ -160,7 +162,7 @@ public class CoreStepHandler {
 
 	/**
 	 * Method to verify if a value is in a dropdown or not
-	 * 
+	 *
 	 * @param verificationToPerform
 	 *            the verification to perform. Must either be "see" or "do not see"
 	 * @param value
@@ -175,7 +177,7 @@ public class CoreStepHandler {
 
 	/**
 	 * Method to verify if a value is in a dropdown or not using just a partial match
-	 * 
+	 *
 	 * @param verificationToPerform
 	 *            the verification to perform. Must either be "see" or "do not see"
 	 * @param value
@@ -190,7 +192,7 @@ public class CoreStepHandler {
 
 	/**
 	 * Method to verify if a string appears in a form element a given number of times
-	 * 
+	 *
 	 * @param description
 	 *            the description of the form element to use
 	 * @param textString
@@ -204,12 +206,12 @@ public class CoreStepHandler {
 
 	/**
 	 * Method to verify if a message/text/label is visible on the on the page
-	 * 
+	 *
 	 * @param searchString
 	 *            the string to search for
 	 */
 	public void iSeeTheMessage(String searchString) {
-		String messageTextToUse = TestInstance.getStepsUtil().parseText(searchString);
+		String messageTextToUse = TestInstance.getStepsUtil().resolveText(searchString);
 		List<WebElement> webElements = TestInstance.getStepsUtil().findMatchingChildElementsWithText(messageTextToUse);
 		boolean isDisplayed = false;
 		for (WebElement webElement : webElements) {
@@ -223,12 +225,12 @@ public class CoreStepHandler {
 
 	/**
 	 * Method to verify if a message/text/label is not visible on the on the page
-	 * 
+	 *
 	 * @param searchString
 	 *            the string to search for
 	 */
 	public void iDoNotSeeTheMessage(String searchString) {
-		String messageTextToUse = TestInstance.getStepsUtil().parseText(searchString);
+		String messageTextToUse = TestInstance.getStepsUtil().resolveText(searchString);
 		List<WebElement> webElements = TestInstance.getStepsUtil().findMatchingChildElementsWithText(messageTextToUse);
 		boolean isDisplayed = false;
 		for (WebElement webElement : webElements) {
@@ -242,12 +244,12 @@ public class CoreStepHandler {
 
 	/**
 	 * Method to verify if an error message is visible on the on the page
-	 * 
+	 *
 	 * @param errorMessage
 	 *            error message to look for
 	 */
 	public void iSeeTheErrorMessage(String errorMessage) {
-		String errorTextToUse = TestInstance.getStepsUtil().parseText(errorMessage);
+		String errorTextToUse = TestInstance.getStepsUtil().resolveText(errorMessage);
 		List<WebElement> webElements = TestInstance.getStepsUtil().findMatchingChildElementsWithText(errorTextToUse);
 		boolean errorMessageFound = false;
 		for (WebElement webElement : webElements) {
@@ -261,12 +263,12 @@ public class CoreStepHandler {
 
 	/**
 	 * Method to verify if an error message is not visible on the on the page
-	 * 
+	 *
 	 * @param errorMessage
 	 *            error message to look for
 	 */
 	public void iDoNotSeeTheErrorMessage(String errorMessage) {
-		String errorTextToUse = TestInstance.getStepsUtil().parseText(errorMessage);
+		String errorTextToUse = TestInstance.getStepsUtil().resolveText(errorMessage);
 		List<WebElement> webElements = TestInstance.getStepsUtil().findMatchingChildElementsWithText(errorTextToUse);
 		for (WebElement webElement : webElements) {
 			if (webElement.isDisplayed() && TestInstance.getAppConfig().webElementHasErrorClass(webElement)) {
@@ -278,7 +280,7 @@ public class CoreStepHandler {
 
 	/**
 	 * Method to verify if a page element is in a given state
-	 * 
+	 *
 	 * @param description
 	 *            the description of the element to use
 	 * @param htmlElementState
@@ -294,14 +296,15 @@ public class CoreStepHandler {
 
 	/**
 	 * Method to verify if a button is in a given state
-	 * 
+	 *
 	 * @param buttonText
 	 *            the button text of the button to verify state for
 	 * @param htmlElementState
 	 *            the state to verify for the element
 	 */
 	public void iSeeTheButtonIs(String buttonText, HTMLElementState htmlElementState) {
-		// Determine what parent locator to use based on what is currently displayed on the UI
+		// Determine what parent locator to use based on what is currently
+		// displayed on the UI
 		String parentLocatorToUse = TestInstance.getStepsUtil().isModalDisplayed() ? TestInstance.getAppConfig().getModalLocator().getLocator() : "";
 		String locator = String.format("%s//input[@value='%s'][@type='submit' or @type='button']|%s//button[.='%s']", parentLocatorToUse, buttonText, parentLocatorToUse, buttonText);
 		List<WebElement> buttons = TestInstance.getWebDriverWait().until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.xpath(locator)));
@@ -320,12 +323,13 @@ public class CoreStepHandler {
 
 	/**
 	 * Method to wait for a given modal to appear
-	 * 
+	 *
 	 * @param modalDescription
 	 *            the description of the modal to use
 	 */
 	public void iWaitForTheModalToAppear(String modalDescription) {
-		// Lookup the modal from the app configuration to find out how to locate it
+		// Lookup the modal from the app configuration to find out how to locate
+		// it
 		Modal modal = (Modal) TestInstance.getAppConfig().findAppWebElement(modalDescription, Modal.class);
 		if (modal == null) {
 			fail(String.format("Bad modal description.  Valid descriptions are: %s", TestInstance.getAppConfig().getValidKnownDescriptions(Modal.class)));
@@ -337,12 +341,13 @@ public class CoreStepHandler {
 
 	/**
 	 * Method to wait for a given modal to disappear
-	 * 
+	 *
 	 * @param modalDescription
 	 *            the description of the modal to use
 	 */
 	public void iWaitForTheModalToDisappear(String modalDescription) {
-		// Lookup the modal from the app configuration to find out how to locate it
+		// Lookup the modal from the app configuration to find out how to locate
+		// it
 		Modal modal = (Modal) TestInstance.getAppConfig().findAppWebElement(modalDescription, Modal.class);
 		if (modal == null) {
 			fail(String.format("Bad modal description.  Valid descriptions are: %s", TestInstance.getAppConfig().getValidKnownDescriptions(Modal.class)));
@@ -352,14 +357,15 @@ public class CoreStepHandler {
 
 	/**
 	 * Method to verify that when an element is hovered over, the expected tooltip appears with the expected text
-	 * 
+	 *
 	 * @param tooltipDescription
 	 *            the tooltip description to use
 	 * @param tooltipText
 	 *            the tooltip text to verify
 	 */
 	public void iHoverOverTheTooltipElementISeeATooltipThatSays(String tooltipDescription, String tooltipText) {
-		// Lookup the element that has the tooltip from the App Config to find out how to locate it
+		// Lookup the element that has the tooltip from the App Config to find
+		// out how to locate it
 		ElementWithTooltip appWebElement = (ElementWithTooltip) TestInstance.getAppConfig().findAppWebElement(tooltipDescription, ElementWithTooltip.class);
 		if (appWebElement == null) {
 			fail(String.format("Bad tooltip description.  Valid descriptions are: %s", TestInstance.getAppConfig().getValidKnownDescriptions(ElementWithTooltip.class)));
@@ -373,15 +379,16 @@ public class CoreStepHandler {
 		new Actions(TestInstance.getWebDriver()).moveToElement(elementWithToolTip).build().perform();
 		// Ensures we have focus. Workaround for some cases where
 		elementWithToolTip.click();
-		// Confirm that a tooltip is displayed and that its description matches what is expected
-		String tooltipTextToUse = TestInstance.getStepsUtil().parseText(tooltipText);
+		// Confirm that a tooltip is displayed and that its description matches
+		// what is expected
+		String tooltipTextToUse = TestInstance.getStepsUtil().resolveText(tooltipText);
 		WebElement tooltip = TestInstance.getWebDriverWait().until(ExpectedConditions.visibilityOfElementLocated(appWebElement.getTooltipElement().getByLocator()));
 		assertTrue(String.format("Tooltip should be displayed: \"%s\"", tooltipTextToUse), tooltip.getText().contains(tooltipTextToUse));
 	}
 
 	/**
 	 * Method to handle all table row actions
-	 * 
+	 *
 	 * @param rowActionDescription
 	 *            the row action to use
 	 * @param criteria

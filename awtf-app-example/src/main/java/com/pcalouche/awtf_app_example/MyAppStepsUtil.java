@@ -22,9 +22,9 @@ public class MyAppStepsUtil extends StepsUtil {
 	}
 
 	@Override
-	public String parseText(String text) {
+	public String resolveText(String text) {
 		// Calling super version to use that parsing as a start.
-		String returnText = super.parseText(text);
+		String returnText = super.resolveText(text);
 		// Perform any other substitutions as needed.
 		if (returnText.contains("{MM/DD/YYYY}")) {
 			SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy");

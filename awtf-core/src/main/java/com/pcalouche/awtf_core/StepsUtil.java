@@ -99,7 +99,7 @@ public class StepsUtil {
 
 	/**
 	 * Method to find and return a matching form element based on a given description. The return element can then be acted on to perform actions such as input or value verification. *
-	 * 
+	 *
 	 * @param description
 	 *            the description to search by
 	 * @return the matching form element
@@ -133,7 +133,7 @@ public class StepsUtil {
 	/**
 	 * Method to find a list of matching form elements based on a given description versus just the first one of the page. The returned elements can then be acted on to perform actions such as input
 	 * or value verification. *
-	 * 
+	 *
 	 * @param description
 	 *            the description to search by
 	 * @return the matching form element
@@ -327,7 +327,7 @@ public class StepsUtil {
 	 *            true to match the value exactly
 	 */
 	public void verifySelectOption(String verificationToPerform, Select select, String description, String value, boolean matchValueExactly) {
-		String parsedValue = TestInstance.getStepsUtil().parseText(value);
+		String parsedValue = TestInstance.getStepsUtil().resolveText(value);
 		boolean valueFound = false;
 		for (WebElement webElement : select.getOptions()) {
 			if (matchValueExactly) {
@@ -361,7 +361,7 @@ public class StepsUtil {
 	 */
 	public void verifyDescriptionValueCombination(String description, String value, boolean matchValueExactly) {
 		// Get parsed value for locators and testing
-		String parsedValue = TestInstance.getStepsUtil().parseText(value);
+		String parsedValue = TestInstance.getStepsUtil().resolveText(value);
 		AppElement appElement = null;
 		List<WebElement> webElements = null;
 		String matchExactlyErrorFormat = "Could not find %s with value of %s";
@@ -487,7 +487,7 @@ public class StepsUtil {
 		for (int i = 1; i < dataTableRowList.size(); i++) {
 			// First find matching cells that meet the first criterion to narrow things down faster
 			List<String> rowCriteria = dataTableRowList.get(i).getCells();
-			String firstCriterion = TestInstance.getStepsUtil().parseText(rowCriteria.get(0));
+			String firstCriterion = TestInstance.getStepsUtil().resolveText(rowCriteria.get(0));
 			// Determine what parent locator to use based on what is currently displayed on the UI
 			String parentLocatorToUse = TestInstance.getStepsUtil().isModalDisplayed() ? TestInstance.getAppConfig().getModalLocator().getLocator() : "";
 			String locator;
@@ -522,7 +522,7 @@ public class StepsUtil {
 				for (int j = 1; j < dataTableRowList.get(i).getCells().size(); j++) {
 					try {
 						WebElement rowCell = initiallyMatchedRow
-								.findElement(By.xpath(String.format(".//td[normalize-space(string())='%s']", TestInstance.getStepsUtil().parseText(rowCriteria.get(j)))));
+								.findElement(By.xpath(String.format(".//td[normalize-space(string())='%s']", TestInstance.getStepsUtil().resolveText(rowCriteria.get(j)))));
 						logger.debug(rowCell.getText() + " found");
 						// Have to check if this is displayed because the old UI likes to put data that could match in hidden cells.
 						if (!rowCell.isDisplayed()) {
@@ -610,7 +610,7 @@ public class StepsUtil {
 	/**
 	 * Method that returns a list of checkable items that are in table rows that match criteria in the given Data Table. An optional table ID can be given to narrow the search to a specific table.
 	 * This can be helpful if there are multiple tables on the same page that may contain the same data.
-	 * 
+	 *
 	 * @param rowAction
 	 *            the row action to evaluate
 	 * @param criteria
@@ -702,16 +702,16 @@ public class StepsUtil {
 	}
 
 	/**
-	 * Method to parse text to get the actual text to use. If the text to parse is surround by [] such [Message_Text] then the text will be looked up from a resource bundle based on that key. If the
-	 * text to parse is not surrounded by [] it is just returned in its original form. Other text substitutions may happen to the text based on codes inside the message. The convention for
+	 * Method to resolve text to get the actual text to use. If the text to parse is surround by [] such [Message_Text] then the text will be looked up from a resource bundle based on that key. If the
+	 * text to resolve is not surrounded by [] it is just returned in its original form. Other text substitutions may happen to the text based on codes inside the message. The convention for
 	 * substitutions inside the text is that they should be surrounded by {}. However, this method can be completely overridden as needed with your own step handler. It recommended to avoid using
 	 * <> as a delimiter because Cucumber uses that itself in the feature files for substitution.
 	 *
 	 * @param text
-	 *            the text to parse
+	 *            the text to resolve
 	 * @return the text to use
 	 */
-	public String parseText(String text) {
+	public String resolveText(String text) {
 		String returnText = null;
 		// See if message needs to pulled from resource bundle or not
 		if (text.startsWith("[") && text.endsWith("]")) {

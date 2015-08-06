@@ -12,6 +12,7 @@ public enum BrowserType {
 	phantomJS,
 	firefox,
 	internetExplorer,
+	edge,
 	safari,
 	chrome;
 }

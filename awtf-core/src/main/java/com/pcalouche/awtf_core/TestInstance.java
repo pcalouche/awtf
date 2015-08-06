@@ -9,9 +9,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.OutputType;
 import org.openqa.selenium.Point;
-import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
@@ -22,7 +20,6 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import com.pcalouche.awtf_core.util.appConfig.AppConfig;
-import com.pcalouche.awtf_core.util.enums.WaitTag;
 
 import cucumber.api.Scenario;
 
@@ -50,20 +47,11 @@ public class TestInstance {
 	private static Map<String, String> tempMap = new HashMap<String, String>();
 
 	public TestInstance() {
-		String testEnvironment;
-		if (System.getProperty("testEnvironment") != null) {
-			testEnvironment = System.getProperty("testEnvironment");
-			logger.info("Test environment received from Command Line as: " + testEnvironment);
-		} else if (System.getenv("testEnvironment") != null) {
-			testEnvironment = System.getenv("testEnvironment");
-			logger.info("Test environment received from Enviroment Variable as: " + testEnvironment);
-		} else {
-			logger.info("Test enviroment not specified in Command Line or Enviroment Variable, defaulting to localhost test environment");
-			testEnvironment = "localhost";
-		}
+		// If test instance is extend this can be overridden to allow for custom test environment setup
+		this.setupTestEnvironment();
+		// If test instance is extend this can be overridden to allow for custom loading of the application config
+		this.loadApplicationConfig();
 
-		testEnvironmentConfig = (TestEnvironmentConfig) YamlHelper.loadFromInputStream(String.format("/yaml/testEnvironments/TestEnvironmentConfig.%s.yml", testEnvironment));
-		appConfig = (AppConfig) YamlHelper.loadFromInputStream("/yaml/appConfig.yml");
 		/*
 		 * Create an instance of the class that will handle the core steps. This defaults to com.pcalouche.awtf_core.CoreStepHandler. This class can be extended with your own version if you need to
 		 * override or add to what is in CoreStepHandler
@@ -87,8 +75,28 @@ public class TestInstance {
 				System.exit(1);
 			}
 		}
-		// If test instance is extended this can be overridden easily to allow for customer browser setup
+		// If test instance is extended this can be overridden to allow for custom browser setup
 		this.setupWebDriver();
+	}
+
+	protected void setupTestEnvironment() {
+		String testEnvironment;
+		if (System.getProperty("testEnvironment") != null) {
+			testEnvironment = System.getProperty("testEnvironment");
+			logger.info("Test environment received from Command Line as: " + testEnvironment);
+		} else if (System.getenv("testEnvironment") != null) {
+			testEnvironment = System.getenv("testEnvironment");
+			logger.info("Test environment received from Enviroment Variable as: " + testEnvironment);
+		} else {
+			logger.info("Test enviroment not specified in Command Line or Enviroment Variable, defaulting to localhost test environment");
+			testEnvironment = "localhost";
+		}
+
+		testEnvironmentConfig = (TestEnvironmentConfig) YamlHelper.loadFromInputStream(String.format("/yaml/testEnvironments/TestEnvironmentConfig.%s.yml", testEnvironment));
+	}
+
+	protected void loadApplicationConfig() {
+		appConfig = (AppConfig) YamlHelper.loadFromInputStream("/yaml/appConfig.yml");
 	}
 
 	protected void setupWebDriver() {
@@ -108,10 +116,14 @@ public class TestInstance {
 		case internetExplorer:
 			webDriver = new InternetExplorerDriver(desiredCapabilities);
 			break;
+		case edge:
+			// TODO look into testing this with new webdriver and update Selenium
+			break;
 		case chrome:
 			webDriver = new ChromeDriver(desiredCapabilities);
 			break;
 		case safari:
+			// TODO look into testing this on a Mac
 			break;
 		default:
 			break;
@@ -119,50 +131,10 @@ public class TestInstance {
 		// Set window size and position
 		webDriver.manage().window().setSize(new Dimension(1280, 1024));
 		webDriver.manage().window().setPosition(new Point(0, 0));
+		// Set the web driver wait
+		webDriverWait = new WebDriverWait(webDriver, testEnvironmentConfig.getSecondsToWait());
 		// Set the JavaScript Executor
 		jsExecutor = (JavascriptExecutor) webDriver;
-	}
-
-	public void setup(Scenario scenario) {
-		try {
-			// Set seconds to wait. Will use what is in the default Test Environment Config if wait tag is not found
-			int secondsToWait = testEnvironmentConfig.getSecondsToWait();
-			boolean displayWaitTag = false;
-			for (WaitTag waitTag : WaitTag.values()) {
-				if (scenario.getSourceTagNames().contains(waitTag.getTagName())) {
-					displayWaitTag = true;
-					secondsToWait = waitTag.getSecondsToWait();
-					break;
-				}
-			}
-			webDriverWait = new WebDriverWait(webDriver, secondsToWait);
-			stopWatch.reset();
-			stopWatch.start();
-			logger.info(String.format("Starting Scenario: \"%s\"", scenario.getName()));
-			if (displayWaitTag) {
-				logger.info(String.format("Wait Tag was set to: %d seconds based on given tag.", secondsToWait));
-			}
-			// Store a reference to the current scenario, so it can be accessed to do things like embed additional screenshots into a scenario.
-			currentScenario = scenario;
-		} catch (Exception e) {
-			logger.error("Failed to initialize scenario", e);
-			teardown(scenario);
-		}
-	}
-
-	public void teardown(Scenario scenario) {
-		try {
-			stopWatch.stop();
-			logger.debug(String.format("Scenario: \"%s\" completed in %.3f seconds", scenario.getName(), stopWatch.getTime() / 1000.00));
-			scenario.write(String.format("Completed in %.3f seconds.", stopWatch.getTime() / 1000.00));
-			if (TestInstance.testEnvironmentConfig.isScreenshotOnScenarioCompletion() || scenario.isFailed()) {
-				scenario.embed(((TakesScreenshot) webDriver).getScreenshotAs(OutputType.BYTES), "image/png");
-			}
-		} catch (Exception e) {
-			logger.error("Failed to teardown scenario", e);
-		} finally {
-			webDriver.quit();
-		}
 	}
 
 	/**
@@ -219,6 +191,14 @@ public class TestInstance {
 	 */
 	public static Scenario getCurrentScenario() {
 		return currentScenario;
+	}
+
+	/**
+	 * @param currentScenario
+	 *            the currentScenario to set
+	 */
+	public static void setCurrentScenario(Scenario currentScenario) {
+		TestInstance.currentScenario = currentScenario;
 	}
 
 	/**

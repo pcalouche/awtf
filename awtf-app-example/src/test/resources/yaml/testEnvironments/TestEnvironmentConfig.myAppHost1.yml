@@ -1,9 +1,0 @@
-!!com.pcalouche.awtf_core.TestEnvironmentConfig {
-  browser: firefox,
-  secondsToWait: 15,
-  url: '/src/test/resources/appExamplePage/appExamplePage.html',
-  screenshotBeforeClick: false,
-  screenshotOnScenarioCompletion: true,
-  coreStepHandlerClass: 'com.pcalouche.awtf_app_example.MyAppStepHandler',
-  stepsUtilClass: 'com.pcalouche.awtf_app_example.MyAppStepsUtil'
-}

@@ -6,6 +6,12 @@ import cucumber.api.CucumberOptions;
 import cucumber.api.SnippetType;
 import cucumber.api.junit.Cucumber;
 
+/**
+ * This is an example test runner that demonstrates the core framework.
+ *
+ * @author Philip Calouche
+ *
+ */
 @RunWith(Cucumber.class)
 @CucumberOptions(glue = { "classpath:" }, plugin = { "html:target/cucumber/testRunner", "json:target/cucumber/testRunner.json", "rerun:target/cucumber/testRunnerRerun.txt" }, features = {
 		"classpath:" }, tags = { "~@pending" }, snippets = SnippetType.CAMELCASE)
