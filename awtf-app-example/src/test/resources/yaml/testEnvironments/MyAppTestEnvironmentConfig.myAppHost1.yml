@@ -1,7 +1,8 @@
 !!com.pcalouche.awtf_app_example.MyAppTestEnvironmentConfig {
-  browser: phantomJS,
+  browser: firefox,
   secondsToWait: 15,
-  url: '/src/test/resources/appExamplePage/appExamplePage.html',
+  url: '/src/test/resources/appExamplePage/myAppExamplePage.html',
+  #url: 'http://localhost:8080/TestWebProject/myAppExamplePage.html',
   screenshotBeforeClick: false,
   screenshotOnScenarioCompletion: true,
   coreStepHandlerClass: 'com.pcalouche.awtf_app_example.MyAppStepHandler',

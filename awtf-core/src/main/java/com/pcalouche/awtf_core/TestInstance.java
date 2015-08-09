@@ -12,11 +12,13 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriverService;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.safari.SafariDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import com.pcalouche.awtf_core.util.appConfig.AppConfig;
@@ -117,13 +119,13 @@ public class TestInstance {
 			webDriver = new InternetExplorerDriver(desiredCapabilities);
 			break;
 		case edge:
-			// TODO look into testing this with new webdriver and update Selenium
+			webDriver = new EdgeDriver(desiredCapabilities);
 			break;
 		case chrome:
 			webDriver = new ChromeDriver(desiredCapabilities);
 			break;
 		case safari:
-			// TODO look into testing this on a Mac
+			webDriver = new SafariDriver(desiredCapabilities);
 			break;
 		default:
 			break;

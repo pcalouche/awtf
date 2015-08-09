@@ -502,7 +502,7 @@ public class StepsUtil {
 			} catch (TimeoutException e) {
 				matchedCells = new ArrayList<WebElement>();
 			}
-			logger.debug("matchedCells size " + matchedCells.size());
+			// logger.debug("matchedCells size " + matchedCells.size());
 			/*
 			 * Check those matching cells are actually visible. This it get around the old balances page using hidden cells to store other data for that row instead of something like data tables or
 			 * jQuery's data method to manage that data.
@@ -514,7 +514,7 @@ public class StepsUtil {
 					initiallyMatchedRows.add(matchedCell.findElement(By.xpath("./ancestor::tr")));
 				}
 			}
-			logger.debug("initiallyMatchedRows size " + initiallyMatchedRows.size());
+			// logger.debug("initiallyMatchedRows size " + initiallyMatchedRows.size());
 			// Go through each matching row and check that is contains the other criteria that is in the given data table
 			for (WebElement initiallyMatchedRow : initiallyMatchedRows) {
 				boolean rowMatch = true;
@@ -523,7 +523,7 @@ public class StepsUtil {
 					try {
 						WebElement rowCell = initiallyMatchedRow
 								.findElement(By.xpath(String.format(".//td[normalize-space(string())='%s']", TestInstance.getStepsUtil().resolveText(rowCriteria.get(j)))));
-						logger.debug(rowCell.getText() + " found");
+						// logger.debug(rowCell.getText() + " found");
 						// Have to check if this is displayed because the old UI likes to put data that could match in hidden cells.
 						if (!rowCell.isDisplayed()) {
 							rowMatch = false;
@@ -533,17 +533,24 @@ public class StepsUtil {
 						rowMatch = false;
 						break;
 					}
-					logger.debug(rowCriteria.get(j) + " not found");
+					// logger.debug(rowCriteria.get(j) + " not found");
 				}
 				if (rowMatch) {
 					matchedRows.add(initiallyMatchedRow);
 				}
 			}
 		}
-		logger.debug("expected number of matching rows was " + (dataTableRowList.size() - 1));
-		logger.debug("matchedRows size " + matchedRows.size() + " Matched rows are:");
-		for (WebElement matchingRow : matchedRows) {
-			logger.debug(matchingRow.getText());
+
+		if (logger.isDebugEnabled()) {
+			if (!matchedRows.isEmpty()) {
+				StringBuilder sb = new StringBuilder();
+				for (WebElement matchingRow : matchedRows) {
+					sb.append("\t" + matchingRow.getText() + "\n");
+				}
+				logger.debug("\nMatching rows found (" + matchedRows.size() + " total):\n" + sb.substring(0, sb.length() - 1).toString());
+			} else {
+				logger.info("No matching rows found.");
+			}
 		}
 
 		// Check expected counts here
@@ -652,7 +659,6 @@ public class StepsUtil {
 	 */
 	public void waitForLoadMasks() {
 		By locator = TestInstance.getAppConfig().getLoadingIndicatorLocator().getByLocator();
-		logger.info(locator);
 		List<WebElement> loadMasks = null;
 		try {
 			loadMasks = TestInstance.getWebDriverWait().until(ExpectedConditions.presenceOfAllElementsLocatedBy(locator));
