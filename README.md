@@ -28,15 +28,14 @@ This could be determined by looking at the code, but I believe this writeup will
   2. Setup plugins for things like HTML reporting.
   3. Where to look for Cucumber Feature files.
   4. What Cucumber Scenarios the flagged Cucumber Feature files need to be run based on their Cucumber Tags.
-2. Any methods in the Glue code path annotated with Cucumber's @Before is run before any Cucumber steps are run for the current Cucumber Scenario.  There is only one @Before method in the core framework which is the setup method in Hooks.java.  
-  1. Some key things happen in this method:
-    1. It first tests if TestInstance's static members have been setup.  If not then an instance is created with the following things happening in that constructor:
-      1. If It tries to look for a "testEnvironment" string first as a system property and then as an environment property to determine what TestEnvironmentConfig YAML file should be loaded.  If one isn't found the string defaults to "localhost".
-      2. The App Config is loaded for the web application.  See the section on App Config for more details.
-      3. The CoreStepHandler and StepsUtil classes to be used are instantiated.  These can be extended and overridden to suit your application's test needs.  This is shown in the awtf-app-example project.
-      4. The web driver to use (Internet Explorer, PhantonJS, etc.) is setup.  Your system must have those web drivers setup.
-      5. From then on what was setup in the TestInstance constructor is accessed through static getters throughout the rest of the framework.
-    2. If TestInstance was created for the first time, a RunTime shutdown hook is added to quit the created web driver at the end of the TestRunner's execution.  This is done to avoid re-creating this for each scenario which improves test run performance.
+2. Any methods in the Glue code path annotated with Cucumber's @Before is run before any Cucumber steps are run for the current Cucumber Scenario.  There is only one @Before method in the core framework which is the setup method in Hooks.java.  Some key things happen in this method:
+  1. It first tests if TestInstance's static members have been setup.  If not then an instance is created with the following things happening in that constructor:
+    1. If It tries to look for a "testEnvironment" string first as a system property and then as an environment property to determine what TestEnvironmentConfig YAML file should be loaded.  If one isn't found the string defaults to "localhost".
+    2. The App Config is loaded for the web application.  See the section on App Config for more details.
+    3. The CoreStepHandler and StepsUtil classes to be used are instantiated.  These can be extended and overridden to suit your application's test needs.  This is shown in the awtf-app-example project.
+    4. The web driver to use (Internet Explorer, PhantonJS, etc.) is setup.  Your system must have those web drivers setup.
+    5. From then on what was setup in the TestInstance constructor is accessed through static getters throughout the rest of the framework.
+  2. If TestInstance was created for the first time, a RunTime shutdown hook is added to quit the created web driver at the end of the TestRunner's execution.  This is done to avoid re-creating this for each scenario which improves test run performance.
 3. The setup method then does some miscellaneous setup like determining the max web driver wait timeout based on the Cucumber Scenario's tags, resetting a stop watch, and setting a reference to the current scenario. 
 4. The step definitions for the Cucumber Scenario are executed.
 5. Whether a scenario passes or fails the @After annotated methods in the Glue code are run.  There is only one @After method in the core framework which is the teardown method in Hooks.java.  This method stops the stop watch to record some timings, takes a final screenshot, and calls the readyWebAppForNextScenario method to reset the page for the next Cucumber Scenario.
@@ -46,7 +45,14 @@ This could be determined by looking at the code, but I believe this writeup will
 NOTE: You can setup your Test Runners to use your own Hooks and ignore the ones in the core framework.  This shown in awtf-app-example project.
 
 ##TestEnvironmentConfig Details
-TODO
+This is a listing of some built in configuration options for this class used by the framework:
+* **browser** - The browser to run your test with.  It must match a valid enum in BrowserType, and your system must have the web driver for that browser configured.
+* **secondsToWait** - The default number of seconds to for the web driver to wait for an expected condition to happen (presence of an element, visibility of an element, element to be clickable, etc.) before timing out.  This can be increased on a per Cucumber Scenario basis.  See the WaitTag.java and the loadMask.feature for an example of this. 
+* **url** - The initial URL of the web application.
+* **screenshotBeforeClick** - Turn this on to take a screenshot before click.  With this on it can show a better pictoral history of a Cucumber Scenario.  It is off by default, because it can generate a lot of screenshots for some tests.
+* **screenshotOnScenarioCompletion** - Turn this on to take a screenshot on completion of a Cucumber Scenario.  This is on by default.
+* **coreStepHandlerClass** - The class to use for handilng Core Step.  Extend CoreStepHandler as needed if you need to change the default behavior.
+* **stepsUtilClass** - The utility class to use for the Core Step Handler.  Extend StepsUtil as needed if you need to change the default behavior.
 
 ##App Config Details
 TODO
