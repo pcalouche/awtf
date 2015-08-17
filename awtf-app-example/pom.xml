@@ -5,16 +5,52 @@
 	<artifactId>awtf-app-example</artifactId>
 	<version>1.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
-	<name>Example App using AWTF</name>
+	<name>AWTF Example App Project</name>
 
 	<properties>
+		<!-- Misc Properties -->
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
+		<!-- Dependency Versions -->
+		<awtf-core.version>1.0-SNAPSHOT</awtf-core.version>
+		<!-- Plugin Versions -->
+		<maven.compiler.version>3.3</maven.compiler.version> <!-- Mar 2015 -->
+		<maven.surefire.version>2.18.1</maven.surefire.version> <!-- Dec 2014 -->
 	</properties>
 	<dependencies>
 		<dependency>
 			<groupId>com.pcalouche</groupId>
 			<artifactId>awtf-core</artifactId>
-			<version>1.0-SNAPSHOT</version>
+			<version>${awtf-core.version}</version>
 		</dependency>
 	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>${maven.compiler.version}</version>
+				<configuration>
+					<source>${maven.compiler.source}</source>
+					<target>${maven.compiler.target}</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>${maven.surefire.version}</version>
+				<configuration>
+					<includes>
+						<include>**/Test*.java</include>
+						<include>**/*Test.java</include>
+						<include>**/*TestCase.java</include>
+						<include>**/*TestRunner.java</include>
+					</includes>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
 </project>

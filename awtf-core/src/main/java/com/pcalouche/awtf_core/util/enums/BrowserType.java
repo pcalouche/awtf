@@ -1,7 +1,5 @@
 package com.pcalouche.awtf_core.util.enums;
 
-;
-
 /**
  * Enum for browser types.
  *

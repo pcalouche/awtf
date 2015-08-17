@@ -49,8 +49,8 @@ public class TestInstance {
 	private static Map<String, String> tempMap = new HashMap<String, String>();
 
 	public TestInstance() {
-		// If test instance is extend this can be overridden to allow for custom test environment setup
-		this.setupTestEnvironment();
+		// If test instance is extend this can be overridden to allow for custom loading of the test environment setup
+		this.loadTestEnvironmentConfig();
 		// If test instance is extend this can be overridden to allow for custom loading of the application config
 		this.loadApplicationConfig();
 
@@ -81,7 +81,7 @@ public class TestInstance {
 		this.setupWebDriver();
 	}
 
-	protected void setupTestEnvironment() {
+	protected void loadTestEnvironmentConfig() {
 		String testEnvironment;
 		if (System.getProperty("testEnvironment") != null) {
 			testEnvironment = System.getProperty("testEnvironment");

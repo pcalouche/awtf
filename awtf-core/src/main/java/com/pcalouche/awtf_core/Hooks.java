@@ -34,7 +34,6 @@ public class Hooks {
 			Runtime.getRuntime().addShutdownHook(new Thread() {
 				@Override
 				public void run() {
-					logger.info("All tests run.  Quitting webdriver.");
 					TestInstance.getWebDriver().quit();
 				}
 			});

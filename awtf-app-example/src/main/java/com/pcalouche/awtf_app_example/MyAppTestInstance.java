@@ -22,7 +22,7 @@ public class MyAppTestInstance extends TestInstance {
 	}
 
 	@Override
-	protected void setupTestEnvironment() {
+	protected void loadTestEnvironmentConfig() {
 		String testEnvironment;
 		if (System.getProperty("testEnvironment") != null) {
 			testEnvironment = System.getProperty("testEnvironment");

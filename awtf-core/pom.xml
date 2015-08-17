@@ -8,7 +8,10 @@
 	<name>AWTF Core Project</name>
 
 	<properties>
+		<!-- Misc Properties -->
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
 		<!-- Dependency Versions -->
 		<cucumber.version>1.2.4</cucumber.version><!-- July 2015 -->
 		<selenium.version>2.47.1</selenium.version><!-- July 2015 -->
@@ -16,6 +19,9 @@
 		<json.version>20141113</json.version><!-- Nov 2014 -->
 		<yaml.version>1.15</yaml.version><!-- Feb 2015 -->
 		<log4j.version>2.3</log4j.version><!-- May 2015 -->
+		<!-- Plugin Versions -->
+		<maven.compiler.version>3.3</maven.compiler.version> <!-- Mar 2015 -->
+		<maven.surefire.version>2.18.1</maven.surefire.version> <!-- Dec 2014 -->
 	</properties>
 
 	<dependencies>
@@ -71,4 +77,31 @@
 			<version>${log4j.version}</version>
 		</dependency>
 	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>${maven.compiler.version}</version>
+				<configuration>
+					<source>${maven.compiler.source}</source>
+					<target>${maven.compiler.target}</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>${maven.surefire.version}</version>
+				<configuration>
+					<includes>
+						<include>**/Test*.java</include>
+						<include>**/*Test.java</include>
+						<include>**/*TestCase.java</include>
+						<include>**/*TestRunner.java</include>
+					</includes>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 </project>

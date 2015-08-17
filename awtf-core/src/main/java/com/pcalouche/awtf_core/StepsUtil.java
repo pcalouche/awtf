@@ -691,7 +691,7 @@ public class StepsUtil {
 		try {
 			webElements = TestInstance.getWebDriverWait().until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.xpath(locator)));
 		} catch (TimeoutException e) {
-			logger.debug("no matching web elements found, returning empty list");
+			logger.debug(String.format("No matching web elements found with text: %s", messageTextToUse));
 			return new ArrayList<WebElement>();
 		}
 		// Iterator through all elements that have the matching text and remove any elements that are parents that have the matching next, so only the child text elements remain
