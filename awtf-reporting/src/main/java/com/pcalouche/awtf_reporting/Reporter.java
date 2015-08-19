@@ -1,24 +1,21 @@
 package com.pcalouche.awtf_reporting;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 public class Reporter {
-	// private static Map<String, ReporterStep> stepsMap = new HashMap<String, ReporterStep>();
-	// private static Map<String, TagInstance> tagsMap = new HashMap<String, TagInstance>();
-
-	private static Map<String, ReporterStep> stepsMap;
-	private static Map<String, TagInstance> tagsMap;
+	private static SortedMap<String, ReporterStep> stepsMap;
+	private static SortedMap<String, TagInstance> tagsMap;
 
 	public Reporter() {
-		stepsMap = new HashMap<String, ReporterStep>();
-		tagsMap = new HashMap<String, TagInstance>();
+		stepsMap = new TreeMap<String, ReporterStep>();
+		tagsMap = new TreeMap<String, TagInstance>();
 	}
 
 	/**
 	 * @return the stepsMap
 	 */
-	public static Map<String, ReporterStep> getStepsMap() {
+	public static SortedMap<String, ReporterStep> getStepsMap() {
 		return stepsMap;
 	}
 
@@ -26,14 +23,14 @@ public class Reporter {
 	 * @param stepsMap
 	 *            the stepsMap to set
 	 */
-	public static void setStepsMap(Map<String, ReporterStep> stepsMap) {
+	public static void setStepsMap(SortedMap<String, ReporterStep> stepsMap) {
 		Reporter.stepsMap = stepsMap;
 	}
 
 	/**
 	 * @return the tagsMap
 	 */
-	public static Map<String, TagInstance> getTagsMap() {
+	public static SortedMap<String, TagInstance> getTagsMap() {
 		return tagsMap;
 	}
 
@@ -41,14 +38,27 @@ public class Reporter {
 	 * @param tagsMap
 	 *            the tagsMap to set
 	 */
-	public static void setTagsMap(Map<String, TagInstance> tagsMap) {
+	public static void setTagsMap(SortedMap<String, TagInstance> tagsMap) {
 		Reporter.tagsMap = tagsMap;
 	}
 
-	public static void track(String step) {
+	public static void track(String step, String usage, String example) {
 		if (!Reporter.getStepsMap().containsKey(step)) {
-			Reporter.getStepsMap().put(step, new ReporterStep(step, "", ""));
+			Reporter.getStepsMap().put(step, new ReporterStep(step, usage, example));
+		} else {
+			Reporter.getStepsMap().get(step).incrementCount();
 		}
-		Reporter.getStepsMap().get(step).incrementCount();
+	}
+
+	public static void printData() {
+		for (ReporterStep reporterStep : Reporter.getStepsMap().values()) {
+			System.out.println(reporterStep.getStep());
+			System.out.println(reporterStep.getUsage());
+			System.out.println(reporterStep.getExample());
+			System.out.println("Count: " + reporterStep.getCount() + "\n");
+		}
+		for (String key : Reporter.getTagsMap().keySet()) {
+			System.out.println(key + " " + Reporter.getTagsMap().get(key).getCount());
+		}
 	}
 }

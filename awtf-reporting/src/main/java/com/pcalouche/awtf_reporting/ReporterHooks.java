@@ -11,9 +11,6 @@ import cucumber.api.java.Before;
  *
  */
 public class ReporterHooks {
-	// This instance will be used by the current scenario
-	// Reporter reporter = new Reporter();
-
 	@Before
 	public void initialize(Scenario scenario) {
 		if (Reporter.getStepsMap() == null) {
@@ -21,15 +18,10 @@ public class ReporterHooks {
 			Runtime.getRuntime().addShutdownHook(new Thread() {
 				@Override
 				public void run() {
-					for (String key : Reporter.getTagsMap().keySet()) {
-						System.out.println(key);
-					}
-					// Reporter.getTagsMap().en
+					Reporter.printData();
 				}
 			});
 		}
-		System.out.println("BEFORE " + Reporter.getStepsMap().size());
-		// reporter.setup(scenario);
 		for (String tag : scenario.getSourceTagNames()) {
 			if (!Reporter.getTagsMap().containsKey(tag)) {
 				Reporter.getTagsMap().put(tag, new TagInstance());
@@ -40,10 +32,8 @@ public class ReporterHooks {
 
 	@After
 	public void teardown(Scenario scenario) {
-		System.out.println("AFTER " + Reporter.getStepsMap().size());
-		// reporter.teardown(scenario);
-		if (Reporter.getStepsMap().containsKey("^I go to the demo page$")) {
-			System.out.println("AFTER " + Reporter.getStepsMap().get("^I go to the demo page$").getCount());
-		}
+		// if (Reporter.getStepsMap().containsKey("^I go to the demo page$")) {
+		// }
+		// for (ReporterStep reporterStep : Repor)
 	}
 }

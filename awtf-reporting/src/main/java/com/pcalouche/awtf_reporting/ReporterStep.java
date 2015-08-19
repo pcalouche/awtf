@@ -1,6 +1,6 @@
 package com.pcalouche.awtf_reporting;
 
-import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.commons.lang3.StringUtils;
 
 public class ReporterStep implements Comparable<Object> {
 
@@ -12,11 +12,8 @@ public class ReporterStep implements Comparable<Object> {
 
 	public ReporterStep(String step, String usage, String example) {
 		this.step = step;
-		this.usage = usage;
-		this.example = example;
-		if ("".equals(this.usage)) {
-			this.usage = "UNKNOWN STEP";
-		}
+		this.usage = StringUtils.isEmpty(usage) ? "UNKNOWN STEP" : usage;
+		this.example = StringUtils.isEmpty(example) ? "NO EXAMPLE" : example;
 		this.count = this.incrementCount();
 	}
 
@@ -25,7 +22,8 @@ public class ReporterStep implements Comparable<Object> {
 	}
 
 	public String getStep() {
-		return StringEscapeUtils.escapeJson(this.step);
+		// return StringEscapeUtils.escapeJson(this.step);
+		return step;
 	}
 
 	public void setStep(String step) {
@@ -33,7 +31,8 @@ public class ReporterStep implements Comparable<Object> {
 	}
 
 	public String getUsage() {
-		return StringEscapeUtils.escapeJson(this.usage);
+		// return StringEscapeUtils.escapeJson(this.usage);
+		return usage;
 	}
 
 	public void setUsage(String usage) {
@@ -41,7 +40,8 @@ public class ReporterStep implements Comparable<Object> {
 	}
 
 	public String getExample() {
-		return StringEscapeUtils.escapeJson(example);
+		// return StringEscapeUtils.escapeJson(example);
+		return example;
 	}
 
 	public void setExample(String example) {

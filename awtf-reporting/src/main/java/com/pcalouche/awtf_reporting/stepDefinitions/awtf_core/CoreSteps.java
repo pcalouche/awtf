@@ -1,6 +1,7 @@
 package com.pcalouche.awtf_reporting.stepDefinitions.awtf_core;
 
 import com.pcalouche.awtf_core.util.enums.HTMLElementState;
+import com.pcalouche.awtf_reporting.Reporter;
 
 import cucumber.api.DataTable;
 import cucumber.api.java.en.Then;
@@ -14,14 +15,18 @@ import cucumber.api.java.en.Then;
 public class CoreSteps {
 	@Then("^I take a screenshot$")
 	public void iTakeAScreenshot() {
+		Reporter.track("^I take a screenshot$", "This is used to explicitly take a screenshot.", "Then I take a screenshot");
 	}
 
 	@Then("^I click on \"(.*?)\"$")
 	public void iClickOn(String text) throws Throwable {
+		Reporter.track("^I click on \"(.*?)\"$", "This is used to handle click on a link or button based on the text of that link or button", "Then I click on \"Submit\"");
 	}
 
 	@Then("^I input \"(.*?)\" as \"(.*?)\"$")
 	public void iInputAs(String description, String value) {
+		Reporter.track("^I input \"(.*?)\" as \"(.*?)\"$", "This is used to handle input of a form element that has an associated label, or it can be used to handle input for a define AppElement",
+				"Then I input \"Car Type\" as \"Honda\"<br>Then I input \"[Global Search]\" as \"cute kittens\"");
 	}
 
 	@Then("^I \"(.*?)\" the \"(.*?)\" (?:radio button|checkbox)$")

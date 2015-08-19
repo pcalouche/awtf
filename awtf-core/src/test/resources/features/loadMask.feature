@@ -7,4 +7,3 @@ Feature: Provide step to check if all loading mask/indicators are no longer visi
     Given I go to the demo page
     Then I click on "Start Load Masks"
     Then I wait for all load masks to disappear
-    Then I wait for all load masks to  disappear
