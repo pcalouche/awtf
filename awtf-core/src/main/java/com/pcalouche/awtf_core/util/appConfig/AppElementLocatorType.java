@@ -7,6 +7,12 @@ package com.pcalouche.awtf_core.util.appConfig;
  *
  */
 public enum AppElementLocatorType {
+	className,
 	css,
+	id,
+	linkText,
+	name,
+	partialLinkText,
+	tagName,
 	xpath;
 }

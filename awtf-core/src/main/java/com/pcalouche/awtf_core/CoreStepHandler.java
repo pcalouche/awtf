@@ -322,37 +322,13 @@ public class CoreStepHandler {
 	}
 
 	/**
-	 * Method to wait for a given modal to appear
+	 * Method to hover over a text on a page
 	 *
-	 * @param modalDescription
-	 *            the description of the modal to use
+	 * @param description
+	 *            the text description to hover over
 	 */
-	public void iWaitForTheModalToAppear(String modalDescription) {
-		// Lookup the modal from the app configuration to find out how to locate
-		// it
-		Modal modal = (Modal) TestInstance.getAppConfig().findAppWebElement(modalDescription, Modal.class);
-		if (modal == null) {
-			fail(String.format("Bad modal description.  Valid descriptions are: %s", TestInstance.getAppConfig().getValidKnownDescriptions(Modal.class)));
-		}
-		// Wait for modal to appear and no load masks to be visible
-		TestInstance.getWebDriverWait().until(ExpectedConditions.visibilityOfElementLocated(modal.getByLocator()));
-		TestInstance.getStepsUtil().waitForLoadMasks();
-	}
-
-	/**
-	 * Method to wait for a given modal to disappear
-	 *
-	 * @param modalDescription
-	 *            the description of the modal to use
-	 */
-	public void iWaitForTheModalToDisappear(String modalDescription) {
-		// Lookup the modal from the app configuration to find out how to locate
-		// it
-		Modal modal = (Modal) TestInstance.getAppConfig().findAppWebElement(modalDescription, Modal.class);
-		if (modal == null) {
-			fail(String.format("Bad modal description.  Valid descriptions are: %s", TestInstance.getAppConfig().getValidKnownDescriptions(Modal.class)));
-		}
-		TestInstance.getWebDriverWait().until(ExpectedConditions.invisibilityOfElementLocated(modal.getByLocator()));
+	public void iHoverOver(String description) {
+		System.out.println("here");
 	}
 
 	/**
@@ -384,6 +360,40 @@ public class CoreStepHandler {
 		String tooltipTextToUse = TestInstance.getStepsUtil().resolveText(tooltipText);
 		WebElement tooltip = TestInstance.getWebDriverWait().until(ExpectedConditions.visibilityOfElementLocated(appWebElement.getTooltipElement().getByLocator()));
 		assertTrue(String.format("Tooltip should be displayed: \"%s\"", tooltipTextToUse), tooltip.getText().contains(tooltipTextToUse));
+	}
+
+	/**
+	 * Method to wait for a given modal to appear
+	 *
+	 * @param modalDescription
+	 *            the description of the modal to use
+	 */
+	public void iWaitForTheModalToAppear(String modalDescription) {
+		// Lookup the modal from the app configuration to find out how to locate
+		// it
+		Modal modal = (Modal) TestInstance.getAppConfig().findAppWebElement(modalDescription, Modal.class);
+		if (modal == null) {
+			fail(String.format("Bad modal description.  Valid descriptions are: %s", TestInstance.getAppConfig().getValidKnownDescriptions(Modal.class)));
+		}
+		// Wait for modal to appear and no load masks to be visible
+		TestInstance.getWebDriverWait().until(ExpectedConditions.visibilityOfElementLocated(modal.getByLocator()));
+		TestInstance.getStepsUtil().waitForLoadMasks();
+	}
+
+	/**
+	 * Method to wait for a given modal to disappear
+	 *
+	 * @param modalDescription
+	 *            the description of the modal to use
+	 */
+	public void iWaitForTheModalToDisappear(String modalDescription) {
+		// Lookup the modal from the app configuration to find out how to locate
+		// it
+		Modal modal = (Modal) TestInstance.getAppConfig().findAppWebElement(modalDescription, Modal.class);
+		if (modal == null) {
+			fail(String.format("Bad modal description.  Valid descriptions are: %s", TestInstance.getAppConfig().getValidKnownDescriptions(Modal.class)));
+		}
+		TestInstance.getWebDriverWait().until(ExpectedConditions.invisibilityOfElementLocated(modal.getByLocator()));
 	}
 
 	/**

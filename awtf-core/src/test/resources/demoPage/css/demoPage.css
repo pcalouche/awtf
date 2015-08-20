@@ -81,6 +81,72 @@ div.load-mask {
 	cursor: pointer;
 }
 
+div.nav ul ul {
+	display: none;
+}
+
+div.nav ul li:hover > ul {
+	display: block;
+}
+
+div.nav ul {
+	background: #efefef;
+	padding: 0 20px;
+	border-radius: 10px;
+	list-style: none;
+	position: relative;
+	display: inline-table;
+}
+div.nav ul:after {
+	content: "";
+	clear: both;
+	display: block;
+}
+
+div.nav ul li {
+	float: left;
+}
+div.nav ul li:hover {
+	background: #4b545f;
+}
+div.nav ul li:hover a {
+	color: #fff;
+}
+
+div.nav ul li a {
+	display: block;
+	padding: 5px 15px;
+	color: #757575;
+	text-decoration: none;
+}
+
+div.nav ul ul {
+	background: #5f6975;
+	border-radius: 0px;
+	padding: 0;
+	position: absolute;
+	top: 100%;
+}
+div.nav ul ul li {
+	float: none;
+	border-top: 1px solid #6b727c;
+	border-bottom: 1px solid #575f6a;
+	position: relative;
+}
+div.nav ul ul li a {
+	padding: 5px 10px;
+	color: #fff;
+}
+div.nav ul ul li a:hover {
+	background: #4b545f;
+}
+
+div.nav ul ul ul {
+	position: absolute;
+	left: 100%;
+	top: 0;
+}
+
 .tooltip {
 	position: absolute;
 	display: none;

@@ -13,8 +13,8 @@ import cucumber.api.junit.Cucumber;
  *
  */
 @RunWith(Cucumber.class)
-@CucumberOptions(glue = { "classpath:" }, plugin = { "html:target/cucumber/testRunner", "json:target/cucumber/testRunner.json", "rerun:target/cucumber/testRunnerRerun.txt" }, features = {
-		"classpath:features/" }, tags = { "~@pending" }, snippets = SnippetType.CAMELCASE)
+@CucumberOptions(glue = { "classpath:" }, plugin = { "html:target/cucumber/testRunner", "json:target/cucumber/testRunner.json", "rerun:target/cucumber/testRunnerRerun.txt" }, features = { "classpath:features/" }, tags = {
+		"~@pending", "@textHover" }, snippets = SnippetType.CAMELCASE)
 public class TestRunner {
 
 }

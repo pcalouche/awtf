@@ -63,13 +63,25 @@ public class AppElement {
 
 	/**
 	 * Method to get an App Element's Selenium by Locator
-	 * 
+	 *
 	 * @return the Selenium By Locator
 	 */
 	public By getByLocator() {
 		switch (this.getLocatorType()) {
+		case className:
+			return By.className(this.getLocator());
 		case css:
 			return By.cssSelector(this.getLocator());
+		case id:
+			return By.id(this.getLocator());
+		case linkText:
+			return By.linkText(this.getLocator());
+		case name:
+			return By.name(this.getLocator());
+		case partialLinkText:
+			return By.partialLinkText(this.getLocator());
+		case tagName:
+			return By.tagName(this.getLocator());
 		case xpath:
 			return By.xpath(this.getLocator());
 		default:

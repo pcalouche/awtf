@@ -20,7 +20,6 @@ public class YamlHelper {
 		Yaml yaml = new Yaml(dumperOptions);
 		StringWriter writer = new StringWriter();
 		yaml.dump(data, writer);
-		System.out.println(writer.toString());
 	}
 
 	public static Object loadFromInputStream(String inputStreamPath) {

@@ -108,6 +108,16 @@ public class CoreSteps {
 		TestInstance.getCoreStepHandler().iWaitForAllLoadMasksToDisappear();
 	}
 
+	@Then("^I hover over \"([^\"]*)\"$")
+	public void iHoverOver(String description) {
+		TestInstance.getCoreStepHandler().iHoverOver(description);
+	}
+
+	@Then("^I hover over the \"(.*?)\" tooltip element I see a tooltip that says \"(.*?)\"$")
+	public void iHoverOverTheTooltipElementISeeATooltipThatSays(String tooltipDescription, String tooltipText) {
+		TestInstance.getCoreStepHandler().iHoverOverTheTooltipElementISeeATooltipThatSays(tooltipDescription, tooltipText);
+	}
+
 	@Then("^I wait for the \"(.*?)\" modal to appear$")
 	public void iWaitForTheModalToLoad(String modalDescription) {
 		TestInstance.getCoreStepHandler().iWaitForTheModalToAppear(modalDescription);
@@ -116,11 +126,6 @@ public class CoreSteps {
 	@Then("^I wait for the \"(.*?)\" modal to disappear$")
 	public void iWaitForTheModalToDisappear(String modalDescription) {
 		TestInstance.getCoreStepHandler().iWaitForTheModalToDisappear(modalDescription);
-	}
-
-	@Then("^I hover over the \"(.*?)\" tooltip element I see a tooltip that says \"(.*?)\"$")
-	public void iHoverOverTheTooltipElementISeeATooltipThatSays(String tooltipDescription, String tooltipText) {
-		TestInstance.getCoreStepHandler().iHoverOverTheTooltipElementISeeATooltipThatSays(tooltipDescription, tooltipText);
 	}
 
 	@Then("^I \"(.*?)\" the (?:row|rows) with the following criteria:$")
