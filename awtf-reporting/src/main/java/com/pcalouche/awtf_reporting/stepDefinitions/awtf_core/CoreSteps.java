@@ -15,18 +15,18 @@ import cucumber.api.java.en.Then;
 public class CoreSteps {
 	@Then("^I take a screenshot$")
 	public void iTakeAScreenshot() {
-		Reporter.track("^I take a screenshot$", "This is used to explicitly take a screenshot.", "Then I take a screenshot");
+		Reporter.track("^I take a screenshot$", "This is used to explicitly take a screenshot.", "Then I take a screenshot", "CoreSteps.java");
 	}
 
 	@Then("^I click on \"(.*?)\"$")
 	public void iClickOn(String text) throws Throwable {
-		Reporter.track("^I click on \"(.*?)\"$", "This is used to handle click on a link or button based on the text of that link or button", "Then I click on \"Submit\"");
+		Reporter.track("^I click on \"(.*?)\"$", "This is used to handle click on a link or button based on the text of that link or button", "Then I click on \"Submit\"", "CoreSteps.java");
 	}
 
 	@Then("^I input \"(.*?)\" as \"(.*?)\"$")
 	public void iInputAs(String description, String value) {
 		Reporter.track("^I input \"(.*?)\" as \"(.*?)\"$", "This is used to handle input of a form element that has an associated label, or it can be used to handle input for a define AppElement",
-				"Then I input \"Car Type\" as \"Honda\"<br>Then I input \"[Global Search]\" as \"cute kittens\"");
+				"Then I input \"Car Type\" as \"Honda\"<br>Then I input \"[Global Search]\" as \"cute kittens\"", "CoreSteps.java");
 	}
 
 	@Then("^I \"(.*?)\" the \"(.*?)\" (?:radio button|checkbox)$")
@@ -93,16 +93,20 @@ public class CoreSteps {
 	public void iWaitForAllLoadMasksToDisappear() {
 	}
 
+	@Then("^I hover over \"([^\"]*)\"$")
+	public void iHoverOver(String description) {
+	}
+
+	@Then("^I hover over the \"(.*?)\" tooltip element I see a tooltip that says \"(.*?)\"$")
+	public void iHoverOverTheTooltipElementISeeATooltipThatSays(String tooltipDescription, String tooltipText) {
+	}
+
 	@Then("^I wait for the \"(.*?)\" modal to appear$")
 	public void iWaitForTheModalToLoad(String modalDescription) {
 	}
 
 	@Then("^I wait for the \"(.*?)\" modal to disappear$")
 	public void iWaitForTheModalToDisappear(String modalDescription) {
-	}
-
-	@Then("^I hover over the \"(.*?)\" tooltip element I see a tooltip that says \"(.*?)\"$")
-	public void iHoverOverTheTooltipElementISeeATooltipThatSays(String tooltipDescription, String tooltipText) {
 	}
 
 	@Then("^I \"(.*?)\" the (?:row|rows) with the following criteria:$")

@@ -8,6 +8,6 @@ public class DemoOnlySteps {
 
 	@Given("^I go to the demo page$")
 	public void iGoToTheDemoPage() {
-		Reporter.track("^I go to the demo page$", "This is used to launch the demo page.", "Given I go to the Demo Page");
+		Reporter.track("^I go to the demo page$", "This is used to launch the demo page.", "Given I go to the Demo Page", "DemoOnlySteps.java");
 	}
 }

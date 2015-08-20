@@ -15,6 +15,7 @@
 		<!-- Dependency Versions -->
 		<awtf-core.version>1.0-SNAPSHOT</awtf-core.version>
 		<awtf-app-example.version>1.0-SNAPSHOT</awtf-app-example.version>
+		<jackson.version>1.9.13</jackson.version>
 		<!-- Plugin Versions -->
 		<maven.compiler.version>3.3</maven.compiler.version> <!-- Mar 2015 -->
 		<maven.surefire.version>2.18.1</maven.surefire.version> <!-- Dec 2014 -->
@@ -30,6 +31,11 @@
 			<groupId>com.pcalouche</groupId>
 			<artifactId>awtf-app-example</artifactId>
 			<version>${awtf-app-example.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.codehaus.jackson</groupId>
+			<artifactId>jackson-mapper-asl</artifactId>
+			<version>${jackson.version}</version>
 		</dependency>
 	</dependencies>
 
@@ -74,6 +80,10 @@
 				<includes>
 					<include>**/*.feature</include>
 				</includes>
+			</testResource>
+			<testResource>				
+				<directory>src/test/resources/awtfReport</directory>
+				<targetPath>../awtfReport</targetPath>
 			</testResource>
 		</testResources>
 	</build>

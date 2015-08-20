@@ -18,22 +18,14 @@ public class ReporterHooks {
 			Runtime.getRuntime().addShutdownHook(new Thread() {
 				@Override
 				public void run() {
-					Reporter.printData();
+					Reporter.handleShutdown();
 				}
 			});
 		}
-		for (String tag : scenario.getSourceTagNames()) {
-			if (!Reporter.getTagsMap().containsKey(tag)) {
-				Reporter.getTagsMap().put(tag, new TagInstance());
-			}
-			Reporter.getTagsMap().get(tag).incrementCount();
-		}
+		Reporter.updateTagData(scenario.getSourceTagNames());
 	}
 
 	@After
 	public void teardown(Scenario scenario) {
-		// if (Reporter.getStepsMap().containsKey("^I go to the demo page$")) {
-		// }
-		// for (ReporterStep reporterStep : Repor)
 	}
 }
