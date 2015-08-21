@@ -1,6 +1,6 @@
 Feature: Provide steps to hover over elements on the page
 
-  @textHover
+  @elementHover
   Scenario: Demonstrate how to do element hovering
     Given I go to the demo page
     When I hover over "Tutorials"
