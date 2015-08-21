@@ -82,17 +82,7 @@ public class Reporter {
 		}
 		ObjectMapper mapper = new ObjectMapper();
 		try {
-			// List<Object> jsonData = new ArrayList<Object>();
-			// System.out.println(mapper.writeValueAsString(Reporter.getStepsMap().values()));
-			// System.out.println(mapper.writeValueAsString(Reporter.getTagsMap().values()));
-			// jsonData.add(getStepsMap().values());
-			// jsonData.add(Reporter.getTagsMap().values());
-			// File outputPath = new File(System.getProperty("user.dir") + "\\target\\stepReport");
-			// outputPath.mkdir();
-			// mapper.writeValue(new File(outputPath.getPath() + "\\data.json"), jsonData);
 			Map<String, Object> jsonMap = new HashMap<String, Object>();
-			// System.out.println(mapper.writeValueAsString(Reporter.getStepsMap().values()));
-			// System.out.println(mapper.writeValueAsString(Reporter.getTagsMap().values()));
 			jsonMap.put("stepData", getStepsMap().values());
 			jsonMap.put("tagNameData", Reporter.getTagsMap().values());
 			File outputPath = new File(System.getProperty("user.dir") + "\\target\\awtfReport\\data");

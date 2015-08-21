@@ -20,10 +20,10 @@ public class ReporterStep implements Comparable<Object> {
 	}
 
 	public ReporterStep(String step, String usage, String example, String javaClass) {
-		this.step = step;
-		this.usage = StringUtils.isEmpty(usage) ? "UNKNOWN STEP" : usage;
+		this.step = StringUtils.isEmpty(step) ? "UNKNOWN STEP" : step;
+		this.usage = StringUtils.isEmpty(usage) ? "UNKNOWN USAGE" : usage;
 		this.example = StringUtils.isEmpty(example) ? "NO EXAMPLE PROVIDED" : example;
-		this.javaClass = javaClass;
+		this.javaClass = StringUtils.isEmpty(javaClass) ? "NO JAVA CLASS PROVIDED" : javaClass;
 		this.count = 1;
 	}
 
