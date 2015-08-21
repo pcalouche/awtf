@@ -8,7 +8,7 @@ import com.pcalouche.awtf_core.util.enums.RowAction;
 
 /**
  * Driver class that can be used to setup your App Elements
- * 
+ *
  * @author Philip Calouche
  *
  */
@@ -28,6 +28,7 @@ public class AppConfigDriver {
 		appWebElements.add(new AppElement("Animal Dropdown", "#animalDropdown", AppElementLocatorType.css));
 		appWebElements.add(new AppElement("Error Box", ".error-box", AppElementLocatorType.css));
 		appWebElements.add(new AppElement("Test Span App Element", "#testSpanAppElement", AppElementLocatorType.css));
+		appWebElements.add(new AppElement("Web Design Menu Item", "Web Design", AppElementLocatorType.linkText));
 		// Modals
 		appWebElements.add(new Modal("Test", "#testModal", AppElementLocatorType.css));
 		// Elements with Tooltip

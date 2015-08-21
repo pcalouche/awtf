@@ -14,6 +14,7 @@ import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 
+import com.pcalouche.awtf_core.util.appConfig.AppElement;
 import com.pcalouche.awtf_core.util.appConfig.ElementWithTooltip;
 import com.pcalouche.awtf_core.util.appConfig.Modal;
 import com.pcalouche.awtf_core.util.enums.HTMLElementState;
@@ -320,16 +321,26 @@ public class CoreStepHandler {
 	}
 
 	/**
-	 * Method to hover over a text on a page
+	 * Method to hover over an element on the page.
 	 *
-	 * @param text
-	 *            the text to hover over
+	 * @param description
+	 *            the description of the element to hover over
 	 */
-	public void iHoverOver(String text) {
-		// Determine what parent locator to use based on what is currently displayed on the UI
-		String parentLocatorToUse = TestInstance.getStepsUtil().isModalDisplayed() ? TestInstance.getAppConfig().getModalLocator().getLocator() : "";
-		String locator = String.format("%s//*[.='%s']", parentLocatorToUse, text);
-		List<WebElement> webElements = TestInstance.getWebDriverWait().until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.xpath(locator)));
+	public void iHoverOver(String description) {
+		List<WebElement> webElements = null;
+		/*
+		 * Parse description to see if it is surrounded by []. If it is then look up the element from the App Config. If it isn't then look for matching text on the screen.
+		 */
+		if (description.startsWith("[") && description.endsWith("]")) {
+			AppElement appElement = TestInstance.getAppConfig().findAppWebElement(description.substring(1, description.length() - 1));
+			webElements = TestInstance.getWebDriverWait().until(ExpectedConditions.presenceOfAllElementsLocatedBy(appElement.getByLocator()));
+		} else {
+			// Determine what parent locator to use based on what is currently displayed on the UI
+			String parentLocatorToUse = TestInstance.getStepsUtil().isModalDisplayed() ? TestInstance.getAppConfig().getModalLocator().getLocator() : "";
+			String locator = String.format("%s//*[.='%s']", parentLocatorToUse, description);
+			webElements = TestInstance.getWebDriverWait().until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.xpath(locator)));
+		}
+		// Iterate through elements and hover over the first visible one
 		boolean visibleItemWasHovered = false;
 		for (WebElement webElement : webElements) {
 			if (webElement.isDisplayed()) {
@@ -338,7 +349,7 @@ public class CoreStepHandler {
 				break;
 			}
 		}
-		assertTrue(String.format("Did not find a visible item with \"%s\" text to hover over", text), visibleItemWasHovered);
+		assertTrue(String.format("Did not find a visible item with \"%s\" text to hover over", description), visibleItemWasHovered);
 	}
 
 	/**

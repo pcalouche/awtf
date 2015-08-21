@@ -25,6 +25,11 @@ appWebElements:
   locator: '#testSpanAppElement',
   locatorType: css
 }
+- {
+  description: Web Design Menu Item,
+  locator: Web Design,
+  locatorType: linkText
+}
 - !!com.pcalouche.awtf_core.util.appConfig.Modal {
   description: Test,
   locator: '#testModal',
