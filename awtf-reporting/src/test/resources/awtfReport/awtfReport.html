@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>AWTF Reporter</title>
+<title>AWTF Report</title>
 <link href="css/bootstrap.min.css" rel="stylesheet">
 <link href="css/highlightDefault.css" rel="stylesheet">
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
@@ -30,7 +30,7 @@
 								<form class="form-inline">
 								  	<div class="form-group">
 								    	<label for="stepDataSearch">Step Data Search:</label>
-								    	<input type="text" class="form-control" id="stepDataSearch" placeholder="Enter Search Criteria For Any Field">
+								    	<input type="text" class="form-control" id="stepDataSearch" placeholder="Enter Search Criteria For Any Field" data-bind="value: stepDataFilter, valueUpdate: 'keyup'">
 								  	</div>
 								</form>
 							</th>
@@ -43,7 +43,7 @@
 							<th>Java Class<i class="fa fa-fw fa-sort inactive" data-bind="click: handleSortFilterClick.bind($data, 'stepData', 'javaClass')"></i></th>
 						</tr>
 					</thead>
-					<tbody data-bind="foreach:stepData">
+					<tbody data-bind="foreach: filteredStepData">
 						<tr>
 							<td data-bind="html:step" ></td>
 							<td data-bind="html:usage" class="usage-col"></td>
@@ -64,7 +64,7 @@
 								<form class="form-inline">
 			  						<div class="form-group">
 			    					<label for="tagNameDataSearch">Tag Name Data Search:</label>
-			    					<input type="text" class="form-control" id="tagNameDataSearch" placeholder="Enter Search Criteria For Any Field">
+			    					<input type="text" class="form-control" id="tagNameDataSearch" placeholder="Enter Search Criteria For Any Field" data-bind="value: tagNameDataFilter, valueUpdate: 'keyup'">
 			  						</div>
 								</form>
 							</th>
@@ -74,7 +74,7 @@
 							<th>Count<i class="fa fa-fw fa-sort inactive" data-bind="click: handleSortFilterClick.bind($data, 'tagNameData', 'count')"></i></th>
 						</tr>
 					</thead>
-					<tbody data-bind="foreach:tagNameData">
+					<tbody data-bind="foreach: filteredTagNameData">
 						<tr>
 							<td data-bind="html:tagName"></td>
 							<td data-bind="html:count"></td>

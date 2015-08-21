@@ -7,6 +7,8 @@ var AwtfReporterModel = function(data) {
 	var self = this;
 	self.stepData = ko.observableArray(data.stepData);
 	self.tagNameData = ko.observableArray(data.tagNameData);
+	self.stepDataFilter = ko.observable("");
+	self.tagNameDataFilter = ko.observable("");
 
 	self.handleSortFilterClick = function(dataToSort, fieldToSortOn, data, event) {
 		var element = $(event.currentTarget);
@@ -35,6 +37,39 @@ var AwtfReporterModel = function(data) {
 			});
 		}
 	}
+
+	self.filteredStepData = ko.computed(function() {
+		var lowerCaseVal = self.stepDataFilter().toLowerCase();
+		if (lowerCaseVal.length == 0) {
+			return self.stepData();
+		} else {
+			return ko.utils.arrayFilter(self.stepData(), function(object) {
+				for (key in object) {
+					if (String(object[key]).toLowerCase().search(lowerCaseVal) != -1) {
+						return true;
+					}
+				}
+				return false;
+			});
+		}
+	});
+
+	self.filteredTagNameData = ko.computed(function() {
+		var lowerCaseVal = self.tagNameDataFilter().toLowerCase();
+		if (lowerCaseVal.length == 0) {
+			return self.tagNameData();
+		} else {
+			return ko.utils.arrayFilter(self.tagNameData(), function(object) {
+				for (key in object) {
+					if (String(object[key]).toLowerCase().search(lowerCaseVal) != -1) {
+						return true;
+					}
+				}
+				return false;
+			});
+		}
+	});
+
 	// Do Initial Sort
 	self.sortData("stepData", "step", SORT_DIRECTION.ASC);
 	self.sortData("tagNameData", "tagName", SORT_DIRECTION.ASC);
@@ -46,9 +81,15 @@ $(function() {
 		type: "get",
 		dataType: "json",
 	}).done(function(data, textStatus, jqXHR) {
+		x = data;
 		var awtfRepoterModel = new AwtfReporterModel(data);
 		ko.applyBindings(awtfRepoterModel);
-		hljs.initHighlighting();
+		setInterval(function() {
+			$("pre code").each(function(i, block) {
+				hljs.highlightBlock(block);
+			});
+		}, 1000);
+		// hljs.initHighlighting();
 	}).fail(function(data, textStatus, jqXHR) {
 		console.error("Failed to load reporter data");
 	});
