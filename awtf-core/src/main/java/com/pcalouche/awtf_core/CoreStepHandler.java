@@ -42,12 +42,10 @@ public class CoreStepHandler {
 		if (TestInstance.getTestEnvironmentConfig().isScreenshotBeforeClick()) {
 			TestInstance.getStepsUtil().takeAScreenShot();
 		}
-		// Determine what parent locator to use based on what is currently
-		// displayed on the UI
+		// Determine what parent locator to use based on what is currently displayed on the UI
 		String parentLocatorToUse = TestInstance.getStepsUtil().isModalDisplayed() ? TestInstance.getAppConfig().getModalLocator().getLocator() : "";
 		String locator = String.format("%s//*[.='%s']|%s//input[@value='%s'][@type='submit' or @type='button']", parentLocatorToUse, text, parentLocatorToUse, text);
-		// In case there is more than one matching element, find the first
-		// visible one and click it
+		// In case there is more than one matching element, find the first visible one and click it
 		List<WebElement> webElements = TestInstance.getWebDriverWait().until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.xpath(locator)));
 		boolean visibleItemWasClicked = false;
 		for (WebElement webElement : webElements) {
@@ -324,11 +322,23 @@ public class CoreStepHandler {
 	/**
 	 * Method to hover over a text on a page
 	 *
-	 * @param description
-	 *            the text description to hover over
+	 * @param text
+	 *            the text to hover over
 	 */
-	public void iHoverOver(String description) {
-		System.out.println("here");
+	public void iHoverOver(String text) {
+		// Determine what parent locator to use based on what is currently displayed on the UI
+		String parentLocatorToUse = TestInstance.getStepsUtil().isModalDisplayed() ? TestInstance.getAppConfig().getModalLocator().getLocator() : "";
+		String locator = String.format("%s//*[.='%s']", parentLocatorToUse, text);
+		List<WebElement> webElements = TestInstance.getWebDriverWait().until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.xpath(locator)));
+		boolean visibleItemWasHovered = false;
+		for (WebElement webElement : webElements) {
+			if (webElement.isDisplayed()) {
+				new Actions(TestInstance.getWebDriver()).moveToElement(webElement).build().perform();
+				visibleItemWasHovered = true;
+				break;
+			}
+		}
+		assertTrue(String.format("Did not find a visible item with \"%s\" text to hover over", text), visibleItemWasHovered);
 	}
 
 	/**
@@ -353,10 +363,9 @@ public class CoreStepHandler {
 		 */
 		new Actions(TestInstance.getWebDriver()).moveByOffset(200, 200).build().perform();
 		new Actions(TestInstance.getWebDriver()).moveToElement(elementWithToolTip).build().perform();
-		// Ensures we have focus. Workaround for some cases where
+		// Ensures we have focus. TODO see if this is still needed?
 		elementWithToolTip.click();
-		// Confirm that a tooltip is displayed and that its description matches
-		// what is expected
+		// Confirm that a tooltip is displayed and that its description matches what is expected
 		String tooltipTextToUse = TestInstance.getStepsUtil().resolveText(tooltipText);
 		WebElement tooltip = TestInstance.getWebDriverWait().until(ExpectedConditions.visibilityOfElementLocated(appWebElement.getTooltipElement().getByLocator()));
 		assertTrue(String.format("Tooltip should be displayed: \"%s\"", tooltipTextToUse), tooltip.getText().contains(tooltipTextToUse));

@@ -13,6 +13,10 @@ $(function() {
 		}, 59000);
 	});
 
+	$("div.nav").on("click", "li a", function(event, data) {
+		$("#navClickResult").html("You clicked " + $(this).text() + "!");
+	});
+
 	$(".info-icon").on("mouseover", function(event, data) {
 		var position = $(this).position();
 		var width = $(this).outerWidth();
@@ -21,7 +25,7 @@ $(function() {
 			left: String(position.left + width + 5) + "px"
 		});
 		$("#infoIconTooltip").show();
-	})
+	});
 
 	$(".help-icon").on("mouseover", function(event, data) {
 		var position = $(this).position();
@@ -31,7 +35,7 @@ $(function() {
 			left: String(position.left + width + 5) + "px"
 		});
 		$("#helpIconTooltip").show();
-	})
+	});
 
 	$(".info-icon, .help-icon").on("mouseleave", function(event, data) {
 		$(".tooltip").hide();
