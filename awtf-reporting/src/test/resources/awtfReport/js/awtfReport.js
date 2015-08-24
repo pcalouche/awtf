@@ -76,21 +76,17 @@ var AwtfReporterModel = function(data) {
 };
 
 $(function() {
-	$.ajax({
-		url: "./data/awtfReport.json",
-		type: "get",
-		dataType: "json",
-	}).done(function(data, textStatus, jqXHR) {
-		x = data;
-		var awtfRepoterModel = new AwtfReporterModel(data);
-		ko.applyBindings(awtfRepoterModel);
-		setInterval(function() {
-			$("pre code").each(function(i, block) {
-				hljs.highlightBlock(block);
-			});
-		}, 1000);
-		// hljs.initHighlighting();
-	}).fail(function(data, textStatus, jqXHR) {
-		console.error("Failed to load reporter data");
-	});
+	// Create KO model and apply bindings
+	var awtfRepoterModel = new AwtfReporterModel($.parseJSON(awtfReportData));
+	ko.applyBindings(awtfRepoterModel);
+	/*
+	 * Set interval to re-highlight Gherkin code HTML because filtering will
+	 * add/remove items from the DOM. When items are added back they won't have
+	 * the highlighting on initially
+	 */
+	setInterval(function() {
+		$("pre code").each(function(i, block) {
+			hljs.highlightBlock(block);
+		});
+	}, 1500);
 });
