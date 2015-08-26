@@ -26,7 +26,7 @@
 				<table class="table table-striped table-bordered table-hover table-condensed table-responsive">
 					<thead>
 						<tr>
-							<th colspan="5">
+							<th colspan="6">
 								<form class="form-inline">
 									<div class="form-group">
 								    	<label for="stepDataSearch">Step Data Search:</label>
@@ -36,11 +36,12 @@
 							</th>
 						</tr>
 						<tr>
-							<th>Step<i class="fa fa-fw fa-sort-asc" data-bind="click: handleSortFilterClick.bind($data, 'stepData', 'step')"></i></th>
+							<th>Step<i class="fa fa-fw fa-sort inactive" data-bind="click: handleSortFilterClick.bind($data, 'stepData', 'step')"></i></th>
 							<th>Usage<i class="fa fa-fw fa-sort inactive" data-bind="click: handleSortFilterClick.bind($data, 'stepData', 'usage')"></i></th>
 							<th>Example<i class="fa fa-fw fa-sort inactive" data-bind="click: handleSortFilterClick.bind($data, 'stepData', 'example')"></i></th>
 							<th>Count<i class="fa fa-fw fa-sort inactive" data-bind="click: handleSortFilterClick.bind($data, 'stepData', 'count')"></i></th>
 							<th>Java Class<i class="fa fa-fw fa-sort inactive" data-bind="click: handleSortFilterClick.bind($data, 'stepData', 'javaClass')"></i></th>
+							<th>Custom Order<i class="fa fa-fw fa-sort fa-sort-asc" data-bind="click: handleSortFilterClick.bind($data, 'stepData', 'customOrder')"></i></th>
 						</tr>
 					</thead>
 					<tbody data-bind="foreach: filteredStepData">
@@ -50,6 +51,7 @@
 							<td><pre><code class="gherkin" data-bind="html:example"></code></pre></td>
 							<td data-bind="html:count"></td>
 							<td data-bind="html:javaClass"></td>
+							<td data-bind="html:customOrder"></td>
 						</tr>
 					</tbody>
 				</table>

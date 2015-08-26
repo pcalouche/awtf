@@ -71,7 +71,7 @@ var AwtfReporterModel = function(data) {
 	});
 
 	// Do Initial Sort
-	self.sortData("stepData", "step", SORT_DIRECTION.ASC);
+	self.sortData("stepData", "customOrder", SORT_DIRECTION.ASC);
 	self.sortData("tagNameData", "tagName", SORT_DIRECTION.ASC);
 };
 

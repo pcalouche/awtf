@@ -2,13 +2,13 @@ package com.pcalouche.awtf_reporting;
 
 import org.apache.commons.lang3.StringUtils;
 
-public class ReporterStep implements Comparable<Object> {
+public class ReporterStep {
 
 	private String step;
 	private String usage;
 	private String example;
 	private String javaClass;
-	private int manualOrder;
+	private int customOrder;
 	private int count;
 
 	public ReporterStep() {
@@ -16,14 +16,19 @@ public class ReporterStep implements Comparable<Object> {
 	}
 
 	public ReporterStep(String step, String usage, String example) {
-		this(step, usage, example, "");
+		this(step, usage, example, "", 0);
 	}
 
 	public ReporterStep(String step, String usage, String example, String javaClass) {
+		this(step, usage, example, javaClass, 0);
+	}
+
+	public ReporterStep(String step, String usage, String example, String javaClass, int customOrder) {
 		this.step = StringUtils.isEmpty(step) ? "UNKNOWN STEP" : step;
 		this.usage = StringUtils.isEmpty(usage) ? "UNKNOWN USAGE" : usage;
 		this.example = StringUtils.isEmpty(example) ? "NO EXAMPLE PROVIDED" : example;
 		this.javaClass = StringUtils.isEmpty(javaClass) ? "NO JAVA CLASS PROVIDED" : javaClass;
+		this.customOrder = customOrder;
 		this.count = 1;
 	}
 
@@ -88,18 +93,18 @@ public class ReporterStep implements Comparable<Object> {
 	}
 
 	/**
-	 * @return the manualOrder
+	 * @return the customOrder
 	 */
-	public int getManualOrder() {
-		return manualOrder;
+	public int getCustomOrder() {
+		return customOrder;
 	}
 
 	/**
-	 * @param manualOrder
-	 *            the manualOrder to set
+	 * @param customOrder
+	 *            the customOrder to set
 	 */
-	public void setManualOrder(int manualOrder) {
-		this.manualOrder = manualOrder;
+	public void setCustomOrder(int customOrder) {
+		this.customOrder = customOrder;
 	}
 
 	/**
@@ -119,13 +124,5 @@ public class ReporterStep implements Comparable<Object> {
 
 	public int incrementCount() {
 		return (this.count++);
-	}
-
-	@Override
-	public int compareTo(Object arg0) {
-		ReporterStep step = (ReporterStep) arg0;
-		return this.count - step.count;
-		// For Manual Order
-		// return this.manualOrder - step.manualOrder;
 	}
 }

@@ -14,12 +14,12 @@ import cucumber.api.java.en.Then;
 public class MyAppSteps {
 
 	@Given("^I go to the sign on page$")
-	public void iGoToTheDemoPage() {
-		Reporter.track("^I go to the sign on page$", "This is used to launch sign on page for my application.", "Given I go to the sign on page", "MyAppSteps.java");
+	public void iGoToTheSignOnPage() {
+		Reporter.track("^I go to the sign on page$", "This is used to launch sign on page for my application.", "Given I go to the sign on page", "MyAppSteps.java", 26);
 	}
 
 	@Then("^I sign into my application$")
 	public void iSignIntoMyApplication() {
-		Reporter.track("^I sign into my application$", "This is used to sign into my application.", "Then I sign into my application", "MyAppSteps.java");
+		Reporter.track("^I sign into my application$", "This is used to sign into my application.", "Then I sign into my application", "MyAppSteps.java", 27);
 	}
 }

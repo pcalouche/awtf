@@ -54,9 +54,9 @@ public class Reporter {
 		Reporter.tagsMap = tagsMap;
 	}
 
-	public static void track(String step, String usage, String example, String javaClass) {
+	public static void track(String step, String usage, String example, String javaClass, int customerOrder) {
 		if (!Reporter.getStepsMap().containsKey(step)) {
-			Reporter.getStepsMap().put(step, new ReporterStep(step, usage, example, javaClass));
+			Reporter.getStepsMap().put(step, new ReporterStep(step, usage, example, javaClass, customerOrder));
 		} else {
 			Reporter.getStepsMap().get(step).incrementCount();
 		}
