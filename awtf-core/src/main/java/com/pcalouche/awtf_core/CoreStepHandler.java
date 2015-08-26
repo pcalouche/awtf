@@ -374,7 +374,7 @@ public class CoreStepHandler {
 		 */
 		new Actions(TestInstance.getWebDriver()).moveByOffset(200, 200).build().perform();
 		new Actions(TestInstance.getWebDriver()).moveToElement(elementWithToolTip).build().perform();
-		// Ensures we have focus. TODO see if this is still needed?
+		// Ensures we have focus.
 		elementWithToolTip.click();
 		// Confirm that a tooltip is displayed and that its description matches what is expected
 		String tooltipTextToUse = TestInstance.getStepsUtil().resolveText(tooltipText);
