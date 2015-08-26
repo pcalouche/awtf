@@ -11,7 +11,7 @@ Some of the features this has that allows for that are listed below:
   - Verifying data in tables and perform table row actions such as selection and expansion
   - Working with Modals
   - Working with Tooltips
-- Ability to easily override the behavior of existing steps and step utility code to suit one's application. 
+- Ability to easily override the behavior of existing steps and step utility code to suit one's application.
 - Ability to create multipe JUnit Test Runners to organize testing
 - Allow for configuration of multiple browsers
 - A configurable and extendable Test Environment object to allowing testing in multiple environments and storing custom data needed for those environments.
@@ -19,6 +19,7 @@ Some of the features this has that allows for that are listed below:
 ##Project Listing
 - **awtf-core** - Contains the core of the framework
 - **awtf-app-example** - An example of how to use the core framework and how to extend its existing steps and configuration to suit your application's testing needs
+- **awtf-reporting** - A reporting tool for tracking all the Cucumber Steps used in your project.  Generates a report showing how often a step was used along with usage and example details.
 
 ##Test Run Flow
 This could be determined by looking at the code, but I believe this writeup will give more clarity.
@@ -36,7 +37,7 @@ This could be determined by looking at the code, but I believe this writeup will
     4. The web driver to use (Internet Explorer, PhantonJS, etc.) is setup.  Your system must have those web drivers setup.
     5. From then on what was setup in the TestInstance constructor is accessed through static getters throughout the rest of the framework.
   2. If TestInstance was created for the first time, a RunTime shutdown hook is added to quit the created web driver at the end of the TestRunner's execution.  This is done to avoid re-creating this for each scenario which improves test run performance.
-3. The setup method then does some miscellaneous setup like determining the max web driver wait timeout based on the Cucumber Scenario's tags, resetting a stop watch, and setting a reference to the current scenario. 
+3. The setup method then does some miscellaneous setup like determining the max web driver wait timeout based on the Cucumber Scenario's tags, resetting a stop watch, and setting a reference to the current scenario.
 4. The step definitions for the Cucumber Scenario are executed.
 5. Whether a scenario passes or fails the @After annotated methods in the Glue code are run.  There is only one @After method in the core framework which is the teardown method in Hooks.java.  This method stops the stop watch to record some timings, takes a final screenshot, and calls the readyWebAppForNextScenario method to reset the page for the next Cucumber Scenario.
 6. Steps 1-4 repeat until there are no Cucumber Scenarios to run by the Test Runner.
@@ -47,7 +48,7 @@ NOTE: You can setup your Test Runners to use your own Hooks and ignore the ones 
 ##TestEnvironmentConfig Details
 This is a listing of some built in configuration options for this class used by the framework:
 * **browser** - The browser to run your test with.  It must match a valid enum in BrowserType, and your system must have the web driver for that browser configured.
-* **secondsToWait** - The default number of seconds to for the web driver to wait for an expected condition to happen (presence of an element, visibility of an element, element to be clickable, etc.) before timing out.  This can be increased on a per Cucumber Scenario basis.  See the WaitTag.java and the loadMask.feature for an example of this. 
+* **secondsToWait** - The default number of seconds to for the web driver to wait for an expected condition to happen (presence of an element, visibility of an element, element to be clickable, etc.) before timing out.  This can be increased on a per Cucumber Scenario basis.  See the WaitTag.java and the loadMask.feature for an example of this.
 * **url** - The initial URL of the web application.
 * **screenshotBeforeClick** - Turn this on to take a screenshot before click.  With this on it can show a better pictoral history of a Cucumber Scenario.  It is off by default, because it can generate a lot of screenshots for some tests.
 * **screenshotOnScenarioCompletion** - Turn this on to take a screenshot on completion of a Cucumber Scenario.  This is on by default.
@@ -61,7 +62,16 @@ TODO
 TODO
 
 ##WebDriver Setup
-TODO
+The framework has a BrowserType enum for testing with different browsers/web drivers, but has not be tested with all of them.  Configurations may need to differ for your environment.  The framework can be extended to handle how you want your browser and web driver to be configured.  Here are some notes of what was tested with this framework:
+
+1. PhantomJS - Downloaded phantomjs web driver and added its .exe to the system PATH.  Runs well.
+2. Firefox - No web driver exe needed.  Have later version of Firefox up to version 40.  Runs well.
+3. Internet Explorer - Downloaded internet explorer web driver and added its .exe to the system PATH.  Worked for 32bit and 64bit versions of the webdriver.  Runs well.  Sometimes security settings in Internet Explorer may need to be updated in order for it work.  There is online help for this.
+4. Edge - Have had success getting the Edge web driver to start up and attempt to run the features files, but some web driver commands that the framework uses do not seem to be supported yet.  I believe this is still a work in progress for Microsoft.
+5. Safari - Do not have a Mac to test this.
+6. Chrome - Downloaded chrome web driver and added its .exe to the system PATH.  Runs well.
+
+To reiterate the code that handles browser and web driver setup and setup can be overridden to suite your testing needs.  What is in the framework just serves as one way to do it.
 
 ##Feature File Examples
 Some feature files exist in the projects to demonstrate what can be done with the framework.  They are run against the sample HTML pages that are in the project.
@@ -77,3 +87,24 @@ There are some feature files are in the awtf-core project that demonstrate the u
 
 There are feature files in the awtf-app-example project that demonstrate how to use a mixture of the core framework and steps for your own application. They are:
 - myAppExampleFeature.feature
+
+##AWTF Reporting
+The AWTF Reporting project produces a report showing information about each step that was used in your feature files.  This includes usage of the CoreSteps and Steps you defined for your app.  In order to create a report for your steps, the steps must be stubbed out in the AWTF Reporting project that calls a track method.  The data can contain HTML since that is what will go in the report.
+
+AwtfReporterTestRunner.java can run as a JUnit test or the AWTF Reporting project can be run as a Maven test to generate the report which will be under target/awtfReport/awtfReport.html.
+
+```java
+public class CoreSteps {
+
+  @Then("^I take a screenshot$")
+  public void iTakeAScreenshot() {
+    Reporter.track("^I take a screenshot$", "This is used to explicitly take a screenshot.", "Then I take a screenshot", "CoreSteps.java", 1);
+  }
+
+  public class MyAppSteps {
+
+  @Given("^I go to the sign on page$")
+  public void iGoToTheSignOnPage() {
+    Reporter.track("^I go to the sign on page$", "This is used to launch sign on page for my application.", "Given I go to the sign on page", "MyAppSteps.java", 26);
+  }
+```
