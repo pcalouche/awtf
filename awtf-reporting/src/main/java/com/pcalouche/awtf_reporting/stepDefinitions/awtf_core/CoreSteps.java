@@ -171,9 +171,6 @@ public class CoreSteps {
 
 	@Then("^I \"(.*?)\" the (?:row|rows) with the following criteria:$")
 	public void iTheRowWithTheFollowingCriteria(String rowActionDescription, DataTable criteria) {
-		Reporter.track("^I \"(.*?)\" the (?:row|rows) with the following criteria:$",
-				"Used when a desired row action or verification needs to be performed such as \"select\", \"expand\", \"see\", \"can select\" on one or more rows in a table. The tables feature file has more examples and usage.",
-				"Then I \"select\" the rows with the following criteria:<br><pre>  | Criteria1 | Criteria2 |<br>  | &lt;Value1&gt;  | &lt;Value2&gt;  |<br>  | &lt;Value3&gt;  | &lt;Value4&gt;  |</pre>",
-				"CoreSteps.java", 24);
+		Reporter.track("^I \"(.*?)\" the (?:row|rows) with the following criteria:$", "", "", "CoreSteps.java", 24);
 	}
 }
