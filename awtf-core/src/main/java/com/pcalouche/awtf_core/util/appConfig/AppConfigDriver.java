@@ -56,6 +56,7 @@ public class AppConfigDriver {
 		appConfig.setErrorMessageClasses(errorMessageClasses);
 		// Set the location of the message bundle
 		appConfig.setMessageBundleLocation("messages_en");
+		// Finally print the result and write the file out to the required location
 		YamlHelper.printToScreen(appConfig);
 		YamlHelper.writeToFile(appConfig, System.getProperty("user.dir") + "\\src\\test\\resources\\yaml\\appConfig.yml");
 	}

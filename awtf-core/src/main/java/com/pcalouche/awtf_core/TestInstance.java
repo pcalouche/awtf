@@ -85,7 +85,7 @@ public class TestInstance {
 		String testEnvironment;
 		if (System.getProperty("testEnvironment") != null) {
 			testEnvironment = System.getProperty("testEnvironment");
-			logger.info("Test environment received from Command Line as: " + testEnvironment);
+			logger.info("Test environment received from System Property as: " + testEnvironment);
 		} else if (System.getenv("testEnvironment") != null) {
 			testEnvironment = System.getenv("testEnvironment");
 			logger.info("Test environment received from Enviroment Variable as: " + testEnvironment);

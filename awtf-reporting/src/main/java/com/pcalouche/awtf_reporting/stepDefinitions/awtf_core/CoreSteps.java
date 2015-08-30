@@ -13,6 +13,7 @@ import cucumber.api.java.en.Then;
  *
  */
 public class CoreSteps {
+
 	@Then("^I take a screenshot$")
 	public void iTakeAScreenshot() {
 		Reporter.track("^I take a screenshot$", "This is used to explicitly take a screenshot.", "Then I take a screenshot", "CoreSteps.java", 1);

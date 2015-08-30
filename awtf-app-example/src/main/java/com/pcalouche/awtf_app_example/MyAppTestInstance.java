@@ -16,6 +16,8 @@ import com.pcalouche.awtf_core.util.appConfig.AppConfig;
 public class MyAppTestInstance extends TestInstance {
 	// Objects like AppConfig or TestEnvironmentConfig could be extended with additional fields as needed or entirely new objects can be added here to suite your applciation's configuration needs.
 	protected static MyAppTestEnvironmentConfig myAppTestEnvironmentConfig;
+	protected static MyAppStepHandler myAppStepHandler;
+	protected static MyAppStepsUtil myAppStepsUtil;
 
 	public MyAppTestInstance() {
 		logger = LogManager.getLogger();
@@ -26,7 +28,7 @@ public class MyAppTestInstance extends TestInstance {
 		String testEnvironment;
 		if (System.getProperty("testEnvironment") != null) {
 			testEnvironment = System.getProperty("testEnvironment");
-			logger.info("Test environment received from Command Line as: " + testEnvironment);
+			logger.info("Test environment received from System Property as: " + testEnvironment);
 		} else if (System.getenv("testEnvironment") != null) {
 			testEnvironment = System.getenv("testEnvironment");
 			logger.info("Test environment received from Enviroment Variable as: " + testEnvironment);
@@ -59,5 +61,35 @@ public class MyAppTestInstance extends TestInstance {
 	 */
 	public static MyAppTestEnvironmentConfig getMyAppTestEnvironmentConfig() {
 		return myAppTestEnvironmentConfig;
+	}
+
+	/**
+	 * @return the myAppStepHandler
+	 */
+	public static MyAppStepHandler getMyAppStepHandler() {
+		return myAppStepHandler;
+	}
+
+	/**
+	 * @param myAppStepHandler
+	 *            the myAppStepHandler to set
+	 */
+	public static void setMyAppStepHandler(MyAppStepHandler myAppStepHandler) {
+		MyAppTestInstance.myAppStepHandler = myAppStepHandler;
+	}
+
+	/**
+	 * @return the myAppStepsUtil
+	 */
+	public static MyAppStepsUtil getMyAppStepsUtil() {
+		return myAppStepsUtil;
+	}
+
+	/**
+	 * @param myAppStepsUtil
+	 *            the myAppStepsUtil to set
+	 */
+	public static void setMyAppStepsUtil(MyAppStepsUtil myAppStepsUtil) {
+		MyAppTestInstance.myAppStepsUtil = myAppStepsUtil;
 	}
 }

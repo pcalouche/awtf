@@ -54,6 +54,20 @@ public class Reporter {
 		Reporter.tagsMap = tagsMap;
 	}
 
+	/**
+	 * Method to track the usage of a step. If the step does not exist it will be added. If it does exist its count will be incremented.
+	 *
+	 * @param step
+	 *            - unique identifier for the step such as the Gherkin string
+	 * @param usage
+	 *            - explanation of when to use the step.
+	 * @param example
+	 *            - example Gherkin steps for the step
+	 * @param javaClass
+	 *            - the Java class the step can be found in
+	 * @param customerOrder
+	 *            - a custom order to order how the step appears in the report. Useful if you want your steps order as manual for a test writer.
+	 */
 	public static void track(String step, String usage, String example, String javaClass, int customerOrder) {
 		if (!Reporter.getStepsMap().containsKey(step)) {
 			Reporter.getStepsMap().put(step, new ReporterStep(step, usage, example, javaClass, customerOrder));
@@ -62,6 +76,12 @@ public class Reporter {
 		}
 	}
 
+	/**
+	 * Method to update the tag data for the report. If the tag does not exist it will be added. If it does exist its count will be incremented.
+	 *
+	 * @param sourceTagNames
+	 *            the list of tages for a gives Cucumber Scenario
+	 */
 	public static void updateTagData(Collection<String> sourceTagNames) {
 		for (String tagName : sourceTagNames) {
 			if (!Reporter.getTagsMap().containsKey(tagName)) {
@@ -72,17 +92,10 @@ public class Reporter {
 		}
 	}
 
+	/**
+	 * Method to handle what happens after the last feature is analyzed for the report
+	 */
 	public static void handleShutdown() {
-		// for (ReporterStep reporterStep : Reporter.getStepsMap().values()) {
-		// System.out.println(reporterStep.getStep());
-		// System.out.println(reporterStep.getUsage());
-		// System.out.println(reporterStep.getExample());
-		// System.out.println(reporterStep.getJavaClass());
-		// System.out.println("Count: " + reporterStep.getCount() + "\n");
-		// }
-		// for (String key : Reporter.getTagsMap().keySet()) {
-		// System.out.println(key + " " + Reporter.getTagsMap().get(key).getCount());
-		// }
 		ObjectMapper mapper = new ObjectMapper();
 		try {
 			Map<String, Object> awtfReportData = new HashMap<String, Object>();

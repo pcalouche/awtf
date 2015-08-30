@@ -14,7 +14,7 @@ import cucumber.api.junit.Cucumber;
  *
  */
 @RunWith(Cucumber.class)
-@CucumberOptions(glue = { "com.pcalouche.awtf_reporting" }, plugin = { "html:target/cucumber/stepReporterTestRunner", "json:target/cucumber/stepReporterTestRunner.json" }, features = {
+@CucumberOptions(glue = { "com.pcalouche.awtf_reporting" }, plugin = { "html:target/cucumber/awtfReporterTestRunner", "json:target/cucumber/awtfReporterTestRunner.json" }, features = {
 		"classpath:" }, tags = {}, snippets = SnippetType.CAMELCASE, strict = true)
 public class AwtfReporterTestRunner {
 
