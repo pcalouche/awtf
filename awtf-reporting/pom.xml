@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.pcalouche</groupId>
 	<artifactId>awtf-reporting</artifactId>
-	<version>1.0.0</version>
+	<version>1.0.1</version>
 	<packaging>jar</packaging>
 	<name>AWTF Reporting Project</name>
 
@@ -13,8 +13,8 @@
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<!-- Dependency Versions -->
-		<awtf-core.version>1.0.0</awtf-core.version>
-		<awtf-app-example.version>1.0.0</awtf-app-example.version>
+		<awtf-core.version>1.0.1</awtf-core.version>
+		<awtf-app-example.version>1.0.1</awtf-app-example.version>
 		<jackson.version>1.9.13</jackson.version>
 		<!-- Plugin Versions -->
 		<maven.compiler.version>3.3</maven.compiler.version> <!-- Mar 2015 -->
