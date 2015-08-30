@@ -9,6 +9,7 @@ var AwtfReporterModel = function(data) {
 	self.tagNameData = ko.observableArray(data.tagNameData);
 	self.stepDataFilter = ko.observable("");
 	self.tagNameDataFilter = ko.observable("");
+	self.highlightAgain = true;
 
 	self.handleSortFilterClick = function(dataToSort, fieldToSortOn, data, event) {
 		var element = $(event.currentTarget);
@@ -39,6 +40,7 @@ var AwtfReporterModel = function(data) {
 	}
 
 	self.filteredStepData = ko.computed(function() {
+		self.highlightAgain = true;
 		var lowerCaseVal = self.stepDataFilter().toLowerCase();
 		if (lowerCaseVal.length == 0) {
 			return self.stepData();
@@ -85,8 +87,11 @@ $(function() {
 	 * the highlighting on initially
 	 */
 	setInterval(function() {
-		$("pre code").each(function(i, block) {
-			hljs.highlightBlock(block);
-		});
+		if (awtfRepoterModel.highlightAgain) {
+			$("pre code").each(function(i, block) {
+				hljs.highlightBlock(block);
+			});
+			awtfRepoterModel.highlightAgain = false;
+		}
 	}, 1500);
 });
