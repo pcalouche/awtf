@@ -1,4 +1,4 @@
-# Automatic WebApp Testing Framework
+# Automated WebApp Testing Framework
 
 ##Background
 This is my attempt at an automatic web application testing framework that makes use of Cucumber and Selenium.  In my job I got the opportunity to learn automatic web application test.  I really liked learning what could be done with it and how much it can improve testing.  I have tried to create a framework that serves as a good starting point to do automated UI testing on any type of web application.  When learning these tools, I often ran across a lot of good examples, but not a lot in the way of putting it all together in a generic manner that any web application could use.
@@ -46,14 +46,14 @@ This could be determined by looking at the code, but I believe this write-up wil
 NOTE: You can setup your Test Runners to use your own Hooks and ignore the ones in the core framework.  This shown in awtf-app-example project.
 
 ##Test Environment Config Details
-The AWTF uses TestEnvironmentConfig.java to manage configuration properties for a given test environment.  These are read in from YAML files.  Any number TestEnvironmentConfig YAML files can be maintained for testing.  For instance, there could be a test environment a local, integration, or production environment.  A ìtestEnvironmentî variable must be set as either a System property (think Javaís System.getProperty method) or as an environment property (think Javaís System.getenv method and Eclipseís Run Configuration Environment variables).
+The AWTF uses TestEnvironmentConfig.java to manage configuration properties for a given test environment.  These are read in from YAML files.  Any number TestEnvironmentConfig YAML files can be maintained for testing.  For instance, there could be a test environment a local, integration, or production environment.  A ‚ÄútestEnvironment‚Äù variable must be set as either a System property (think Java‚Äôs System.getProperty method) or as an environment property (think Java‚Äôs System.getenv method and Eclipse‚Äôs Run Configuration Environment variables).
 
 Maven System Property Example:
 ```
 mvn -DargLine="-DtestEnvironment=localhost"  -Dtest=TestRunner 
 ```
 
-If not it defaults to ìlocalhostî.  The AWTF then looks for a YAML file in the resources folder by the name of TestEnvironmentConfig.[yourTestEnvironmentValue].yml.
+If not it defaults to ‚Äúlocalhost‚Äù.  The AWTF then looks for a YAML file in the resources folder by the name of TestEnvironmentConfig.[yourTestEnvironmentValue].yml.
 
 The following is a listing of some built in configuration options for this class used by the framework:
 * **browser** - The browser to run your test with.  It must match a valid enumerated type in BrowserType, and your system must have the web driver for that browser configured.
@@ -71,7 +71,7 @@ This class configuration specific to you specific webapp.  Not everything is req
 
 The AppConfig lives under /test/resources/yaml/appConfig.yml.  AppConfigDriver provides an example of how to configure the AppConfig.  In it the AppElements lists and other AppConfig properties are set.  AppConfigDriver can be updated and then run to update your appConfig.yml.
 
-The AppElement class represents a way to help the steps locate elements that are specific to your app.  Steps will parse the description given and if that description is surrounded by two brackets ì[]î it will look in the AppConfig for that element by the given description.  See the example feature files and step implementations for more details.
+The AppElement class represents a way to help the steps locate elements that are specific to your app.  Steps will parse the description given and if that description is surrounded by two brackets ‚Äú[]‚Äù it will look in the AppConfig for that element by the given description.  See the example feature files and step implementations for more details.
 
 ##CoreStepHandler and StepsUtilClass Details
 These classes handle the default logic for running the core steps.  CoreStepHandler contains methods for handling each step definition, and StepUtilClass contains helper methods for thing like locating form elements based on label or handling input for form elements.
