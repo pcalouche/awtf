@@ -8,7 +8,7 @@ Feature: Provide steps to verify and interact with tables
   "see deselected" --
   "select" --
   "deselect" --
-  "expand" -- 
+  "expand" --
   "collapse" --
   "click" --
   In order to use any of of these table actions they must be registered in the App Config as a RowActionDefinition.

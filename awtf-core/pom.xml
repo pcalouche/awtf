@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.pcalouche</groupId>
 	<artifactId>awtf-core</artifactId>
-	<version>1.0.1</version>
+	<version>1.0.2</version>
 	<packaging>jar</packaging>
 	<name>AWTF Core Project</name>
 
@@ -13,15 +13,23 @@
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<!-- Dependency Versions -->
-		<cucumber.version>1.2.4</cucumber.version><!-- July 2015 -->
-		<selenium.version>2.47.1</selenium.version><!-- July 2015 -->
-		<phantomjsdriver.version>1.2.1</phantomjsdriver.version><!-- Dec 2014 -->
-		<json.version>20141113</json.version><!-- Nov 2014 -->
-		<yaml.version>1.15</yaml.version><!-- Feb 2015 -->
-		<log4j.version>2.3</log4j.version><!-- May 2015 -->
+		<!-- July 2015 -->
+		<cucumber.version>1.2.4</cucumber.version>
+
+		<selenium.version>2.48.2</selenium.version>
+		<!-- Dec 2014 -->
+		<phantomjsdriver.version>1.2.1</phantomjsdriver.version>
+		<!-- Nov 2014 -->
+		<json.version>20141113</json.version>
+		<!-- Feb 2015 -->
+		<yaml.version>1.15</yaml.version>
+		<!-- May 2015 -->
+		<log4j.version>2.3</log4j.version>
 		<!-- Plugin Versions -->
-		<maven.compiler.version>3.3</maven.compiler.version> <!-- Mar 2015 -->
-		<maven.surefire.version>2.18.1</maven.surefire.version> <!-- Dec 2014 -->
+		<!-- Mar 2015 -->
+		<maven.compiler.version>3.3</maven.compiler.version>
+		<!-- Dec 2014 -->
+		<maven.surefire.version>2.18.1</maven.surefire.version>
 	</properties>
 
 	<dependencies>
