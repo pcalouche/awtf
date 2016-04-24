@@ -11,5 +11,5 @@ public enum BrowserType {
     internetExplorer,
     edge,
     safari,
-    chrome;
+    chrome
 }

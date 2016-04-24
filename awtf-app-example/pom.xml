@@ -1,9 +1,9 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.pcalouche</groupId>
     <artifactId>awtf-app-example</artifactId>
-    <version>1.0.2</version>
+    <version>1.0.3</version>
     <packaging>jar</packaging>
     <name>AWTF Example App Project</name>
 
@@ -13,12 +13,10 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <!-- Dependency Versions -->
-        <awtf-core.version>1.0.2</awtf-core.version>
+        <awtf-core.version>1.0.3</awtf-core.version>
         <!-- Plugin Versions -->
-        <!-- Mar 2015 -->
-        <maven.compiler.version>3.3</maven.compiler.version>
-        <!-- Dec 2014 -->
-        <maven.surefire.version>2.18.1</maven.surefire.version>
+        <maven.compiler.version>3.3</maven.compiler.version><!-- Mar 2015 -->
+        <maven.surefire.version>2.18.1</maven.surefire.version><!-- Dec 2014 -->
     </properties>
     <dependencies>
         <dependency>
