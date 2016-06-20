@@ -19,7 +19,6 @@ public class AppConfig {
     private ResourceBundle messageBundle;
 
     public AppConfig() {
-
     }
 
     /**

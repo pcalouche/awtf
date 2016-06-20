@@ -2,8 +2,6 @@ package com.pcalouche.awtf_core;
 
 import com.pcalouche.awtf_core.util.enums.WaitTag;
 import cucumber.api.Scenario;
-import cucumber.api.java.After;
-import cucumber.api.java.Before;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -17,10 +15,10 @@ import java.util.concurrent.TimeUnit;
 public class Hooks {
     protected Logger logger = LogManager.getLogger();
 
-    @Before
+    //    @Before
     public void setup(Scenario scenario) {
         /*
-		 * This should only run on the first test. Doing this here allows us to reuse the same web driver and avoid the expense in reading in the config files and setting up a new instance of the web
+         * This should only run on the first test. Doing this here allows us to reuse the same web driver and avoid the expense in reading in the config files and setting up a new instance of the web
 		 * driver on every scenario.
 		 */
         if (TestInstance.getWebDriver() == null) {
@@ -63,7 +61,7 @@ public class Hooks {
         }
     }
 
-    @After
+    //    @After
     public void tearDown(Scenario scenario) {
         // Stop the stop watch and take a final screenshot of configured to do so
         try {

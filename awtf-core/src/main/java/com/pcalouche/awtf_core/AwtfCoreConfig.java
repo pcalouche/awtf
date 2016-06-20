@@ -9,16 +9,9 @@ import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.io.ClassPathResource;
 
 @Configuration
-@ComponentScan("com.pcalouche")
+@ComponentScan("com.pcalouche.awtf_core")
 public class AwtfCoreConfig {
     private static final Logger logger = LogManager.getLogger();
-//    @Bean
-//    public TestInstance testInstance() {
-//        return new TestInstance();
-//    }
-
-//    @Autowired
-//    private static Environment environment;
 
     @Bean
     public static PropertySourcesPlaceholderConfigurer propertyConfigInDev() {
@@ -34,21 +27,8 @@ public class AwtfCoreConfig {
             logger.info("Test environment not specified in Command Line or environment variable, defaulting to localhost test environment");
             testEnvironment = "localhost";
         }
-        ClassPathResource testEnvironmentConfig = new ClassPathResource(String.format("test_environment_config.%s.properties", testEnvironment));
+        ClassPathResource testEnvironmentConfig = new ClassPathResource(String.format("/testEnvironmentConfigs/test_environment_config.%s.properties", testEnvironment));
         pspc.setLocations(testEnvironmentConfig);
         return pspc;
-    }
-
-    @Bean(name = "A")
-    public TestEnvironmentConfigSpring testInstanceSpring() {
-//        System.out.println("testEnvironment->" + environment.getProperty("testEnvironment"));
-//        System.out.println("System.getProperty testEnvironment->" + System.getProperty("testEnvironment"));
-//        System.out.println("System.getenv testEnvironment->" + System.getenv("testEnvironment"));
-        return null;
-    }
-
-    @Bean(name = "B")
-    public TestEnvironmentConfigSpring testInstanceSpring1() {
-        return null;
     }
 }

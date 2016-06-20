@@ -73,7 +73,7 @@ public class TestInstance {
     }
 
     /**
-     * @return the testEnvironmentConfig
+     * @return the testEnvironmentConfigs
      */
     public static TestEnvironmentConfig getTestEnvironmentConfig() {
         return testEnvironmentConfig;

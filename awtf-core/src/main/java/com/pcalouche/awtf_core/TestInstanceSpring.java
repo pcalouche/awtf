@@ -31,121 +31,29 @@ import java.util.Map;
  */
 @Component("testInstance")
 public class TestInstanceSpring {
-    protected static TestEnvironmentConfig testEnvironmentConfig;
-    protected static CoreStepHandlerSpring coreStepHandler;
-    protected static StepsUtilSpring stepsUtil;
-    protected static AppConfig appConfig;
-    protected static WebDriver webDriver;
-    protected static WebDriverWait webDriverWait;
-    protected static JavascriptExecutor jsExecutor;
-    protected static Scenario currentScenario;
-    protected static StopWatch stopWatch = new StopWatch();
     /*
      * Used to store temporary values that subsequent steps may later need. A good use case is storing a confirmation ID that comes from a form submission, and then retrieving it later to verify that
      * is appears on the screen to the user.
      */
     private static Map<String, String> tempMap = new HashMap<>();
+    private final TestEnvironmentConfigSpring testEnvironmentConfig;
+    protected AppConfig appConfig;
+    protected WebDriver webDriver;
+    protected WebDriverWait webDriverWait;
+    protected JavascriptExecutor jsExecutor;
+    protected Scenario currentScenario;
+    protected StopWatch stopWatch = new StopWatch();
     protected Logger logger = LogManager.getLogger();
 
     @Autowired
-    public TestInstanceSpring(CoreStepHandlerSpring coreStepHandler, StepsUtilSpring stepsUtil) {
-        this.coreStepHandler = coreStepHandler;
-        this.stepsUtil = stepsUtil;
-
-        // If test instance is extend this can be overridden to allow for custom loading of the test environment setup
-//        this.loadTestEnvironmentConfig();
+    public TestInstanceSpring(TestEnvironmentConfigSpring testEnvironmentConfig) {
+        this.testEnvironmentConfig = testEnvironmentConfig;
+        logger.info("testEnvironmentConfig browserType->" + this.testEnvironmentConfig.getBrowserType());
         // If test instance is extend this can be overridden to allow for custom loading of the application config
-//        this.loadApplicationConfig();
-
-		/*
-         * Create an instance of the class that will handle the core steps. This defaults to com.pcalouche.awtf_core.CoreStepHandler. This class can be extended with your own version if you need to
-		 * override or add to what is in CoreStepHandler
-		 */
-//        if (StringUtils.isEmpty(testEnvironmentConfig.getCoreStepHandlerClass())) {
-//            coreStepHandler = new CoreStepHandler();
-//        } else {
-//            try {
-//                Class<?> c = Class.forName(testEnvironmentConfig.getCoreStepHandlerClass());
-//                coreStepHandler = (CoreStepHandler) c.newInstance();
-//                c = Class.forName(testEnvironmentConfig.getStepsUtilClass());
-//                stepsUtil = (StepsUtil) c.newInstance();
-//            } catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
-//                e.printStackTrace();
-//                System.exit(1);
-//            }
-//        }
+        this.loadApplicationConfig();
         // If test instance is extended this can be overridden to allow for custom browser setup
-//        this.setupWebDriver();
-    }
-
-    /**
-     * @return the testEnvironmentConfig
-     */
-    public static TestEnvironmentConfig getTestEnvironmentConfig() {
-        return testEnvironmentConfig;
-    }
-
-    /**
-     * @return the coreStepHandler
-     */
-    public static CoreStepHandlerSpring getCoreStepHandler() {
-        return coreStepHandler;
-    }
-
-    /**
-     * @return the stepsUtils
-     */
-    public static StepsUtilSpring getStepsUtil() {
-        return stepsUtil;
-    }
-
-    /**
-     * @return the appConfig
-     */
-    public static AppConfig getAppConfig() {
-        return appConfig;
-    }
-
-    /**
-     * @return the webDriver
-     */
-    public static WebDriver getWebDriver() {
-        return webDriver;
-    }
-
-    /**
-     * @return the webDriverWait
-     */
-    public static WebDriverWait getWebDriverWait() {
-        return webDriverWait;
-    }
-
-    /**
-     * @return the jsExecutor
-     */
-    public static JavascriptExecutor getJsExecutor() {
-        return jsExecutor;
-    }
-
-    /**
-     * @return the currentScenario
-     */
-    public static Scenario getCurrentScenario() {
-        return currentScenario;
-    }
-
-    /**
-     * @param currentScenario the currentScenario to set
-     */
-    public static void setCurrentScenario(Scenario currentScenario) {
-        TestInstanceSpring.currentScenario = currentScenario;
-    }
-
-    /**
-     * @return the stopWatch
-     */
-    public static StopWatch getStopWatch() {
-        return stopWatch;
+        this.setupWebDriver();
+        logger.info("done with TestInstanceSpring constructor");
     }
 
     /**
@@ -155,24 +63,64 @@ public class TestInstanceSpring {
         return tempMap;
     }
 
-    protected void loadTestEnvironmentConfig() {
-        String testEnvironment;
-        if (System.getProperty("testEnvironment") != null) {
-            testEnvironment = System.getProperty("testEnvironment");
-            logger.info("Test environment received from System Property as: " + testEnvironment);
-        } else if (System.getenv("testEnvironment") != null) {
-            testEnvironment = System.getenv("testEnvironment");
-            logger.info("Test environment received from Enviroment Variable as: " + testEnvironment);
-        } else {
-            logger.info("Test enviroment not specified in Command Line or Enviroment Variable, defaulting to localhost test environment");
-            testEnvironment = "localhost";
-        }
+    /**
+     * @return the appConfig
+     */
+    public AppConfig getAppConfig() {
+        return appConfig;
+    }
 
-        testEnvironmentConfig = (TestEnvironmentConfig) YamlHelper.loadFromInputStream(String.format("/yaml/testEnvironments/TestEnvironmentConfig.%s.yml", testEnvironment));
+    /**
+     * @return the webDriver
+     */
+    public WebDriver getWebDriver() {
+        return webDriver;
+    }
+
+    /**
+     * @return the webDriverWait
+     */
+    public WebDriverWait getWebDriverWait() {
+        return webDriverWait;
+    }
+
+    /**
+     * @return the jsExecutor
+     */
+    public JavascriptExecutor getJsExecutor() {
+        return jsExecutor;
+    }
+
+    /**
+     * @return the currentScenario
+     */
+    public Scenario getCurrentScenario() {
+        return currentScenario;
+    }
+
+    /**
+     * @param currentScenario the currentScenario to set
+     */
+    public void setCurrentScenario(Scenario currentScenario) {
+        this.currentScenario = currentScenario;
+    }
+
+    /**
+     * @return the stopWatch
+     */
+    public StopWatch getStopWatch() {
+        return stopWatch;
+    }
+
+    /**
+     * @return the testEnvironmentConfigs
+     */
+    public TestEnvironmentConfigSpring getTestEnvironmentConfig() {
+        return testEnvironmentConfig;
     }
 
     protected void loadApplicationConfig() {
-        appConfig = (AppConfig) YamlHelper.loadFromInputStream("/yaml/appConfig.yml");
+        this.appConfig = (AppConfig) YamlHelper.loadFromInputStream("/yaml/appConfig.yml");
     }
 
     protected void setupWebDriver() {
@@ -181,9 +129,10 @@ public class TestInstanceSpring {
         desiredCapabilities.setJavascriptEnabled(true);
         desiredCapabilities.setCapability("takesScreenshot", true);
         desiredCapabilities.setCapability("acceptSslCerts", true);
-        switch (testEnvironmentConfig.getBrowser()) {
+        switch (testEnvironmentConfig.getBrowserType()) {
             case phantomJS:
                 desiredCapabilities.setCapability(PhantomJSDriverService.PHANTOMJS_CLI_ARGS, new String[]{"--web-security=no", "--ignore-ssl-errors=yes", "--webdriver-loglevel=NONE"});
+                desiredCapabilities.setCapability(PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY, "C:\\Users\\pcalouch\\Projects\\webdrivers\\phantomjs-2.1.1-windows\\bin\\phantomjs.exe");
                 webDriver = new PhantomJSDriver(desiredCapabilities);
                 break;
             case firefox:

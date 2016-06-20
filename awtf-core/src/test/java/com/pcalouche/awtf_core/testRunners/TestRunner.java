@@ -12,7 +12,6 @@ import org.junit.runner.RunWith;
  */
 @RunWith(Cucumber.class)
 @CucumberOptions(glue = {"classpath:"}, plugin = {"html:target/cucumber/testRunner", "json:target/cucumber/testRunner.json", "rerun:target/cucumber/testRunnerRerun.txt"}, features = {
-        "classpath:features/"}, tags = {"~@pending", "@formInputAndVerification"}, snippets = SnippetType.CAMELCASE)
+        "classpath:features/"}, tags = {"~@pending", "@tables"}, snippets = SnippetType.CAMELCASE)
 public class TestRunner {
-
 }
