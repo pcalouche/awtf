@@ -1,9 +1,9 @@
 !!com.pcalouche.awtf_core.TestEnvironmentConfig {
-  browser: phantomJS,
-  secondsToWait: 15,
-  url: '/src/test/resources/demoPage/demoPage.html',
-  screenshotBeforeClick: false,
-  screenshotOnScenarioCompletion: true,
-  coreStepHandlerClass: 'com.pcalouche.awtf_core.CoreStepHandler',
-  stepsUtilClass: 'com.pcalouche.awtf_core.StepsUtil'
-}
+   browser: phantomJS,
+   secondsToWait: 15,
+   url: '/src/test/resources/demoPage/demoPage.html',
+   screenshotBeforeClick: false,
+   screenshotOnScenarioCompletion: true,
+   coreStepHandlerClass: 'com.pcalouche.awtf_core.CoreStepHandler',
+   stepsUtilClass: 'com.pcalouche.awtf_core.StepsUtil'
+ }

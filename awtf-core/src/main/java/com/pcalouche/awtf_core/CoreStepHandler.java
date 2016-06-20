@@ -290,7 +290,7 @@ public class CoreStepHandler {
      * @param description the description of the element to hover over
      */
     public void iHoverOver(String description) {
-        List<WebElement> webElements = null;
+        List<WebElement> webElements;
         /*
          * Parse description to see if it is surrounded by []. If it is then look up the element from the App Config. If it isn't then look for matching text on the screen.
 		 */
@@ -329,8 +329,8 @@ public class CoreStepHandler {
             fail(String.format("Bad tooltip description.  Valid descriptions are: %s", TestInstance.getAppConfig().getValidKnownDescriptions(ElementWithTooltip.class)));
         }
         WebElement elementWithToolTip = TestInstance.getWebDriverWait().until(ExpectedConditions.visibilityOfElementLocated(appWebElement.getByLocator()));
-		/*
-		 * Hover over the element with the tooltip. Move to a far enough offset. This should be far enough to hide an an existing visible tooltip that could be covering up another element with a
+        /*
+         * Hover over the element with the tooltip. Move to a far enough offset. This should be far enough to hide an an existing visible tooltip that could be covering up another element with a
 		 * tooltip that we want to hover over.
 		 */
         new Actions(TestInstance.getWebDriver()).moveByOffset(200, 200).build().perform();

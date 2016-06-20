@@ -1,95 +1,91 @@
 package com.pcalouche.awtf_app_example;
 
-import org.apache.logging.log4j.LogManager;
-
 import com.pcalouche.awtf_core.TestEnvironmentConfig;
 import com.pcalouche.awtf_core.TestInstance;
 import com.pcalouche.awtf_core.YamlHelper;
 import com.pcalouche.awtf_core.util.appConfig.AppConfig;
+import org.apache.logging.log4j.LogManager;
 
 /**
  * This class demonstrates how TestInstance can be extended for your needs
  *
  * @author Philip Calouche
- *
  */
 public class MyAppTestInstance extends TestInstance {
-	// Objects like AppConfig or TestEnvironmentConfig could be extended with additional fields as needed or entirely new objects can be added here to suite your applciation's configuration needs.
-	protected static MyAppTestEnvironmentConfig myAppTestEnvironmentConfig;
-	protected static MyAppStepHandler myAppStepHandler;
-	protected static MyAppStepsUtil myAppStepsUtil;
+    // Objects like AppConfig or TestEnvironmentConfig could be extended with additional fields as needed or entirely new objects can be added here to suite your application's configuration needs.
+    protected static MyAppTestEnvironmentConfig myAppTestEnvironmentConfig;
+    protected static MyAppStepHandler myAppStepHandler;
+    protected static MyAppStepsUtil myAppStepsUtil;
 
-	public MyAppTestInstance() {
-		logger = LogManager.getLogger();
-	}
+    public MyAppTestInstance() {
+        logger = LogManager.getLogger();
+    }
 
-	@Override
-	protected void loadTestEnvironmentConfig() {
-		String testEnvironment;
-		if (System.getProperty("testEnvironment") != null) {
-			testEnvironment = System.getProperty("testEnvironment");
-			logger.info("Test environment received from System Property as: " + testEnvironment);
-		} else if (System.getenv("testEnvironment") != null) {
-			testEnvironment = System.getenv("testEnvironment");
-			logger.info("Test environment received from Enviroment Variable as: " + testEnvironment);
-		} else {
-			logger.info("Test enviroment not specified in Command Line or Enviroment Variable, defaulting to localhost test environment");
-			testEnvironment = "localhost";
-		}
+    /**
+     * @return the myAppTestEnvironmentConfig
+     */
+    public static MyAppTestEnvironmentConfig getMyAppTestEnvironmentConfig() {
+        return myAppTestEnvironmentConfig;
+    }
 
-		// Set this to keep the core framework happy
-		testEnvironmentConfig = (TestEnvironmentConfig) YamlHelper.loadFromInputStream(String.format("/yaml/testEnvironments/MyAppTestEnvironmentConfig.%s.yml", testEnvironment));
-		// Set this to get access to our extended version for use in our app's step definitions
-		myAppTestEnvironmentConfig = (MyAppTestEnvironmentConfig) testEnvironmentConfig;
-		appConfig = (AppConfig) YamlHelper.loadFromInputStream("/yaml/appConfig.yml");
-	}
+    /**
+     * @return the myAppStepHandler
+     */
+    public static MyAppStepHandler getMyAppStepHandler() {
+        return myAppStepHandler;
+    }
 
-	@Override
-	protected void loadApplicationConfig() {
-		// Just calling super here, but this can be completely changed to do whatever you need
-		super.loadApplicationConfig();
-	}
+    /**
+     * @param myAppStepHandler the myAppStepHandler to set
+     */
+    public static void setMyAppStepHandler(MyAppStepHandler myAppStepHandler) {
+        MyAppTestInstance.myAppStepHandler = myAppStepHandler;
+    }
 
-	@Override
-	protected void setupWebDriver() {
-		// Just calling super here, but this can be completely changed to do whatever you need
-		super.setupWebDriver();
-	}
+    /**
+     * @return the myAppStepsUtil
+     */
+    public static MyAppStepsUtil getMyAppStepsUtil() {
+        return myAppStepsUtil;
+    }
 
-	/**
-	 * @return the myAppTestEnvironmentConfig
-	 */
-	public static MyAppTestEnvironmentConfig getMyAppTestEnvironmentConfig() {
-		return myAppTestEnvironmentConfig;
-	}
+    /**
+     * @param myAppStepsUtil the myAppStepsUtil to set
+     */
+    public static void setMyAppStepsUtil(MyAppStepsUtil myAppStepsUtil) {
+        MyAppTestInstance.myAppStepsUtil = myAppStepsUtil;
+    }
 
-	/**
-	 * @return the myAppStepHandler
-	 */
-	public static MyAppStepHandler getMyAppStepHandler() {
-		return myAppStepHandler;
-	}
+    @Override
+    protected void loadTestEnvironmentConfig() {
+        String testEnvironment;
+        if (System.getProperty("testEnvironment") != null) {
+            testEnvironment = System.getProperty("testEnvironment");
+            logger.info("Test environment received from System Property as: " + testEnvironment);
+        } else if (System.getenv("testEnvironment") != null) {
+            testEnvironment = System.getenv("testEnvironment");
+            logger.info("Test environment received from Enviroment Variable as: " + testEnvironment);
+        } else {
+            logger.info("Test enviroment not specified in Command Line or Enviroment Variable, defaulting to localhost test environment");
+            testEnvironment = "localhost";
+        }
 
-	/**
-	 * @param myAppStepHandler
-	 *            the myAppStepHandler to set
-	 */
-	public static void setMyAppStepHandler(MyAppStepHandler myAppStepHandler) {
-		MyAppTestInstance.myAppStepHandler = myAppStepHandler;
-	}
+        // Set this to keep the core framework happy
+        testEnvironmentConfig = (TestEnvironmentConfig) YamlHelper.loadFromInputStream(String.format("/yaml/testEnvironments/MyAppTestEnvironmentConfig.%s.yml", testEnvironment));
+        // Set this to get access to our extended version for use in our app's step definitions
+        myAppTestEnvironmentConfig = (MyAppTestEnvironmentConfig) testEnvironmentConfig;
+        appConfig = (AppConfig) YamlHelper.loadFromInputStream("/yaml/appConfig.yml");
+    }
 
-	/**
-	 * @return the myAppStepsUtil
-	 */
-	public static MyAppStepsUtil getMyAppStepsUtil() {
-		return myAppStepsUtil;
-	}
+    @Override
+    protected void loadApplicationConfig() {
+        // Just calling super here, but this can be completely changed to do whatever you need
+        super.loadApplicationConfig();
+    }
 
-	/**
-	 * @param myAppStepsUtil
-	 *            the myAppStepsUtil to set
-	 */
-	public static void setMyAppStepsUtil(MyAppStepsUtil myAppStepsUtil) {
-		MyAppTestInstance.myAppStepsUtil = myAppStepsUtil;
-	}
+    @Override
+    protected void setupWebDriver() {
+        // Just calling super here, but this can be completely changed to do whatever you need
+        super.setupWebDriver();
+    }
 }
