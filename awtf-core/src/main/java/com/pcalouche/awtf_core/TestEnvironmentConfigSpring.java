@@ -5,16 +5,20 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 
-@Component
+//@Component
+//@ContextConfiguration(classes = AwtfCoreConfig.class)
 public class TestEnvironmentConfigSpring {
-    private Logger logger = LogManager.getLogger();
-    private BrowserType browserType = BrowserType.firefox;
-    private int secondsToWait = 15;
+    private BrowserType browserType;
+    private int secondsToWait;
     private String url;
-    private boolean screenshotBeforeClick = false;
-    private boolean screenshotOnScenarioCompletion = true;
+    private boolean screenshotBeforeClick;
+    private boolean screenshotOnScenarioCompletion;
+    private Logger logger = LogManager.getLogger();
+
+//    public TestEnvironmentConfigSpring() {
+//        logger.info("in no arg constructor");
+//    }
 
     @Autowired
     public TestEnvironmentConfigSpring(@Value("${browserType}") BrowserType browserType,
@@ -22,6 +26,11 @@ public class TestEnvironmentConfigSpring {
                                        @Value("${url}") String url,
                                        @Value("${screenshotBeforeClick}") boolean screenshotBeforeClick,
                                        @Value("${screenshotOnScenarioCompletion}") boolean screenshotOnScenarioCompletion) {
+//    public TestEnvironmentConfigSpring(BrowserType browserType,
+//                                       int secondsToWait,
+//                                       String url,
+//                                       boolean screenshotBeforeClick,
+//                                       boolean screenshotOnScenarioCompletion) {
         this.browserType = browserType;
         this.secondsToWait = secondsToWait;
         this.url = url;

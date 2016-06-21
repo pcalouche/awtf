@@ -6,20 +6,18 @@ import cucumber.api.DataTable;
 import cucumber.api.java.en.Then;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 /**
  * The core step definitions for the framework.
  *
  * @author Philip Calouche
  */
-@Component
+//@Component("coreSteps")
 public class CoreSteps {
     protected static Logger logger = LogManager.getLogger();
     private final CoreStepHandlerSpring stepHandler;
 
-    @Autowired
+    //    @Autowired
     public CoreSteps(CoreStepHandlerSpring stepHandler) {
         this.stepHandler = stepHandler;
         logger.info("Done with CoreSteps constructor");

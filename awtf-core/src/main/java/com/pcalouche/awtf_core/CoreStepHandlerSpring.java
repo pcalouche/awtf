@@ -15,15 +15,13 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-@Component("coreStepHandler")
+//@Component("coreStepHandler")
 public class CoreStepHandlerSpring {
     //    private final TestInstanceSpring testInstance;
     private final TestEnvironmentConfigSpring testEnvironmentConfig;
@@ -31,7 +29,7 @@ public class CoreStepHandlerSpring {
     private final StepsUtilSpring stepsUtil;
     protected Logger logger = LogManager.getLogger();
 
-    @Autowired
+    //    @Autowired
     public CoreStepHandlerSpring(TestEnvironmentConfigSpring testEnvironmentConfig, TestInstanceSpring testInstance, StepsUtilSpring stepsUtil) {
         //    public CoreStepHandlerSpring(TestInstanceSpring testInstance, StepsUtilSpring stepsUtil) {
         //    public CoreStepHandlerSpring(StepsUtilSpring stepsUtil) {

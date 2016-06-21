@@ -31,12 +31,6 @@ import java.util.Map;
  */
 @Component("testInstance")
 public class TestInstanceSpring {
-    /*
-     * Used to store temporary values that subsequent steps may later need. A good use case is storing a confirmation ID that comes from a form submission, and then retrieving it later to verify that
-     * is appears on the screen to the user.
-     */
-    private static Map<String, String> tempMap = new HashMap<>();
-    private final TestEnvironmentConfigSpring testEnvironmentConfig;
     protected AppConfig appConfig;
     protected WebDriver webDriver;
     protected WebDriverWait webDriverWait;
@@ -44,22 +38,40 @@ public class TestInstanceSpring {
     protected Scenario currentScenario;
     protected StopWatch stopWatch = new StopWatch();
     protected Logger logger = LogManager.getLogger();
+    //    @Autowired
+//    @Qualifier("work")
+    private TestEnvironmentConfigSpring testEnvironmentConfig;
+    /*
+     * Used to store temporary values that subsequent steps may later need. A good use case is storing a confirmation ID that comes from a form submission, and then retrieving it later to verify that
+     * is appears on the screen to the user.
+     */
+    private Map<String, String> tempMap = new HashMap<>();
+
+//    public TestInstanceSpring() {
+//        logger.info("in new con");
+//        logger.info("testEnvironmentConfig browserType->" + this.testEnvironmentConfig.getBrowserType());
+//     If test instance is extend this can be overridden to allow for custom loading of the application config
+//        this.loadApplicationConfig();
+//     If test instance is extended this can be overridden to allow for custom browser setup
+//        this.setupWebDriver();
+//        logger.info("done with TestInstanceSpring constructor");
+//    }
 
     @Autowired
     public TestInstanceSpring(TestEnvironmentConfigSpring testEnvironmentConfig) {
         this.testEnvironmentConfig = testEnvironmentConfig;
         logger.info("testEnvironmentConfig browserType->" + this.testEnvironmentConfig.getBrowserType());
-        // If test instance is extend this can be overridden to allow for custom loading of the application config
-        this.loadApplicationConfig();
-        // If test instance is extended this can be overridden to allow for custom browser setup
-        this.setupWebDriver();
-        logger.info("done with TestInstanceSpring constructor");
+//        // If test instance is extend this can be overridden to allow for custom loading of the application config
+////        this.loadApplicationConfig();
+//        // If test instance is extended this can be overridden to allow for custom browser setup
+////        this.setupWebDriver();
+////        logger.info("done with TestInstanceSpring constructor");
     }
 
     /**
      * @return the tempMap
      */
-    public static Map<String, String> getTempMap() {
+    public Map<String, String> getTempMap() {
         return tempMap;
     }
 
@@ -129,10 +141,12 @@ public class TestInstanceSpring {
         desiredCapabilities.setJavascriptEnabled(true);
         desiredCapabilities.setCapability("takesScreenshot", true);
         desiredCapabilities.setCapability("acceptSslCerts", true);
+        logger.info("in setupWebDriver->" + testEnvironmentConfig.getBrowserType());
         switch (testEnvironmentConfig.getBrowserType()) {
             case phantomJS:
                 desiredCapabilities.setCapability(PhantomJSDriverService.PHANTOMJS_CLI_ARGS, new String[]{"--web-security=no", "--ignore-ssl-errors=yes", "--webdriver-loglevel=NONE"});
-                desiredCapabilities.setCapability(PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY, "C:\\Users\\pcalouch\\Projects\\webdrivers\\phantomjs-2.1.1-windows\\bin\\phantomjs.exe");
+//                desiredCapabilities.setCapability(PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY, "C:\\Users\\pcalouch\\Projects\\webdrivers\\phantomjs-2.1.1-windows\\bin\\phantomjs.exe");
+                desiredCapabilities.setCapability(PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY, "C:\\webdrivers\\phantomjs-2.1.1-windows\\bin\\phantomjs.exe");
                 webDriver = new PhantomJSDriver(desiredCapabilities);
                 break;
             case firefox:
