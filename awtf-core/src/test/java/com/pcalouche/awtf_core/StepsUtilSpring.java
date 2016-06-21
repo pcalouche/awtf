@@ -8,11 +8,13 @@ import com.pcalouche.awtf_core.util.enums.RowAction;
 import cucumber.api.DataTable;
 import gherkin.formatter.model.DataTableRow;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -25,12 +27,12 @@ import static org.junit.Assert.*;
  *
  * @author Philip Calouche
  */
-//@Component("coreStepsUtil")
+@Component("coreStepsUtil")
 public class StepsUtilSpring {
+    private static final Logger logger = LoggerFactory.getLogger(StepsUtilSpring.class);
     private final TestInstanceSpring testInstance;
-    protected Logger logger = LogManager.getLogger();
 
-    //    @Autowired
+    @Autowired
     public StepsUtilSpring(TestInstanceSpring testInstance) {
         this.testInstance = testInstance;
         logger.info("Done with StepsUtilSpring constructor->" + testInstance.getTestEnvironmentConfig().getBrowserType());

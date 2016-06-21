@@ -8,36 +8,34 @@ import com.pcalouche.awtf_core.util.enums.HTMLFormElement;
 import com.pcalouche.awtf_core.util.enums.RowAction;
 import cucumber.api.DataTable;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-//@Component("coreStepHandler")
+@Component("coreStepHandler")
 public class CoreStepHandlerSpring {
-    //    private final TestInstanceSpring testInstance;
-    private final TestEnvironmentConfigSpring testEnvironmentConfig;
+    private static final Logger logger = LoggerFactory.getLogger(CoreStepHandlerSpring.class);
     private final TestInstanceSpring testInstance;
     private final StepsUtilSpring stepsUtil;
-    protected Logger logger = LogManager.getLogger();
 
-    //    @Autowired
-    public CoreStepHandlerSpring(TestEnvironmentConfigSpring testEnvironmentConfig, TestInstanceSpring testInstance, StepsUtilSpring stepsUtil) {
+    @Autowired
+    public CoreStepHandlerSpring(TestInstanceSpring testInstance, StepsUtilSpring stepsUtil) {
         //    public CoreStepHandlerSpring(TestInstanceSpring testInstance, StepsUtilSpring stepsUtil) {
         //    public CoreStepHandlerSpring(StepsUtilSpring stepsUtil) {
-        this.testEnvironmentConfig = testEnvironmentConfig;
         this.testInstance = testInstance;
         this.stepsUtil = stepsUtil;
-        logger.info("Done with CoreStepHandlerSpring constructor TI->" + testInstance.getTestEnvironmentConfig().getBrowserType());
-        logger.info("Done with CoreStepHandlerSpring constructor->" + testEnvironmentConfig.getBrowserType());
+        logger.info("Done with CoreStepHandlerSpring constructor->" + this.testInstance.getTestEnvironmentConfig().getBrowserType());
     }
 
     /**
@@ -53,7 +51,7 @@ public class CoreStepHandlerSpring {
      * @param text the text of the link or button
      */
     public void iClickOn(String text) {
-        if (testEnvironmentConfig.isScreenshotBeforeClick()) {
+        if (this.testInstance.getTestEnvironmentConfig().isScreenshotBeforeClick()) {
             stepsUtil.takeAScreenShot();
         }
         // Determine what parent locator to use based on what is currently displayed on the UI
@@ -425,7 +423,7 @@ public class CoreStepHandlerSpring {
             case CLICK:
                 actionableRowElements = stepsUtil.findActionableRowElements(rowAction, criteria, null);
                 assertTrue("No matching rows found", !actionableRowElements.isEmpty());
-                if (testEnvironmentConfig.isScreenshotBeforeClick()) {
+                if (this.testInstance.getTestEnvironmentConfig().isScreenshotBeforeClick()) {
                     stepsUtil.takeAScreenShot();
                 }
                 for (WebElement actionableRowElement : actionableRowElements) {

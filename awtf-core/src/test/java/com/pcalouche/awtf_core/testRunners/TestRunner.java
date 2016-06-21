@@ -14,7 +14,7 @@ import org.springframework.test.context.ContextConfiguration;
  */
 @RunWith(Cucumber.class)
 @CucumberOptions(glue = {"classpath:"}, plugin = {"html:target/cucumber/testRunner", "json:target/cucumber/testRunner.json", "rerun:target/cucumber/testRunnerRerun.txt"}, features = {
-        "classpath:features/"}, tags = {"~@pending", "@tables"}, snippets = SnippetType.CAMELCASE)
+        "classpath:features/"}, tags = {"~@pending"}, snippets = SnippetType.CAMELCASE)
 @ContextConfiguration(classes = AwtfCoreConfig.class)
 public class TestRunner {
 }

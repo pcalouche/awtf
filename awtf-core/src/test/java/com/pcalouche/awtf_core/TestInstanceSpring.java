@@ -1,5 +1,6 @@
 package com.pcalouche.awtf_core;
 
+import com.pcalouche.awtf_core.util.YamlHelper;
 import com.pcalouche.awtf_core.util.appConfig.AppConfig;
 import cucumber.api.Scenario;
 import org.apache.commons.lang3.time.StopWatch;
@@ -31,104 +32,64 @@ import java.util.Map;
  */
 @Component("testInstance")
 public class TestInstanceSpring {
+    protected TestEnvironmentConfigSpring testEnvironmentConfig;
     protected AppConfig appConfig;
     protected WebDriver webDriver;
     protected WebDriverWait webDriverWait;
     protected JavascriptExecutor jsExecutor;
     protected Scenario currentScenario;
     protected StopWatch stopWatch = new StopWatch();
-    protected Logger logger = LogManager.getLogger();
-    //    @Autowired
-//    @Qualifier("work")
-    private TestEnvironmentConfigSpring testEnvironmentConfig;
     /*
      * Used to store temporary values that subsequent steps may later need. A good use case is storing a confirmation ID that comes from a form submission, and then retrieving it later to verify that
      * is appears on the screen to the user.
      */
-    private Map<String, String> tempMap = new HashMap<>();
-
-//    public TestInstanceSpring() {
-//        logger.info("in new con");
-//        logger.info("testEnvironmentConfig browserType->" + this.testEnvironmentConfig.getBrowserType());
-//     If test instance is extend this can be overridden to allow for custom loading of the application config
-//        this.loadApplicationConfig();
-//     If test instance is extended this can be overridden to allow for custom browser setup
-//        this.setupWebDriver();
-//        logger.info("done with TestInstanceSpring constructor");
-//    }
+    protected Map<String, String> tempMap = new HashMap<>();
+    private Logger logger = LogManager.getLogger();
 
     @Autowired
     public TestInstanceSpring(TestEnvironmentConfigSpring testEnvironmentConfig) {
         this.testEnvironmentConfig = testEnvironmentConfig;
-        logger.info("testEnvironmentConfig browserType->" + this.testEnvironmentConfig.getBrowserType());
-//        // If test instance is extend this can be overridden to allow for custom loading of the application config
-////        this.loadApplicationConfig();
-//        // If test instance is extended this can be overridden to allow for custom browser setup
-////        this.setupWebDriver();
-////        logger.info("done with TestInstanceSpring constructor");
+        // If test instance is extend this can be overridden to allow for custom loading of the application config
+        this.loadApplicationConfig();
+        // If test instance is extended this can be overridden to allow for custom browser setup
+        this.setupWebDriver();
+        logger.info("TestInstanceSpring constructor, browserType->" + this.testEnvironmentConfig.getBrowserType());
     }
 
-    /**
-     * @return the tempMap
-     */
-    public Map<String, String> getTempMap() {
-        return tempMap;
+    public TestEnvironmentConfigSpring getTestEnvironmentConfig() {
+        return testEnvironmentConfig;
     }
 
-    /**
-     * @return the appConfig
-     */
     public AppConfig getAppConfig() {
         return appConfig;
     }
 
-    /**
-     * @return the webDriver
-     */
     public WebDriver getWebDriver() {
         return webDriver;
     }
 
-    /**
-     * @return the webDriverWait
-     */
     public WebDriverWait getWebDriverWait() {
         return webDriverWait;
     }
 
-    /**
-     * @return the jsExecutor
-     */
     public JavascriptExecutor getJsExecutor() {
         return jsExecutor;
     }
 
-    /**
-     * @return the currentScenario
-     */
     public Scenario getCurrentScenario() {
         return currentScenario;
     }
 
-    /**
-     * @param currentScenario the currentScenario to set
-     */
     public void setCurrentScenario(Scenario currentScenario) {
         this.currentScenario = currentScenario;
     }
 
-    /**
-     * @return the stopWatch
-     */
     public StopWatch getStopWatch() {
         return stopWatch;
     }
 
-    /**
-     * @return the testEnvironmentConfigs
-     */
-    public TestEnvironmentConfigSpring getTestEnvironmentConfig() {
-        return testEnvironmentConfig;
+    public Map<String, String> getTempMap() {
+        return tempMap;
     }
 
     protected void loadApplicationConfig() {
@@ -145,8 +106,8 @@ public class TestInstanceSpring {
         switch (testEnvironmentConfig.getBrowserType()) {
             case phantomJS:
                 desiredCapabilities.setCapability(PhantomJSDriverService.PHANTOMJS_CLI_ARGS, new String[]{"--web-security=no", "--ignore-ssl-errors=yes", "--webdriver-loglevel=NONE"});
-//                desiredCapabilities.setCapability(PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY, "C:\\Users\\pcalouch\\Projects\\webdrivers\\phantomjs-2.1.1-windows\\bin\\phantomjs.exe");
-                desiredCapabilities.setCapability(PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY, "C:\\webdrivers\\phantomjs-2.1.1-windows\\bin\\phantomjs.exe");
+                //                desiredCapabilities.setCapability(PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY, "C:\\Users\\pcalouch\\Projects\\webdrivers\\phantomjs-2.1.1-windows\\bin\\phantomjs.exe");
+                //                desiredCapabilities.setCapability(PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY, "C:\\webdrivers\\phantomjs-2.1.1-windows\\bin\\phantomjs.exe");
                 webDriver = new PhantomJSDriver(desiredCapabilities);
                 break;
             case firefox:
