@@ -8,8 +8,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
-public class TestEnvironmentConfigSpring {
-    private static final Logger logger = LoggerFactory.getLogger(TestEnvironmentConfigSpring.class);
+public class TestEnvironmentConfig {
+    private static final Logger logger = LoggerFactory.getLogger(TestEnvironmentConfig.class);
     private final BrowserType browserType;
     private final int secondsToWait;
     private final String url;
@@ -17,17 +17,17 @@ public class TestEnvironmentConfigSpring {
     private final boolean screenshotOnScenarioCompletion;
 
     @Autowired
-    public TestEnvironmentConfigSpring(@Value("${browserType}") BrowserType browserType,
-                                       @Value("${secondsToWait}") int secondsToWait,
-                                       @Value("${url}") String url,
-                                       @Value("${screenshotBeforeClick}") boolean screenshotBeforeClick,
-                                       @Value("${screenshotOnScenarioCompletion}") boolean screenshotOnScenarioCompletion) {
+    public TestEnvironmentConfig(@Value("${browserType}") BrowserType browserType,
+                                 @Value("${secondsToWait}") int secondsToWait,
+                                 @Value("${url}") String url,
+                                 @Value("${screenshotBeforeClick}") boolean screenshotBeforeClick,
+                                 @Value("${screenshotOnScenarioCompletion}") boolean screenshotOnScenarioCompletion) {
         this.browserType = browserType;
         this.secondsToWait = secondsToWait;
         this.url = url;
         this.screenshotBeforeClick = screenshotBeforeClick;
         this.screenshotOnScenarioCompletion = screenshotOnScenarioCompletion;
-        logger.info("done with TestEnvironmentConfigSpring constructor");
+        logger.info("done with TestEnvironmentConfig constructor");
     }
 
 

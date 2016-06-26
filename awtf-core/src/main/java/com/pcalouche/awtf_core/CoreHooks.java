@@ -16,15 +16,16 @@ import java.util.concurrent.TimeUnit;
  *
  * @author Philip Calouche
  */
-@ContextConfiguration(classes = {AwtfCoreConfig.class})
-public class HooksSpring {
-    private static final Logger logger = LoggerFactory.getLogger(HooksSpring.class);
-    private final TestInstanceSpring testInstance;
-    //    private final CoreStepHandlerSpring coreStepHandler = ctx.getBean("coreStepHandler", CoreStepHandlerSpring.class);
+@ContextConfiguration(classes = {CoreConfig.class})
+public class CoreHooks {
+    private static final Logger logger = LoggerFactory.getLogger(CoreHooks.class);
+    protected final TestInstance testInstance;
+    protected final CoreStepHandler coreStepHandler;
 
     @Autowired
-    public HooksSpring(TestInstanceSpring testInstance) {
+    public CoreHooks(TestInstance testInstance, CoreStepHandler coreStepHandler) {
         this.testInstance = testInstance;
+        this.coreStepHandler = coreStepHandler;
         // Add a runtime shutdown hook to have the web driver quit when all tests are done
         //        Runtime.getRuntime().addShutdownHook(new Thread() {
         //            @Override
@@ -33,7 +34,7 @@ public class HooksSpring {
         //                testInstance.getWebDriver().quit();
         //            }
         //        });
-        logger.info("Done with HooksSpring constructor->" + this.testInstance.getTestEnvironmentConfig().getBrowserType());
+        logger.info("Done with CoreHooks constructor->" + this.testInstance.getTestEnvironmentConfig().getBrowserType());
     }
 
     @Before
@@ -74,9 +75,9 @@ public class HooksSpring {
             testInstance.getStopWatch().stop();
             logger.debug(String.format("Scenario: \"%s\" completed in %.3f seconds", scenario.getName(), testInstance.getStopWatch().getTime() / 1000.00));
             scenario.write(String.format("Completed in %.3f seconds.", testInstance.getStopWatch().getTime() / 1000.00));
-            //            if (testEnvironmentConfig.isScreenshotOnScenarioCompletion() || scenario.isFailed()) {
-            //                coreStepHandler.iTakeAScreenshot();
-            //            }
+            if (testInstance.getTestEnvironmentConfig().isScreenshotOnScenarioCompletion() || scenario.isFailed()) {
+                coreStepHandler.iTakeAScreenshot();
+            }
         } catch (Exception e) {
             logger.error("Failed to tearDown scenario", e);
         } finally {

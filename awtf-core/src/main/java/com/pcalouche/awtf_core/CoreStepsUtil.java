@@ -28,14 +28,14 @@ import static org.junit.Assert.*;
  * @author Philip Calouche
  */
 @Component("coreStepsUtil")
-public class StepsUtilSpring {
-    private static final Logger logger = LoggerFactory.getLogger(StepsUtilSpring.class);
-    private final TestInstanceSpring testInstance;
+public class CoreStepsUtil {
+    private static final Logger logger = LoggerFactory.getLogger(CoreStepsUtil.class);
+    protected final TestInstance testInstance;
 
     @Autowired
-    public StepsUtilSpring(TestInstanceSpring testInstance) {
+    public CoreStepsUtil(TestInstance testInstance) {
         this.testInstance = testInstance;
-        logger.info("Done with StepsUtilSpring constructor->" + testInstance.getTestEnvironmentConfig().getBrowserType());
+        logger.info("Done with CoreStepsUtil constructor->" + testInstance.getTestEnvironmentConfig().getBrowserType());
     }
 
     /**

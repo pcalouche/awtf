@@ -9,32 +9,33 @@
 
     <properties>
         <!-- Misc Properties -->
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
+        <java.version>1.8</java.version>
         <!-- Dependency Versions -->
         <awtf-core.version>1.0.4</awtf-core.version>
         <awtf-app-example.version>1.0.4</awtf-app-example.version>
-        <jackson.version>1.9.13</jackson.version>
+        <jackson.version>2.7.4</jackson.version><!-- Apr 2016 -->
         <!-- Plugin Versions -->
         <maven.compiler.version>3.3</maven.compiler.version><!-- Mar 2015 -->
         <maven.surefire.version>2.18.1</maven.surefire.version><!-- Dec 2014 -->
     </properties>
 
     <dependencies>
+        <!-- AWTF Core -->
         <dependency>
             <groupId>com.pcalouche</groupId>
             <artifactId>awtf-core</artifactId>
             <version>${awtf-core.version}</version>
         </dependency>
+        <!-- AWTF App Example -->
         <dependency>
             <groupId>com.pcalouche</groupId>
             <artifactId>awtf-app-example</artifactId>
             <version>${awtf-app-example.version}</version>
         </dependency>
+        <!-- Jackson Databind -->
         <dependency>
-            <groupId>org.codehaus.jackson</groupId>
-            <artifactId>jackson-mapper-asl</artifactId>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
             <version>${jackson.version}</version>
         </dependency>
     </dependencies>
@@ -46,8 +47,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>${maven.compiler.version}</version>
                 <configuration>
-                    <source>${maven.compiler.source}</source>
-                    <target>${maven.compiler.target}</target>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
                 </configuration>
             </plugin>
             <plugin>
@@ -64,8 +65,7 @@
                 </configuration>
             </plugin>
         </plugins>
-        <!-- Copy all features files from the projects you care about to this project
-            that you care about here. -->
+        <!-- Copy all features files from the projects you care about to this project that you care about here. -->
         <testResources>
             <testResource>
                 <directory>../awtf-core/src/test/resources/</directory>
@@ -82,7 +82,7 @@
                 </includes>
             </testResource>
             <testResource>
-                <directory>src/test/resources/awtfReport</directory>
+                <directory>src/main/resources/awtfReport</directory>
                 <targetPath>../awtfReport</targetPath>
             </testResource>
         </testResources>

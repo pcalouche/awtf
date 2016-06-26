@@ -1,32 +1,40 @@
 package com.pcalouche.awtf_app_example.stepDefinitions;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
+import com.pcalouche.awtf_app_example.MyAppStepHandler;
 import com.pcalouche.awtf_app_example.MyAppTestInstance;
-import com.pcalouche.awtf_core.TestInstance;
-
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * Step Definitions specific for my app
  *
  * @author Philip Calouche
- *
  */
+//@Component("myAppSteps")
 public class MyAppSteps {
-	private static Logger logger = LogManager.getLogger();
+    private static final Logger logger = LoggerFactory.getLogger(MyAppSteps.class);
+    private final MyAppTestInstance myAppTestInstance;
+    private final MyAppStepHandler myAppStepHandler;
 
-	@Given("^I go to the sign on page$")
-	public void iGoToTheDemoPage() {
-		logger.info("file:///" + System.getProperty("user.dir") + TestInstance.getTestEnvironmentConfig().getUrl());
-		MyAppTestInstance.getWebDriver().get("file:///" + System.getProperty("user.dir") + MyAppTestInstance.getTestEnvironmentConfig().getUrl());
-	}
+    @Autowired
+    public MyAppSteps(MyAppTestInstance myAppTestInstance, MyAppStepHandler myAppStepHandler) {
+        this.myAppTestInstance = myAppTestInstance;
+        this.myAppStepHandler = myAppStepHandler;
+        logger.info("end of MyAppSteps constructor");
+    }
 
-	@Then("^I sign into my application$")
-	public void iSignIntoMyApplication() {
-		MyAppTestInstance.getCoreStepHandler().iInputAs("Login ID", MyAppTestInstance.getMyAppTestEnvironmentConfig().getLoginID());
-		MyAppTestInstance.getCoreStepHandler().iInputAs("Password", MyAppTestInstance.getMyAppTestEnvironmentConfig().getPassword());
-	}
+    @Given("^I go to the sign on page$")
+    public void iGoToTheDemoPage() {
+        logger.info("file:///" + System.getProperty("user.dir") + myAppTestInstance.getTestEnvironmentConfig().getUrl());
+        myAppTestInstance.getWebDriver().get("file:///" + System.getProperty("user.dir") + myAppTestInstance.getTestEnvironmentConfig().getUrl());
+    }
+
+    @Then("^I sign into my application$")
+    public void iSignIntoMyApplication() {
+        myAppStepHandler.iInputAs("Login ID", myAppTestInstance.getMyAppTestEnvironmentConfig().getLoginID());
+        myAppStepHandler.iInputAs("Password", myAppTestInstance.getMyAppTestEnvironmentConfig().getPassword());
+    }
 }

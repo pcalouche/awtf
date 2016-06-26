@@ -24,18 +24,16 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 @Component("coreStepHandler")
-public class CoreStepHandlerSpring {
-    private static final Logger logger = LoggerFactory.getLogger(CoreStepHandlerSpring.class);
-    private final TestInstanceSpring testInstance;
-    private final StepsUtilSpring stepsUtil;
+public class CoreStepHandler {
+    private static final Logger logger = LoggerFactory.getLogger(CoreStepHandler.class);
+    private final TestInstance testInstance;
+    private final CoreStepsUtil stepsUtil;
 
     @Autowired
-    public CoreStepHandlerSpring(TestInstanceSpring testInstance, StepsUtilSpring stepsUtil) {
-        //    public CoreStepHandlerSpring(TestInstanceSpring testInstance, StepsUtilSpring stepsUtil) {
-        //    public CoreStepHandlerSpring(StepsUtilSpring stepsUtil) {
+    public CoreStepHandler(TestInstance testInstance, CoreStepsUtil stepsUtil) {
         this.testInstance = testInstance;
         this.stepsUtil = stepsUtil;
-        logger.info("Done with CoreStepHandlerSpring constructor->" + this.testInstance.getTestEnvironmentConfig().getBrowserType());
+        logger.info("Done with CoreStepHandler constructor->" + this.testInstance.getTestEnvironmentConfig().getBrowserType());
     }
 
     /**

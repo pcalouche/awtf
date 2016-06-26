@@ -1,6 +1,7 @@
 package com.pcalouche.awtf_core.stepDefinitions;
 
-import com.pcalouche.awtf_core.CoreStepHandlerSpring;
+import com.pcalouche.awtf_core.CoreStepHandler;
+import com.pcalouche.awtf_core.TestInstance;
 import com.pcalouche.awtf_core.util.enums.HTMLElementState;
 import cucumber.api.DataTable;
 import cucumber.api.java.en.Then;
@@ -15,131 +16,133 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 public class CoreSteps {
     private static final Logger logger = LoggerFactory.getLogger(CoreSteps.class);
-    private final CoreStepHandlerSpring stepHandler;
+    private final TestInstance testInstance;
+    private final CoreStepHandler coreStepHandler;
 
     @Autowired
-    public CoreSteps(CoreStepHandlerSpring stepHandler) {
-        this.stepHandler = stepHandler;
+    public CoreSteps(TestInstance testInstance, CoreStepHandler coreStepHandler) {
+        this.testInstance = testInstance;
+        this.coreStepHandler = coreStepHandler;
         logger.info("Done with CoreSteps constructor");
     }
 
     @Then("^I take a screenshot$")
     public void iTakeAScreenshot() {
-        stepHandler.iTakeAScreenshot();
+        coreStepHandler.iTakeAScreenshot();
     }
 
     @Then("^I click on \"(.*?)\"$")
     public void iClickOn(String text) throws Throwable {
-        stepHandler.iClickOn(text);
+        coreStepHandler.iClickOn(text);
     }
 
     @Then("^I input \"(.*?)\" as \"(.*?)\"$")
     public void iInputAs(String description, String value) {
-        stepHandler.iInputAs(description, value);
+        coreStepHandler.iInputAs(description, value);
     }
 
     @Then("^I \"(.*?)\" the \"(.*?)\" (?:radio button|checkbox)$")
     public void iTheRadioButtonCheckbox(String actionValue, String description) {
-        stepHandler.iTheRadioButtonCheckbox(actionValue, description);
+        coreStepHandler.iTheRadioButtonCheckbox(actionValue, description);
     }
 
     @Then("^I input \"(.*?)\" as value containing \"(.*?)\"$")
     public void iInputAsValueContaining(String description, String value) {
-        stepHandler.iInputAsValueContaining(description, value);
+        coreStepHandler.iInputAsValueContaining(description, value);
     }
 
     @Then("^I input \"(.*?)\" (\\d+) times? into \"(.*?)\"$")
     public void iInputTimesInto(String textString, int numberOfTimes, String description) {
-        stepHandler.iInputTimesInto(textString, numberOfTimes, description);
+        coreStepHandler.iInputTimesInto(textString, numberOfTimes, description);
     }
 
     @Then("^I input \"(.*?)\" range as \"(.*?)\" to \"(.*?)\"$")
     public void iInputRangeAsTo(String description, String startValue, String endValue) {
-        stepHandler.iInputRangeAsTo(description, startValue, endValue);
+        coreStepHandler.iInputRangeAsTo(description, startValue, endValue);
     }
 
     @Then("^I see \"(.*?)\" has value of \"(.*?)\"$")
     public void iSeeHasValueOf(String description, String value) {
-        stepHandler.iSeeHasValueOf(description, value);
+        coreStepHandler.iSeeHasValueOf(description, value);
     }
 
     @Then("^I see \"(.*?)\" has value containing \"(.*?)\"$")
     public void iSeeHasValueContaining(String description, String value) {
-        stepHandler.iSeeHasValueContaining(description, value);
+        coreStepHandler.iSeeHasValueContaining(description, value);
     }
 
     @Then("^I \"(.*?)\" \"(.*?)\" in the \"(.*?)\" dropdown$")
     public void iInTheDropdown(String action, String value, String description) {
-        stepHandler.iInTheDropdown(action, value, description);
+        coreStepHandler.iInTheDropdown(action, value, description);
     }
 
     @Then("^I \"(.*?)\" an option containing \"(.*?)\" in the \"(.*?)\" dropdown$")
     public void iAnOptionContainingInTheDropdown(String action, String value, String description) throws Throwable {
-        stepHandler.iAnOptionContainingInTheDropdown(action, value, description);
+        coreStepHandler.iAnOptionContainingInTheDropdown(action, value, description);
     }
 
     @Then("^I see \"(.*?)\" contains \"(.*?)\" (\\d+) times?$")
     public void iSeeContainsTimes(String description, String textString, int numberOfTimes) {
-        stepHandler.iSeeContainsTimes(description, textString, numberOfTimes);
+        coreStepHandler.iSeeContainsTimes(description, textString, numberOfTimes);
     }
 
     @Then("^I see the (?:message|label|text) \"(.*?)\"$")
     public void iSeeTheMessage(String searchString) {
-        stepHandler.iSeeTheMessage(searchString);
+        coreStepHandler.iSeeTheMessage(searchString);
     }
 
     @Then("^I do not see the (?:message|label|text) \"(.*?)\"$")
     public void iDoNotSeeTheMessage(String searchString) {
-        stepHandler.iDoNotSeeTheMessage(searchString);
+        coreStepHandler.iDoNotSeeTheMessage(searchString);
     }
 
     @Then("^I see the error message \"(.*?)\"$")
     public void iSeeTheErrorMessage(String errorMessage) {
-        stepHandler.iSeeTheErrorMessage(errorMessage);
+        coreStepHandler.iSeeTheErrorMessage(errorMessage);
     }
 
     @Then("^I do not see the error message \"(.*?)\"$")
     public void iDoNotSeeTheErrorMessage(String errorMessage) {
-        stepHandler.iDoNotSeeTheErrorMessage(errorMessage);
+        coreStepHandler.iDoNotSeeTheErrorMessage(errorMessage);
     }
 
     @Then("^I see the \"(.*?)\" element is \"(.*?)\"$")
     public void iSeeTheElementIs(String description, HTMLElementState htmlElementState) {
-        stepHandler.iSeeTheElementIs(description, htmlElementState);
+        coreStepHandler.iSeeTheElementIs(description, htmlElementState);
     }
 
     @Then("^I see the \"(.*?)\" button is \"(.*?)\"$")
     public void iSeeTheButtonIs(String buttonText, HTMLElementState htmlElementState) {
-        stepHandler.iSeeTheButtonIs(buttonText, htmlElementState);
+        coreStepHandler.iSeeTheButtonIs(buttonText, htmlElementState);
     }
 
     @Then("^I wait for all load masks to disappear$")
     public void iWaitForAllLoadMasksToDisappear() {
-        stepHandler.iWaitForAllLoadMasksToDisappear();
+        coreStepHandler.iWaitForAllLoadMasksToDisappear();
     }
 
     @Then("^I hover over \"([^\"]*)\"$")
     public void iHoverOver(String description) {
-        stepHandler.iHoverOver(description);
+        coreStepHandler.iHoverOver(description);
     }
 
     @Then("^I hover over the \"(.*?)\" tooltip element I see a tooltip that says \"(.*?)\"$")
     public void iHoverOverTheTooltipElementISeeATooltipThatSays(String tooltipDescription, String tooltipText) {
-        stepHandler.iHoverOverTheTooltipElementISeeATooltipThatSays(tooltipDescription, tooltipText);
+        coreStepHandler.iHoverOverTheTooltipElementISeeATooltipThatSays(tooltipDescription, tooltipText);
     }
 
     @Then("^I wait for the \"(.*?)\" modal to appear$")
     public void iWaitForTheModalToLoad(String modalDescription) {
-        stepHandler.iWaitForTheModalToAppear(modalDescription);
+        coreStepHandler.iWaitForTheModalToAppear(modalDescription);
     }
 
     @Then("^I wait for the \"(.*?)\" modal to disappear$")
     public void iWaitForTheModalToDisappear(String modalDescription) {
-        stepHandler.iWaitForTheModalToDisappear(modalDescription);
+        coreStepHandler.iWaitForTheModalToDisappear(modalDescription);
     }
 
     @Then("^I \"(.*?)\" the (?:row|rows) with the following criteria:$")
     public void iTheRowWithTheFollowingCriteria(String rowActionDescription, DataTable criteria) {
-        stepHandler.iTheRowWithTheFollowingCriteria(rowActionDescription, criteria);
+        coreStepHandler.iTheRowWithTheFollowingCriteria(rowActionDescription, criteria);
     }
 }

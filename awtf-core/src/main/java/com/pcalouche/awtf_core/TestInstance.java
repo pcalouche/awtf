@@ -4,8 +4,6 @@ import com.pcalouche.awtf_core.util.YamlHelper;
 import com.pcalouche.awtf_core.util.appConfig.AppConfig;
 import cucumber.api.Scenario;
 import org.apache.commons.lang3.time.StopWatch;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Point;
@@ -19,6 +17,8 @@ import org.openqa.selenium.phantomjs.PhantomJSDriverService;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.safari.SafariDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -31,8 +31,9 @@ import java.util.Map;
  * @author Philip Calouche
  */
 @Component("testInstance")
-public class TestInstanceSpring {
-    protected TestEnvironmentConfigSpring testEnvironmentConfig;
+public class TestInstance {
+    private static final Logger logger = LoggerFactory.getLogger(TestInstance.class);
+    protected final TestEnvironmentConfig testEnvironmentConfig;
     protected AppConfig appConfig;
     protected WebDriver webDriver;
     protected WebDriverWait webDriverWait;
@@ -44,19 +45,18 @@ public class TestInstanceSpring {
      * is appears on the screen to the user.
      */
     protected Map<String, String> tempMap = new HashMap<>();
-    private Logger logger = LogManager.getLogger();
 
     @Autowired
-    public TestInstanceSpring(TestEnvironmentConfigSpring testEnvironmentConfig) {
+    public TestInstance(TestEnvironmentConfig testEnvironmentConfig) {
         this.testEnvironmentConfig = testEnvironmentConfig;
         // If test instance is extend this can be overridden to allow for custom loading of the application config
         this.loadApplicationConfig();
         // If test instance is extended this can be overridden to allow for custom browser setup
         this.setupWebDriver();
-        logger.info("TestInstanceSpring constructor, browserType->" + this.testEnvironmentConfig.getBrowserType());
+        logger.info("TestInstance constructor, browserType->" + this.testEnvironmentConfig.getBrowserType());
     }
 
-    public TestEnvironmentConfigSpring getTestEnvironmentConfig() {
+    public TestEnvironmentConfig getTestEnvironmentConfig() {
         return testEnvironmentConfig;
     }
 

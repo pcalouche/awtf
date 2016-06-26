@@ -1,80 +1,30 @@
 package com.pcalouche.awtf_app_example;
 
-import com.pcalouche.awtf_core.TestEnvironmentConfig;
 import com.pcalouche.awtf_core.TestInstance;
-import com.pcalouche.awtf_core.YamlHelper;
-import com.pcalouche.awtf_core.util.appConfig.AppConfig;
-import org.apache.logging.log4j.LogManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 /**
  * This class demonstrates how TestInstance can be extended for your needs
  *
  * @author Philip Calouche
  */
+@Component("myAppTestInstance")
 public class MyAppTestInstance extends TestInstance {
-    // Objects like AppConfig or TestEnvironmentConfig could be extended with additional fields as needed or entirely new objects can be added here to suite your application's configuration needs.
-    protected static MyAppTestEnvironmentConfig myAppTestEnvironmentConfig;
-    protected static MyAppStepHandler myAppStepHandler;
-    protected static MyAppStepsUtil myAppStepsUtil;
+    private static final Logger logger = LoggerFactory.getLogger(MyAppTestInstance.class);
+    private final MyAppTestEnvironmentConfig myAppTestEnvironmentConfig;
 
-    public MyAppTestInstance() {
-        logger = LogManager.getLogger();
+    @Autowired
+    public MyAppTestInstance(MyAppTestEnvironmentConfig myAppTestEnvironmentConfig) {
+        super(myAppTestEnvironmentConfig);
+        this.myAppTestEnvironmentConfig = myAppTestEnvironmentConfig;
+        logger.info("MyAppTestInstance constructor, browserType->" + this.testEnvironmentConfig.getBrowserType());
     }
 
-    /**
-     * @return the myAppTestEnvironmentConfig
-     */
-    public static MyAppTestEnvironmentConfig getMyAppTestEnvironmentConfig() {
+    public MyAppTestEnvironmentConfig getMyAppTestEnvironmentConfig() {
         return myAppTestEnvironmentConfig;
-    }
-
-    /**
-     * @return the myAppStepHandler
-     */
-    public static MyAppStepHandler getMyAppStepHandler() {
-        return myAppStepHandler;
-    }
-
-    /**
-     * @param myAppStepHandler the myAppStepHandler to set
-     */
-    public static void setMyAppStepHandler(MyAppStepHandler myAppStepHandler) {
-        MyAppTestInstance.myAppStepHandler = myAppStepHandler;
-    }
-
-    /**
-     * @return the myAppStepsUtil
-     */
-    public static MyAppStepsUtil getMyAppStepsUtil() {
-        return myAppStepsUtil;
-    }
-
-    /**
-     * @param myAppStepsUtil the myAppStepsUtil to set
-     */
-    public static void setMyAppStepsUtil(MyAppStepsUtil myAppStepsUtil) {
-        MyAppTestInstance.myAppStepsUtil = myAppStepsUtil;
-    }
-
-    @Override
-    protected void loadTestEnvironmentConfig() {
-        String testEnvironment;
-        if (System.getProperty("testEnvironment") != null) {
-            testEnvironment = System.getProperty("testEnvironment");
-            logger.info("Test environment received from System Property as: " + testEnvironment);
-        } else if (System.getenv("testEnvironment") != null) {
-            testEnvironment = System.getenv("testEnvironment");
-            logger.info("Test environment received from Enviroment Variable as: " + testEnvironment);
-        } else {
-            logger.info("Test enviroment not specified in Command Line or Enviroment Variable, defaulting to localhost test environment");
-            testEnvironment = "localhost";
-        }
-
-        // Set this to keep the core framework happy
-        testEnvironmentConfig = (TestEnvironmentConfig) YamlHelper.loadFromInputStream(String.format("/yaml/testEnvironments/MyAppTestEnvironmentConfig.%s.yml", testEnvironment));
-        // Set this to get access to our extended version for use in our app's step definitions
-        myAppTestEnvironmentConfig = (MyAppTestEnvironmentConfig) testEnvironmentConfig;
-        appConfig = (AppConfig) YamlHelper.loadFromInputStream("/yaml/appConfig.yml");
     }
 
     @Override
