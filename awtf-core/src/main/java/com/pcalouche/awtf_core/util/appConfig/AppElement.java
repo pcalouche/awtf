@@ -1,5 +1,6 @@
 package com.pcalouche.awtf_core.util.appConfig;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.openqa.selenium.By;
 
 public class AppElement {
@@ -16,44 +17,26 @@ public class AppElement {
         this.locatorType = locatorType;
     }
 
-    /**
-     * @return the description
-     */
     public String getDescription() {
         return description;
     }
 
-    /**
-     * @param description the description to set
-     */
     public void setDescription(String description) {
         this.description = description;
     }
 
-    /**
-     * @return the locator
-     */
     public String getLocator() {
         return locator;
     }
 
-    /**
-     * @param locator the locator to set
-     */
     public void setLocator(String locator) {
         this.locator = locator;
     }
 
-    /**
-     * @return the locatorType
-     */
     public AppElementLocatorType getLocatorType() {
         return locatorType;
     }
 
-    /**
-     * @param locatorType the locatorType to set
-     */
     public void setLocatorType(AppElementLocatorType locatorType) {
         this.locatorType = locatorType;
     }
@@ -63,6 +46,7 @@ public class AppElement {
      *
      * @return the Selenium By Locator
      */
+    @JsonIgnore
     public By getByLocator() {
         switch (this.getLocatorType()) {
             case className:

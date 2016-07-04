@@ -1,9 +1,8 @@
 package com.pcalouche.awtf_app_example;
 
 import com.pcalouche.awtf_core.CoreStepsUtil;
-import com.pcalouche.awtf_core.TestInstance;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -14,11 +13,18 @@ import java.util.TimeZone;
  *
  * @author Philip Calouche
  */
-@Component("myAppStepsUtil")
 public class MyAppStepsUtil extends CoreStepsUtil {
-    @Autowired
-    public MyAppStepsUtil(TestInstance testInstance) {
-        super(testInstance);
+    private static final Logger logger = LoggerFactory.getLogger(MyAppStepsUtil.class);
+    private final MyAppTestInstance myAppTestInstance;
+
+    public MyAppStepsUtil(MyAppTestInstance myAppTestInstance) {
+        super(myAppTestInstance);
+        this.myAppTestInstance = myAppTestInstance;
+        logger.info("Done with MyAppStepsUtil constructor");
+    }
+
+    public MyAppTestInstance getMyAppTestInstance() {
+        return myAppTestInstance;
     }
 
     @Override
@@ -31,36 +37,36 @@ public class MyAppStepsUtil extends CoreStepsUtil {
             format.setTimeZone(TimeZone.getTimeZone("America/New_York"));
             returnText = returnText.replace("{MM/DD/YYYY}", format.format(Calendar.getInstance().getTime()));
             // Log to scenario to help with review
-            if (testInstance.getCurrentScenario() != null) {
-                testInstance.getCurrentScenario().write(String.format("%s is: %s<br>", "{MM/DD/YYYY}", format.format(Calendar.getInstance().getTime())));
+            if (myAppTestInstance.getCurrentScenario() != null) {
+                myAppTestInstance.getCurrentScenario().write(String.format("%s is: %s<br>", "{MM/DD/YYYY}", format.format(Calendar.getInstance().getTime())));
             }
         }
         if (returnText.contains("{Confirmation Code}")) {
-            returnText = returnText.replace("{Confirmation Code}", testInstance.getTempMap().get("lastConfirmationCode"));
+            returnText = returnText.replace("{Confirmation Code}", myAppTestInstance.getTempMap().get("lastConfirmationCode"));
             // Log to scenario to help with review
-            if (testInstance.getCurrentScenario() != null) {
-                testInstance.getCurrentScenario().write(String.format("%s is: %s<br>", "{Confirmation Code}", testInstance.getTempMap().get("lastConfirmationCode")));
+            if (myAppTestInstance.getCurrentScenario() != null) {
+                myAppTestInstance.getCurrentScenario().write(String.format("%s is: %s<br>", "{Confirmation Code}", myAppTestInstance.getTempMap().get("lastConfirmationCode")));
             }
         }
         if (returnText.contains("{Service Request ID}")) {
-            returnText = returnText.replace("{Service Request ID}", testInstance.getTempMap().get("lastServiceRequestID"));
+            returnText = returnText.replace("{Service Request ID}", myAppTestInstance.getTempMap().get("lastServiceRequestID"));
             // Log to scenario to help with review
-            if (testInstance.getCurrentScenario() != null) {
-                testInstance.getCurrentScenario().write(String.format("%s is: %s<br>", "{Service Request ID}", testInstance.getTempMap().get("lastServiceRequestID")));
+            if (myAppTestInstance.getCurrentScenario() != null) {
+                myAppTestInstance.getCurrentScenario().write(String.format("%s is: %s<br>", "{Service Request ID}", myAppTestInstance.getTempMap().get("lastServiceRequestID")));
             }
         }
         if (returnText.contains("{Requested Effective Date}")) {
-            returnText = returnText.replace("{Requested Effective Date}", testInstance.getTempMap().get("Requested Effective Date"));
+            returnText = returnText.replace("{Requested Effective Date}", myAppTestInstance.getTempMap().get("Requested Effective Date"));
             // Log to scenario to help with review
-            if (testInstance.getCurrentScenario() != null) {
-                testInstance.getCurrentScenario().write(String.format("%s is: %s<br>", "{Requested Effective Date}", testInstance.getTempMap().get("Requested Effective Date")));
+            if (myAppTestInstance.getCurrentScenario() != null) {
+                myAppTestInstance.getCurrentScenario().write(String.format("%s is: %s<br>", "{Requested Effective Date}", myAppTestInstance.getTempMap().get("Requested Effective Date")));
             }
         }
         if (returnText.contains("{Effective Date}")) {
-            returnText = returnText.replace("{Effective Date}", testInstance.getTempMap().get("Effective Date"));
+            returnText = returnText.replace("{Effective Date}", myAppTestInstance.getTempMap().get("Effective Date"));
             // Log to scenario to help with review
-            if (testInstance.getCurrentScenario() != null) {
-                testInstance.getCurrentScenario().write(String.format("%s is: %s<br>", "{Effective Date}", testInstance.getTempMap().get("Effective Date")));
+            if (myAppTestInstance.getCurrentScenario() != null) {
+                myAppTestInstance.getCurrentScenario().write(String.format("%s is: %s<br>", "{Effective Date}", myAppTestInstance.getTempMap().get("Effective Date")));
             }
         }
         return returnText;

@@ -1,8 +1,16 @@
 package com.pcalouche.awtf_core.util.appConfig;
 
-import com.pcalouche.awtf_core.util.YamlHelper;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pcalouche.awtf_core.util.enums.RowAction;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,9 +20,21 @@ import java.util.List;
  * @author Philip Calouche
  */
 public class AppConfigDriver {
+    private static final Logger logger = LoggerFactory.getLogger(AppConfigDriver.class);
+
     public static void main(String[] args) {
+        // Set this for your needs
+
+        Path outputDirectory = Paths.get("C:/Users/Philip Calouche/Documents/Projects/awtf/awtf-core/src/test/resources/appConfigs");
+        try {
+            Files.createDirectories(outputDirectory);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Path outputFile = outputDirectory.resolve("coreAppConfig.json");
+
+        // Create the AppConfig as needed
         AppConfig appConfig = new AppConfig();
-        YamlHelper.printToScreen(appConfig);
         // Global Locators
         appConfig.setLoadingIndicatorLocator(new AppElement("Loading Locator", ".load-mask-large, .load-mask-medium, .load-mask-small", AppElementLocatorType.css));
         appConfig.setModalLocator(new AppElement("Modal Locator", "//*[contains(@class,'modal')]", AppElementLocatorType.xpath));
@@ -30,10 +50,10 @@ public class AppConfigDriver {
         appWebElements.add(new AppElement("Web Design Menu Item", "Web Design", AppElementLocatorType.linkText));
         // Modals
         appWebElements.add(new Modal("Test", "#testModal", AppElementLocatorType.css));
+        appConfig.setAppWebElements(appWebElements);
         // Elements with Tooltip
         appWebElements.add(new ElementWithTooltip("Info Icon", ".info-icon", AppElementLocatorType.css, "#infoIconTooltip", AppElementLocatorType.css));
         appWebElements.add(new ElementWithTooltip("Help Icon", ".help-icon", AppElementLocatorType.css, "#helpIconTooltip", AppElementLocatorType.css));
-        appConfig.setAppWebElements(appWebElements);
         // Row Action Definitions - Note framework currently requires these to be of type xpath, and they must be relative to a table row
         List<RowActionDefinition> rowActionDefinitions = new ArrayList<>();
         rowActionDefinitions.add(new RowActionDefinition("select", ".//input[@type='checkbox' or @type='radio']", AppElementLocatorType.xpath, RowAction.SELECT));
@@ -55,8 +75,25 @@ public class AppConfigDriver {
         appConfig.setErrorMessageClasses(errorMessageClasses);
         // Set the location of the message bundle
         appConfig.setMessageBundleLocation("messages_en");
-        // Finally print the result and write the file out to the required location
-        YamlHelper.printToScreen(appConfig);
-        YamlHelper.writeToFile(appConfig, System.getProperty("user.dir") + "\\src\\test\\resources\\yaml\\appConfig.yml");
+
+        // Finally write the result to file and printer it back out for testing purposes
+        try (
+                BufferedWriter bufferedWriter = Files.newBufferedWriter(outputFile)
+        ) {
+            ObjectMapper objectMapper = new ObjectMapper();
+            objectMapper.enableDefaultTyping(ObjectMapper.DefaultTyping.NON_FINAL);
+            objectMapper.writerWithDefaultPrettyPrinter().writeValue(bufferedWriter, appConfig);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        try (BufferedReader bufferedReader = Files.newBufferedReader(outputFile)) {
+            ObjectMapper objectMapper = new ObjectMapper();
+            objectMapper.enableDefaultTyping(ObjectMapper.DefaultTyping.NON_FINAL);
+            AppConfig appConfigFromFile = objectMapper.readValue(bufferedReader, AppConfig.class);
+            logger.info(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(appConfigFromFile));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

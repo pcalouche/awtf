@@ -3,11 +3,7 @@ package com.pcalouche.awtf_core;
 import com.pcalouche.awtf_core.util.enums.BrowserType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 
-@Component
 public class TestEnvironmentConfig {
     private static final Logger logger = LoggerFactory.getLogger(TestEnvironmentConfig.class);
     private final BrowserType browserType;
@@ -16,12 +12,8 @@ public class TestEnvironmentConfig {
     private final boolean screenshotBeforeClick;
     private final boolean screenshotOnScenarioCompletion;
 
-    @Autowired
-    public TestEnvironmentConfig(@Value("${browserType}") BrowserType browserType,
-                                 @Value("${secondsToWait}") int secondsToWait,
-                                 @Value("${url}") String url,
-                                 @Value("${screenshotBeforeClick}") boolean screenshotBeforeClick,
-                                 @Value("${screenshotOnScenarioCompletion}") boolean screenshotOnScenarioCompletion) {
+    public TestEnvironmentConfig(BrowserType browserType, int secondsToWait, String url,
+                                 boolean screenshotBeforeClick, boolean screenshotOnScenarioCompletion) {
         this.browserType = browserType;
         this.secondsToWait = secondsToWait;
         this.url = url;
@@ -29,7 +21,6 @@ public class TestEnvironmentConfig {
         this.screenshotOnScenarioCompletion = screenshotOnScenarioCompletion;
         logger.info("done with TestEnvironmentConfig constructor");
     }
-
 
     public BrowserType getBrowserType() {
         return browserType;

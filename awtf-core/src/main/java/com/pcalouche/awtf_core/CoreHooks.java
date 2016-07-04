@@ -19,13 +19,15 @@ import java.util.concurrent.TimeUnit;
 @ContextConfiguration(classes = {CoreConfig.class})
 public class CoreHooks {
     private static final Logger logger = LoggerFactory.getLogger(CoreHooks.class);
-    protected final TestInstance testInstance;
-    protected final CoreStepHandler coreStepHandler;
+    private final CoreStepHandler coreStepHandler;
+    private final TestInstance testInstance;
+    private final TestEnvironmentConfig testEnvironmentConfig;
 
     @Autowired
-    public CoreHooks(TestInstance testInstance, CoreStepHandler coreStepHandler) {
-        this.testInstance = testInstance;
+    public CoreHooks(CoreStepHandler coreStepHandler) {
         this.coreStepHandler = coreStepHandler;
+        this.testInstance = coreStepHandler.getTestInstance();
+        this.testEnvironmentConfig = coreStepHandler.getTestInstance().getTestEnvironmentConfig();
         // Add a runtime shutdown hook to have the web driver quit when all tests are done
         //        Runtime.getRuntime().addShutdownHook(new Thread() {
         //            @Override
@@ -34,16 +36,16 @@ public class CoreHooks {
         //                testInstance.getWebDriver().quit();
         //            }
         //        });
-        logger.info("Done with CoreHooks constructor->" + this.testInstance.getTestEnvironmentConfig().getBrowserType());
+        logger.info("Done with CoreHooks constructor->" + testEnvironmentConfig.getBrowserType());
     }
 
     @Before
     public void setup(Scenario scenario) {
         // Always check if a the web driver wait needs to be changed from the default for a scenario based on its tags. Also reset the stop watch and current scenario.
         try {
-            logger.info("in  setup " + this.testInstance.getTestEnvironmentConfig().getBrowserType());
+            logger.info("in CoreHooks setup");
             // Set seconds to wait. Will use what is in the default Test Environment Config if wait tag is not found
-            int secondsToWait = this.testInstance.getTestEnvironmentConfig().getSecondsToWait();
+            int secondsToWait = testEnvironmentConfig.getSecondsToWait();
             boolean displayWaitTag = false;
             for (WaitTag waitTag : WaitTag.values()) {
                 if (scenario.getSourceTagNames().contains(waitTag.getTagName())) {
@@ -69,7 +71,7 @@ public class CoreHooks {
 
     @After
     public void tearDown(Scenario scenario) {
-        logger.info("in  tearDown " + this.testInstance.getTestEnvironmentConfig().getBrowserType());
+        logger.info("in CoreHooks tearDown");
         // Stop the stop watch and take a final screenshot of configured to do so
         try {
             testInstance.getStopWatch().stop();
@@ -89,8 +91,7 @@ public class CoreHooks {
      * Do something to reset the page to a known state versus just quitting the web driver. In the case of the static demo web page used in the core framework for testing that is refreshing the page.
      * In an actual web application you may want to do a logout. This can be overridden in your hooks class.
      */
-
-    protected void readyWebAppForNextScenario() {
+    private void readyWebAppForNextScenario() {
         testInstance.getWebDriver().navigate().refresh();
     }
 }

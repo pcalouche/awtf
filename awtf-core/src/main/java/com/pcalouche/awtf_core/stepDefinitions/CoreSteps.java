@@ -1,7 +1,6 @@
 package com.pcalouche.awtf_core.stepDefinitions;
 
 import com.pcalouche.awtf_core.CoreStepHandler;
-import com.pcalouche.awtf_core.TestInstance;
 import com.pcalouche.awtf_core.util.enums.HTMLElementState;
 import cucumber.api.DataTable;
 import cucumber.api.java.en.Then;
@@ -16,12 +15,10 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 public class CoreSteps {
     private static final Logger logger = LoggerFactory.getLogger(CoreSteps.class);
-    private final TestInstance testInstance;
     private final CoreStepHandler coreStepHandler;
 
     @Autowired
-    public CoreSteps(TestInstance testInstance, CoreStepHandler coreStepHandler) {
-        this.testInstance = testInstance;
+    public CoreSteps(CoreStepHandler coreStepHandler) {
         this.coreStepHandler = coreStepHandler;
         logger.info("Done with CoreSteps constructor");
     }

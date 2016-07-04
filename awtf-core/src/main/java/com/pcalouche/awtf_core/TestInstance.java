@@ -1,6 +1,6 @@
 package com.pcalouche.awtf_core;
 
-import com.pcalouche.awtf_core.util.YamlHelper;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pcalouche.awtf_core.util.appConfig.AppConfig;
 import cucumber.api.Scenario;
 import org.apache.commons.lang3.time.StopWatch;
@@ -19,9 +19,10 @@ import org.openqa.selenium.safari.SafariDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.core.io.ClassPathResource;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,7 +31,6 @@ import java.util.Map;
  *
  * @author Philip Calouche
  */
-@Component("testInstance")
 public class TestInstance {
     private static final Logger logger = LoggerFactory.getLogger(TestInstance.class);
     protected final TestEnvironmentConfig testEnvironmentConfig;
@@ -46,7 +46,6 @@ public class TestInstance {
      */
     protected Map<String, String> tempMap = new HashMap<>();
 
-    @Autowired
     public TestInstance(TestEnvironmentConfig testEnvironmentConfig) {
         this.testEnvironmentConfig = testEnvironmentConfig;
         // If test instance is extend this can be overridden to allow for custom loading of the application config
@@ -93,7 +92,13 @@ public class TestInstance {
     }
 
     protected void loadApplicationConfig() {
-        this.appConfig = (AppConfig) YamlHelper.loadFromInputStream("/yaml/appConfig.yml");
+        try (InputStream inputStream = new ClassPathResource("appConfigs/coreAppConfig.json").getInputStream()) {
+            ObjectMapper objectMapper = new ObjectMapper();
+            objectMapper.enableDefaultTyping(ObjectMapper.DefaultTyping.NON_FINAL);
+            this.appConfig = objectMapper.readValue(inputStream, AppConfig.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     protected void setupWebDriver() {
@@ -106,8 +111,6 @@ public class TestInstance {
         switch (testEnvironmentConfig.getBrowserType()) {
             case phantomJS:
                 desiredCapabilities.setCapability(PhantomJSDriverService.PHANTOMJS_CLI_ARGS, new String[]{"--web-security=no", "--ignore-ssl-errors=yes", "--webdriver-loglevel=NONE"});
-                //                desiredCapabilities.setCapability(PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY, "C:\\Users\\pcalouch\\Projects\\webdrivers\\phantomjs-2.1.1-windows\\bin\\phantomjs.exe");
-                //                desiredCapabilities.setCapability(PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY, "C:\\webdrivers\\phantomjs-2.1.1-windows\\bin\\phantomjs.exe");
                 webDriver = new PhantomJSDriver(desiredCapabilities);
                 break;
             case firefox:

@@ -13,8 +13,6 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -27,15 +25,17 @@ import static org.junit.Assert.*;
  *
  * @author Philip Calouche
  */
-@Component("coreStepsUtil")
 public class CoreStepsUtil {
     private static final Logger logger = LoggerFactory.getLogger(CoreStepsUtil.class);
-    protected final TestInstance testInstance;
+    private final TestInstance testInstance;
 
-    @Autowired
     public CoreStepsUtil(TestInstance testInstance) {
         this.testInstance = testInstance;
-        logger.info("Done with CoreStepsUtil constructor->" + testInstance.getTestEnvironmentConfig().getBrowserType());
+        logger.info("Done with CoreStepsUtil constructor");
+    }
+
+    public TestInstance getTestInstance() {
+        return testInstance;
     }
 
     /**

@@ -15,25 +15,27 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-@Component("coreStepHandler")
 public class CoreStepHandler {
     private static final Logger logger = LoggerFactory.getLogger(CoreStepHandler.class);
-    private final TestInstance testInstance;
     private final CoreStepsUtil stepsUtil;
+    private final TestInstance testInstance;
+    private final TestEnvironmentConfig testEnvironmentConfig;
 
-    @Autowired
-    public CoreStepHandler(TestInstance testInstance, CoreStepsUtil stepsUtil) {
-        this.testInstance = testInstance;
+    public CoreStepHandler(CoreStepsUtil stepsUtil) {
         this.stepsUtil = stepsUtil;
-        logger.info("Done with CoreStepHandler constructor->" + this.testInstance.getTestEnvironmentConfig().getBrowserType());
+        this.testInstance = stepsUtil.getTestInstance();
+        this.testEnvironmentConfig = stepsUtil.getTestInstance().getTestEnvironmentConfig();
+        logger.info("Done with CoreStepHandler constructor->" + testEnvironmentConfig.getBrowserType());
+    }
+
+    public TestInstance getTestInstance() {
+        return testInstance;
     }
 
     /**
@@ -49,7 +51,7 @@ public class CoreStepHandler {
      * @param text the text of the link or button
      */
     public void iClickOn(String text) {
-        if (this.testInstance.getTestEnvironmentConfig().isScreenshotBeforeClick()) {
+        if (testEnvironmentConfig.isScreenshotBeforeClick()) {
             stepsUtil.takeAScreenShot();
         }
         // Determine what parent locator to use based on what is currently displayed on the UI
@@ -361,8 +363,7 @@ public class CoreStepHandler {
      * @param modalDescription the description of the modal to use
      */
     public void iWaitForTheModalToAppear(String modalDescription) {
-        // Lookup the modal from the app configuration to find out how to locate
-        // it
+        // Lookup the modal from the app configuration to find out how to locate it
         Modal modal = (Modal) testInstance.getAppConfig().findAppWebElement(modalDescription, Modal.class);
         if (modal == null) {
             fail(String.format("Bad modal description.  Valid descriptions are: %s", testInstance.getAppConfig().getValidKnownDescriptions(Modal.class)));
@@ -378,8 +379,7 @@ public class CoreStepHandler {
      * @param modalDescription the description of the modal to use
      */
     public void iWaitForTheModalToDisappear(String modalDescription) {
-        // Lookup the modal from the app configuration to find out how to locate
-        // it
+        // Lookup the modal from the app configuration to find out how to locate it
         Modal modal = (Modal) testInstance.getAppConfig().findAppWebElement(modalDescription, Modal.class);
         if (modal == null) {
             fail(String.format("Bad modal description.  Valid descriptions are: %s", testInstance.getAppConfig().getValidKnownDescriptions(Modal.class)));
@@ -421,7 +421,7 @@ public class CoreStepHandler {
             case CLICK:
                 actionableRowElements = stepsUtil.findActionableRowElements(rowAction, criteria, null);
                 assertTrue("No matching rows found", !actionableRowElements.isEmpty());
-                if (this.testInstance.getTestEnvironmentConfig().isScreenshotBeforeClick()) {
+                if (testEnvironmentConfig.isScreenshotBeforeClick()) {
                     stepsUtil.takeAScreenShot();
                 }
                 for (WebElement actionableRowElement : actionableRowElements) {

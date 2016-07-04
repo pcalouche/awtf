@@ -1,7 +1,12 @@
 package com.pcalouche.awtf_core.util.appConfig;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 public class ElementWithTooltip extends AppElement {
+    private String tooltipLocator;
+    private AppElementLocatorType tooltipLocatorType;
     private AppElement tooltipElement;
+
 
     public ElementWithTooltip() {
         super();
@@ -10,20 +15,31 @@ public class ElementWithTooltip extends AppElement {
     public ElementWithTooltip(String description, String locator, AppElementLocatorType locatorType,
                               String tooltipLocator, AppElementLocatorType tooltipLocatorType) {
         super(description, locator, locatorType);
-        this.tooltipElement = new AppElement(null, tooltipLocator, tooltipLocatorType);
+        this.tooltipLocator = tooltipLocator;
+        this.tooltipLocatorType = tooltipLocatorType;
     }
 
-    /**
-     * @return the tooltipElement
-     */
+    public String getTooltipLocator() {
+        return tooltipLocator;
+    }
+
+    public void setTooltipLocator(String tooltipLocator) {
+        this.tooltipLocator = tooltipLocator;
+    }
+
+    public AppElementLocatorType getTooltipLocatorType() {
+        return tooltipLocatorType;
+    }
+
+    public void setTooltipLocatorType(AppElementLocatorType tooltipLocatorType) {
+        this.tooltipLocatorType = tooltipLocatorType;
+    }
+
+    @JsonIgnore
     public AppElement getTooltipElement() {
+        if (this.tooltipElement == null) {
+            this.tooltipElement = new AppElement(null, tooltipLocator, tooltipLocatorType);
+        }
         return tooltipElement;
-    }
-
-    /**
-     * @param tooltipElement the tooltipElement to set
-     */
-    public void setTooltipElement(AppElement tooltipElement) {
-        this.tooltipElement = tooltipElement;
     }
 }
