@@ -31,7 +31,6 @@ public enum WaitTag {
                 return waitTag;
             }
         }
-        // Return null if we get here
         return null;
     }
 
@@ -43,16 +42,10 @@ public enum WaitTag {
         return StringUtils.join(validTagNames, ", ");
     }
 
-    /**
-     * @return the tagName
-     */
     public String getTagName() {
         return tagName;
     }
 
-    /**
-     * @return the secondsToWait
-     */
     public int getSecondsToWait() {
         return secondsToWait;
     }

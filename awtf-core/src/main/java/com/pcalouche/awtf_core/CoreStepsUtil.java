@@ -13,6 +13,8 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -28,6 +30,8 @@ import static org.junit.Assert.*;
 public class CoreStepsUtil {
     private static final Logger logger = LoggerFactory.getLogger(CoreStepsUtil.class);
     private final TestInstance testInstance;
+    @Autowired
+    private Environment environment;
 
     public CoreStepsUtil(TestInstance testInstance) {
         this.testInstance = testInstance;
@@ -688,7 +692,10 @@ public class CoreStepsUtil {
         String returnText = null;
         // See if message needs to pulled from resource bundle or not
         if (text.startsWith("[") && text.endsWith("]")) {
-            returnText = testInstance.getAppConfig().getMessageBundle().getString(text.substring(1, text.length() - 1));
+            logger.info(text);
+            logger.info(text.substring(1, text.length() - 1));
+            logger.info(environment.getProperty(text.substring(1, text.length() - 1)));
+            returnText = environment.getProperty(text.substring(1, text.length() - 1));
             // Log to scenario to help with review
             if (testInstance.getCurrentScenario() != null) {
                 testInstance.getCurrentScenario().write(String.format("%s is: %s<br>", text, returnText));

@@ -1,13 +1,11 @@
 package com.pcalouche.awtf_core.util.appConfig;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.pcalouche.awtf_core.util.enums.RowAction;
 import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.WebElement;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.ResourceBundle;
 
 public class AppConfig {
     private AppElement loadingIndicatorLocator;
@@ -16,8 +14,6 @@ public class AppConfig {
     private List<AppElement> appWebElements = new ArrayList<>();
     private List<RowActionDefinition> rowActionDefinitions = new ArrayList<>();
     private List<String> errorMessageClasses = new ArrayList<>();
-    private String messageBundleLocation;
-    private ResourceBundle messageBundle;
 
     public AppConfig() {
     }
@@ -70,22 +66,6 @@ public class AppConfig {
         this.errorMessageClasses = errorMessageClasses;
     }
 
-    public String getMessageBundleLocation() {
-        return messageBundleLocation;
-    }
-
-    public void setMessageBundleLocation(String messageBundleLocation) {
-        this.messageBundleLocation = messageBundleLocation;
-    }
-
-    @JsonIgnore
-    public ResourceBundle getMessageBundle() {
-        if (messageBundle == null && messageBundleLocation != null) {
-            messageBundle = ResourceBundle.getBundle(messageBundleLocation);
-        }
-        return messageBundle;
-    }
-
     public AppElement findAppWebElement(String description) {
         return findAppWebElement(description, null);
     }
@@ -112,7 +92,6 @@ public class AppConfig {
         return foundRowActionLocator;
     }
 
-    @JsonIgnore
     public String getValidKnownDescriptions(Class<?> clazz) {
         List<String> descriptions = new ArrayList<>();
         for (AppElement appWebElement : appWebElements) {

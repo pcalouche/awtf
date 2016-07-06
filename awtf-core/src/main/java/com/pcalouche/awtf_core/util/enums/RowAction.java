@@ -35,7 +35,6 @@ public enum RowAction {
                 return rowAction;
             }
         }
-        // Return null if we get here
         return null;
     }
 

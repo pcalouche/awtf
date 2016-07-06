@@ -1,6 +1,7 @@
 package com.pcalouche.awtf_app_example;
 
 import com.pcalouche.awtf_core.TestInstance;
+import com.pcalouche.awtf_core.util.appConfig.AppConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,20 +14,14 @@ public class MyAppTestInstance extends TestInstance {
     private static final Logger logger = LoggerFactory.getLogger(MyAppTestInstance.class);
     private final MyAppTestEnvironmentConfig myAppTestEnvironmentConfig;
 
-    public MyAppTestInstance(MyAppTestEnvironmentConfig myAppTestEnvironmentConfig) {
-        super(myAppTestEnvironmentConfig);
+    public MyAppTestInstance(MyAppTestEnvironmentConfig myAppTestEnvironmentConfig, AppConfig appConfig) {
+        super(myAppTestEnvironmentConfig, appConfig);
         this.myAppTestEnvironmentConfig = myAppTestEnvironmentConfig;
-        logger.info("MyAppTestInstance constructor, browserType->" + this.testEnvironmentConfig.getBrowserType());
+        logger.info("MyAppTestInstance constructor, browserType->" + this.getMyAppTestEnvironmentConfig().getBrowserType());
     }
 
     public MyAppTestEnvironmentConfig getMyAppTestEnvironmentConfig() {
         return myAppTestEnvironmentConfig;
-    }
-
-    @Override
-    protected void loadApplicationConfig() {
-        // Just calling super here, but this can be completely changed to do whatever you need
-        super.loadApplicationConfig();
     }
 
     @Override

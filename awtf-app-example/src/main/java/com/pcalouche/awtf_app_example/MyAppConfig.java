@@ -1,5 +1,8 @@
 package com.pcalouche.awtf_app_example;
 
+import com.pcalouche.awtf_core.util.appConfig.AppConfig;
+import com.pcalouche.awtf_core.util.appConfig.AppElement;
+import com.pcalouche.awtf_core.util.appConfig.AppElementLocatorType;
 import com.pcalouche.awtf_core.util.enums.BrowserType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,7 +14,6 @@ import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.env.Environment;
 
 @Configuration
-//@ComponentScan(basePackages = {"com.pcalouche.awtf_app_example"})
 @PropertySource("classpath:/testEnvironmentConfigs/test_environment_config.${testEnvironment:localhost2}.properties")
 @PropertySource("classpath:/messages_en.properties")
 public class MyAppConfig {
@@ -26,9 +28,20 @@ public class MyAppConfig {
     }
 
     @Bean
+    public AppConfig appConfig() {
+        logger.info("in appConfig bean for MyAppConfig");
+        AppConfig appConfig = new AppConfig();
+        // Global Locators
+        appConfig.setLoadingIndicatorLocator(new AppElement("Loading Locator", ".load-mask-large, .load-mask-medium, .load-mask-small", AppElementLocatorType.css));
+        appConfig.setModalLocator(new AppElement("Modal Locator", "//*[contains(@class,'modal')]", AppElementLocatorType.xpath));
+        appConfig.setTooltipLocator(new AppElement("Tooltip Locator", ".//*[contains(@class, 'tooltip')]", AppElementLocatorType.xpath));
+        return appConfig;
+    }
+
+    @Bean
     public MyAppTestInstance myAppTestInstance() {
-        logger.info("in myAppTestInstance bean ");
-        return new MyAppTestInstance(myAppTestEnvironmentConfig());
+        logger.info("in myAppTestInstance bean");
+        return new MyAppTestInstance(myAppTestEnvironmentConfig(), appConfig());
     }
 
     @Bean
@@ -45,9 +58,6 @@ public class MyAppConfig {
 
     private MyAppTestEnvironmentConfig myAppTestEnvironmentConfig() {
         logger.info("In MyAppConfig myAppTestEnvironmentConfig");
-        logger.info("browserType from env->" + environment.getProperty("browserType"));
-        logger.info("disclaimer1 from env->" + environment.getProperty("disclaimer1"));
-        logger.info("welcomeText from env->" + environment.getProperty("welcomeText"));
         BrowserType browserType = BrowserType.valueOf(environment.getProperty("browserType"));
         int secondsToWait = Integer.valueOf(environment.getProperty("secondsToWait"));
         String url = environment.getProperty("url");
@@ -55,8 +65,7 @@ public class MyAppConfig {
         boolean screenshotOnScenarioCompletion = Boolean.valueOf(environment.getProperty("screenshotOnScenarioCompletion"));
         String loginID = environment.getProperty("loginID");
         String password = environment.getProperty("password");
-        return new MyAppTestEnvironmentConfig(browserType, secondsToWait, url, screenshotBeforeClick,
-                screenshotOnScenarioCompletion, loginID, password);
+        return new MyAppTestEnvironmentConfig(browserType, secondsToWait, url, screenshotBeforeClick, screenshotOnScenarioCompletion, loginID, password);
     }
 
 }
