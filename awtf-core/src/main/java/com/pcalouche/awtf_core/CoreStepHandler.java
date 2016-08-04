@@ -6,7 +6,9 @@ import com.pcalouche.awtf_core.util.appConfig.Modal;
 import com.pcalouche.awtf_core.util.enums.HTMLElementState;
 import com.pcalouche.awtf_core.util.enums.HTMLFormElement;
 import com.pcalouche.awtf_core.util.enums.RowAction;
+import com.pcalouche.awtf_core.util.enums.WaitTag;
 import cucumber.api.DataTable;
+import cucumber.api.Scenario;
 import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
@@ -17,25 +19,77 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 public class CoreStepHandler {
     private static final Logger logger = LoggerFactory.getLogger(CoreStepHandler.class);
-    private final CoreStepsUtil stepsUtil;
-    private final TestInstance testInstance;
     private final TestEnvironmentConfig testEnvironmentConfig;
+    private final TestInstance testInstance;
+    private final CoreStepsUtil stepsUtil;
 
-    public CoreStepHandler(CoreStepsUtil stepsUtil) {
+//    public CoreStepHandler(CoreStepsUtil stepsUtil) {
+//        this.stepsUtil = stepsUtil;
+//        this.testInstance = stepsUtil.getTestInstance();
+//        this.testEnvironmentConfig = stepsUtil.getTestInstance().getTestEnvironmentConfig();
+//    }
+
+    public CoreStepHandler(TestEnvironmentConfig testEnvironmentConfig,
+                           TestInstance testInstance,
+                           CoreStepsUtil stepsUtil) {
+        this.testEnvironmentConfig = testEnvironmentConfig;
+        this.testInstance = testInstance;
         this.stepsUtil = stepsUtil;
-        this.testInstance = stepsUtil.getTestInstance();
-        this.testEnvironmentConfig = stepsUtil.getTestInstance().getTestEnvironmentConfig();
-        logger.info("Done with CoreStepHandler constructor->" + testEnvironmentConfig.getBrowserType());
     }
 
     public TestInstance getTestInstance() {
         return testInstance;
+    }
+
+    protected void handleScenarioSetup(Scenario scenario) {
+        // Set the currentScenario of the test instance, so it can be used if needed
+        testInstance.setCurrentScenario(scenario);
+        // Always check if a the web driver wait needs to be changed from the default for a scenario based on its tags. Also reset the stop watch and current scenario.
+        try {
+            // Set seconds to wait. Will use what is in the default Test Environment Config if wait tag is not found
+            int secondsToWait = testEnvironmentConfig.getSecondsToWait();
+            boolean displayWaitTag = false;
+            for (WaitTag waitTag : WaitTag.values()) {
+                if (scenario.getSourceTagNames().contains(waitTag.getTagName())) {
+                    displayWaitTag = true;
+                    secondsToWait = waitTag.getSecondsToWait();
+                    break;
+                }
+            }
+            // Update the web driver wait time for the scenario
+            testInstance.getWebDriverWait().withTimeout(secondsToWait, TimeUnit.SECONDS);
+            testInstance.getStopWatch().reset();
+            testInstance.getStopWatch().start();
+            logger.info(String.format("Starting Scenario: \"%s\"", scenario.getName()));
+            if (displayWaitTag) {
+                logger.info(String.format("Wait Tag was set to: %d seconds based on given tag.", secondsToWait));
+            }
+        } catch (Exception e) {
+            logger.error("Failed to initialize scenario", e);
+            this.handleScenarioTearDown(scenario);
+        }
+    }
+
+    protected void handleScenarioTearDown(Scenario scenario) {
+        try {
+            testInstance.getStopWatch().stop();
+            logger.info(String.format("Scenario: \"%s\" completed in %.3f seconds", scenario.getName(), testInstance.getStopWatch().getTime() / 1000.0));
+            testInstance.getCurrentScenario().write(String.format("Completed in %.3f seconds.", testInstance.getStopWatch().getTime() / 1000.0));
+            if (testEnvironmentConfig.isScreenshotOnScenarioCompletion() || scenario.isFailed()) {
+                iTakeAScreenshot();
+            }
+        } catch (Exception e) {
+            logger.error("Failed to tearDown scenario", e);
+        } finally {
+            testInstance.getWebDriver().navigate().refresh();
+        }
     }
 
     /**

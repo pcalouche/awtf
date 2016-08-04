@@ -17,7 +17,6 @@ public class MyAppTestInstance extends TestInstance {
     public MyAppTestInstance(MyAppTestEnvironmentConfig myAppTestEnvironmentConfig, AppConfig appConfig) {
         super(myAppTestEnvironmentConfig, appConfig);
         this.myAppTestEnvironmentConfig = myAppTestEnvironmentConfig;
-        logger.info("MyAppTestInstance constructor, browserType->" + this.getMyAppTestEnvironmentConfig().getBrowserType());
     }
 
     public MyAppTestEnvironmentConfig getMyAppTestEnvironmentConfig() {

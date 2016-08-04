@@ -11,7 +11,9 @@ import org.junit.runner.RunWith;
  * @author Philip Calouche
  */
 @RunWith(Cucumber.class)
-@CucumberOptions(glue = {"classpath:"}, plugin = {"html:target/cucumber/testRunnerRerun", "json:target/cucumber/testRunnerRerun.json"}, features = {
-        "@target/cucumber/testRunnerRerun.txt"}, snippets = SnippetType.CAMELCASE)
+@CucumberOptions(glue = {"classpath:"},
+        plugin = {"html:target/cucumber/testRunnerRerun", "json:target/cucumber/testRunnerRerun.json"},
+        features = {"@target/cucumber/testRunnerRerun.txt"},
+        snippets = SnippetType.CAMELCASE)
 public class TestRunnerRerun {
 }

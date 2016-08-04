@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.annotation.PropertySources;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.env.Environment;
 
@@ -16,8 +17,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Configuration
-@PropertySource("classpath:/testEnvironmentConfigs/test_environment_config.${testEnvironment:localhost}.properties")
-@PropertySource("classpath:/messages_en.properties")
+@PropertySources({
+        @PropertySource("classpath:/testEnvironmentConfigs/test_environment_config.${testEnvironment:localhost}.properties"),
+        @PropertySource("classpath:/messages_en.properties")
+})
 public class CoreConfig {
     private static final Logger logger = LoggerFactory.getLogger(CoreConfig.class);
     @Autowired
@@ -30,8 +33,32 @@ public class CoreConfig {
     }
 
     @Bean
-    public AppConfig appConfig() {
-        logger.info("in appConfig bean");
+    public TestInstance testInstance() {
+        return new TestInstance(this.testEnvironmentConfig(), this.appConfig());
+    }
+
+    @Bean
+    public CoreStepsUtil coreStepsUtil() {
+        return new CoreStepsUtil(testInstance());
+    }
+
+    @Bean
+    public CoreStepHandler coreStepHandler() {
+        return new CoreStepHandler(testEnvironmentConfig(), testInstance(), coreStepsUtil());
+    }
+
+    //    @Bean
+    private TestEnvironmentConfig testEnvironmentConfig() {
+        BrowserType browserType = BrowserType.valueOf(environment.getProperty("browserType"));
+        int secondsToWait = Integer.valueOf(environment.getProperty("secondsToWait"));
+        String url = environment.getProperty("url");
+        boolean screenshotBeforeClick = Boolean.valueOf(environment.getProperty("screenshotBeforeClick"));
+        boolean screenshotOnScenarioCompletion = Boolean.valueOf(environment.getProperty("screenshotOnScenarioCompletion"));
+        return new TestEnvironmentConfig(browserType, secondsToWait, url, screenshotBeforeClick, screenshotOnScenarioCompletion);
+    }
+
+    //    @Bean
+    private AppConfig appConfig() {
         // Create the AppConfig as needed
         AppConfig appConfig = new AppConfig();
         // Global Locators
@@ -73,33 +100,5 @@ public class CoreConfig {
         errorMessageClasses.add("invalid");
         appConfig.setErrorMessageClasses(errorMessageClasses);
         return appConfig;
-    }
-
-    @Bean
-    public TestInstance testInstance() {
-        logger.info("in testInstance bean");
-        return new TestInstance(testEnvironmentConfig(), appConfig());
-    }
-
-    @Bean
-    public CoreStepsUtil coreStepsUtil() {
-        logger.info("in coreStepsUtil bean");
-        return new CoreStepsUtil(testInstance());
-    }
-
-    @Bean
-    public CoreStepHandler coreStepHandler() {
-        logger.info("in coreStepHandler bean");
-        return new CoreStepHandler(coreStepsUtil());
-    }
-
-    private TestEnvironmentConfig testEnvironmentConfig() {
-        logger.info("In CoreConfig testEnvironmentConfig");
-        BrowserType browserType = BrowserType.valueOf(environment.getProperty("browserType"));
-        int secondsToWait = Integer.valueOf(environment.getProperty("secondsToWait"));
-        String url = environment.getProperty("url");
-        boolean screenshotBeforeClick = Boolean.valueOf(environment.getProperty("screenshotBeforeClick"));
-        boolean screenshotOnScenarioCompletion = Boolean.valueOf(environment.getProperty("screenshotOnScenarioCompletion"));
-        return new TestEnvironmentConfig(browserType, secondsToWait, url, screenshotBeforeClick, screenshotOnScenarioCompletion);
     }
 }

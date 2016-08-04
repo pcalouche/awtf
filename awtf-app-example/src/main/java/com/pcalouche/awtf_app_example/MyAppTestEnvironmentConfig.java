@@ -25,7 +25,6 @@ public class MyAppTestEnvironmentConfig extends TestEnvironmentConfig {
         super(browserType, secondsToWait, url, screenshotBeforeClick, screenshotOnScenarioCompletion);
         this.loginID = loginID;
         this.password = password;
-        logger.info("done with MyAppTestEnvironmentConfig constructor");
     }
 
     public String getLoginID() {

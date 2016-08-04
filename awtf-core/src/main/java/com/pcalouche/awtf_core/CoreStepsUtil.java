@@ -33,9 +33,9 @@ public class CoreStepsUtil {
     @Autowired
     private Environment environment;
 
+    @Autowired
     public CoreStepsUtil(TestInstance testInstance) {
         this.testInstance = testInstance;
-        logger.info("Done with CoreStepsUtil constructor");
     }
 
     public TestInstance getTestInstance() {
@@ -636,7 +636,6 @@ public class CoreStepsUtil {
         try {
             loadMasks = testInstance.getWebDriverWait().until(ExpectedConditions.presenceOfAllElementsLocatedBy(locator));
         } catch (TimeoutException e) {
-            logger.info("here");
             // If not loading on the page, just return
             return;
         }
@@ -692,9 +691,6 @@ public class CoreStepsUtil {
         String returnText = null;
         // See if message needs to pulled from resource bundle or not
         if (text.startsWith("[") && text.endsWith("]")) {
-            logger.info(text);
-            logger.info(text.substring(1, text.length() - 1));
-            logger.info(environment.getProperty(text.substring(1, text.length() - 1)));
             returnText = environment.getProperty(text.substring(1, text.length() - 1));
             // Log to scenario to help with review
             if (testInstance.getCurrentScenario() != null) {

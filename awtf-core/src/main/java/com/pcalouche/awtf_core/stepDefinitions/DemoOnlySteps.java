@@ -19,13 +19,10 @@ public class DemoOnlySteps {
         this.coreStepHandler = coreStepHandler;
         this.testInstance = coreStepHandler.getTestInstance();
         this.testEnvironmentConfig = coreStepHandler.getTestInstance().getTestEnvironmentConfig();
-        logger.info("Done with DemoOnlySteps constructor->" + testEnvironmentConfig.getBrowserType());
     }
-
 
     @Given("^I go to the demo page$")
     public void iGoToTheDemoPage() {
-        logger.info("file:///" + System.getProperty("user.dir") + testEnvironmentConfig.getUrl());
         testInstance.getWebDriver().get("file:///" + System.getProperty("user.dir") + testEnvironmentConfig.getUrl());
     }
 }

@@ -18,6 +18,7 @@ import org.openqa.selenium.safari.SafariDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -42,12 +43,12 @@ public class TestInstance {
      */
     private Map<String, String> tempMap = new HashMap<>();
 
+    @Autowired
     public TestInstance(TestEnvironmentConfig testEnvironmentConfig, AppConfig appConfig) {
         this.testEnvironmentConfig = testEnvironmentConfig;
         this.appConfig = appConfig;
         // If test instance is extended this can be overridden to allow for custom browser setup
         this.setupWebDriver();
-        logger.info("TestInstance constructor, browserType->" + this.testEnvironmentConfig.getBrowserType());
     }
 
     public TestEnvironmentConfig getTestEnvironmentConfig() {

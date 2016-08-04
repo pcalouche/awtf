@@ -25,12 +25,10 @@ public class MyAppSteps {
         this.myAppStepHandler = myAppStepHandler;
         this.myAppTestInstance = myAppStepHandler.getMyAppTestInstance();
         this.myAppTestEnvironmentConfig = myAppStepHandler.getMyAppTestInstance().getMyAppTestEnvironmentConfig();
-        logger.info("end of MyAppSteps constructor");
     }
 
     @Given("^I go to the sign on page$")
     public void iGoToTheDemoPage() {
-        logger.info("file:///" + System.getProperty("user.dir") + myAppTestEnvironmentConfig.getUrl());
         myAppTestInstance.getWebDriver().get("file:///" + System.getProperty("user.dir") + myAppTestEnvironmentConfig.getUrl());
     }
 

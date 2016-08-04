@@ -20,7 +20,6 @@ public class MyAppStepsUtil extends CoreStepsUtil {
     public MyAppStepsUtil(MyAppTestInstance myAppTestInstance) {
         super(myAppTestInstance);
         this.myAppTestInstance = myAppTestInstance;
-        logger.info("Done with MyAppStepsUtil constructor");
     }
 
     public MyAppTestInstance getMyAppTestInstance() {

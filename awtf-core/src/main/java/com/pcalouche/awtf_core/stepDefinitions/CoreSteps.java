@@ -20,7 +20,6 @@ public class CoreSteps {
     @Autowired
     public CoreSteps(CoreStepHandler coreStepHandler) {
         this.coreStepHandler = coreStepHandler;
-        logger.info("Done with CoreSteps constructor");
     }
 
     @Then("^I take a screenshot$")

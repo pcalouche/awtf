@@ -12,14 +12,16 @@ public class TestEnvironmentConfig {
     private final boolean screenshotBeforeClick;
     private final boolean screenshotOnScenarioCompletion;
 
-    public TestEnvironmentConfig(BrowserType browserType, int secondsToWait, String url,
-                                 boolean screenshotBeforeClick, boolean screenshotOnScenarioCompletion) {
+    public TestEnvironmentConfig(BrowserType browserType,
+                                 int secondsToWait,
+                                 String url,
+                                 boolean screenshotBeforeClick,
+                                 boolean screenshotOnScenarioCompletion) {
         this.browserType = browserType;
         this.secondsToWait = secondsToWait;
         this.url = url;
         this.screenshotBeforeClick = screenshotBeforeClick;
         this.screenshotOnScenarioCompletion = screenshotOnScenarioCompletion;
-        logger.info("done with TestEnvironmentConfig constructor");
     }
 
     public BrowserType getBrowserType() {

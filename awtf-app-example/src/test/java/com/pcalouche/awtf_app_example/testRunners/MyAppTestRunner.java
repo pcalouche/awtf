@@ -15,7 +15,7 @@ import org.junit.runner.RunWith;
 @CucumberOptions(glue = {"com.pcalouche.awtf_core.stepDefinitions", "com.pcalouche.awtf_app_example"},
         plugin = {"html:target/cucumber/myAppTestRunner", "json:target/cucumber/myAppTestRunner.json", "rerun:target/cucumber/myAppTestRunnerRerun.txt"},
         features = {"classpath:features/"},
-        tags = {"~@pending", "@myAppExampleFeature"},
+        tags = {"~@pending"},
         snippets = SnippetType.CAMELCASE)
 public class MyAppTestRunner {
 }
