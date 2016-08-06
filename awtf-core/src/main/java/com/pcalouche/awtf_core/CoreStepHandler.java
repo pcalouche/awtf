@@ -6,29 +6,97 @@ import com.pcalouche.awtf_core.util.appConfig.Modal;
 import com.pcalouche.awtf_core.util.enums.HTMLElementState;
 import com.pcalouche.awtf_core.util.enums.HTMLFormElement;
 import com.pcalouche.awtf_core.util.enums.RowAction;
+import com.pcalouche.awtf_core.util.enums.WaitTag;
 import cucumber.api.DataTable;
+import cucumber.api.Scenario;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 public class CoreStepHandler {
-    protected Logger logger = LogManager.getLogger();
+    private static final Logger logger = LoggerFactory.getLogger(CoreStepHandler.class);
+    private final TestEnvironmentConfig testEnvironmentConfig;
+    private final TestInstance testInstance;
+    private final CoreStepsUtil stepsUtil;
+
+//    public CoreStepHandler(CoreStepsUtil stepsUtil) {
+//        this.stepsUtil = stepsUtil;
+//        this.testInstance = stepsUtil.getTestInstance();
+//        this.testEnvironmentConfig = stepsUtil.getTestInstance().getTestEnvironmentConfig();
+//    }
+
+    public CoreStepHandler(TestEnvironmentConfig testEnvironmentConfig,
+                           TestInstance testInstance,
+                           CoreStepsUtil stepsUtil) {
+        this.testEnvironmentConfig = testEnvironmentConfig;
+        this.testInstance = testInstance;
+        this.stepsUtil = stepsUtil;
+    }
+
+    public TestInstance getTestInstance() {
+        return testInstance;
+    }
+
+    protected void handleScenarioSetup(Scenario scenario) {
+        // Set the currentScenario of the test instance, so it can be used if needed
+        testInstance.setCurrentScenario(scenario);
+        // Always check if a the web driver wait needs to be changed from the default for a scenario based on its tags. Also reset the stop watch and current scenario.
+        try {
+            // Set seconds to wait. Will use what is in the default Test Environment Config if wait tag is not found
+            int secondsToWait = testEnvironmentConfig.getSecondsToWait();
+            boolean displayWaitTag = false;
+            for (WaitTag waitTag : WaitTag.values()) {
+                if (scenario.getSourceTagNames().contains(waitTag.getTagName())) {
+                    displayWaitTag = true;
+                    secondsToWait = waitTag.getSecondsToWait();
+                    break;
+                }
+            }
+            // Update the web driver wait time for the scenario
+            testInstance.getWebDriverWait().withTimeout(secondsToWait, TimeUnit.SECONDS);
+            testInstance.getStopWatch().reset();
+            testInstance.getStopWatch().start();
+            logger.info(String.format("Starting Scenario: \"%s\"", scenario.getName()));
+            if (displayWaitTag) {
+                logger.info(String.format("Wait Tag was set to: %d seconds based on given tag.", secondsToWait));
+            }
+        } catch (Exception e) {
+            logger.error("Failed to initialize scenario", e);
+            this.handleScenarioTearDown(scenario);
+        }
+    }
+
+    protected void handleScenarioTearDown(Scenario scenario) {
+        try {
+            testInstance.getStopWatch().stop();
+            logger.info(String.format("Scenario: \"%s\" completed in %.3f seconds", scenario.getName(), testInstance.getStopWatch().getTime() / 1000.0));
+            testInstance.getCurrentScenario().write(String.format("Completed in %.3f seconds.", testInstance.getStopWatch().getTime() / 1000.0));
+            if (testEnvironmentConfig.isScreenshotOnScenarioCompletion() || scenario.isFailed()) {
+                iTakeAScreenshot();
+            }
+        } catch (Exception e) {
+            logger.error("Failed to tearDown scenario", e);
+        } finally {
+            testInstance.getWebDriver().navigate().refresh();
+        }
+    }
 
     /**
      * Method to handle taking a screen shot during a scenario
      */
     public void iTakeAScreenshot() {
-        TestInstance.getStepsUtil().takeAScreenShot();
+        stepsUtil.takeAScreenShot();
     }
 
     /**
@@ -37,18 +105,18 @@ public class CoreStepHandler {
      * @param text the text of the link or button
      */
     public void iClickOn(String text) {
-        if (TestInstance.getTestEnvironmentConfig().isScreenshotBeforeClick()) {
-            TestInstance.getStepsUtil().takeAScreenShot();
+        if (testEnvironmentConfig.isScreenshotBeforeClick()) {
+            stepsUtil.takeAScreenShot();
         }
         // Determine what parent locator to use based on what is currently displayed on the UI
-        String parentLocatorToUse = TestInstance.getStepsUtil().isModalDisplayed() ? TestInstance.getAppConfig().getModalLocator().getLocator() : "";
+        String parentLocatorToUse = stepsUtil.isModalDisplayed() ? testInstance.getAppConfig().getModalLocator().getLocator() : "";
         String locator = String.format("%s//*[.='%s']|%s//input[@value='%s'][@type='submit' or @type='button']", parentLocatorToUse, text, parentLocatorToUse, text);
         // In case there is more than one matching element, find the first visible one and click it
-        List<WebElement> webElements = TestInstance.getWebDriverWait().until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.xpath(locator)));
+        List<WebElement> webElements = testInstance.getWebDriverWait().until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.xpath(locator)));
         boolean visibleItemWasClicked = false;
         for (WebElement webElement : webElements) {
             if (webElement.isDisplayed()) {
-                TestInstance.getStepsUtil().handleGeneralClick(webElement);
+                stepsUtil.handleGeneralClick(webElement);
                 visibleItemWasClicked = true;
                 break;
             }
@@ -63,7 +131,7 @@ public class CoreStepHandler {
      * @param value       the value to input into the form element
      */
     public void iInputAs(String description, String value) {
-        TestInstance.getStepsUtil().handleFormElementInput(TestInstance.getStepsUtil().findFormElementByDescription(description), value);
+        stepsUtil.handleFormElementInput(stepsUtil.findFormElementByDescription(description), value);
     }
 
     /**
@@ -73,7 +141,7 @@ public class CoreStepHandler {
      * @param description the description of the form element to to use
      */
     public void iTheRadioButtonCheckbox(String actionValue, String description) {
-        TestInstance.getStepsUtil().handleFormElementInput(TestInstance.getStepsUtil().findFormElementByDescription(description), actionValue);
+        stepsUtil.handleFormElementInput(stepsUtil.findFormElementByDescription(description), actionValue);
     }
 
     /**
@@ -83,13 +151,13 @@ public class CoreStepHandler {
      * @param value       the partial value that will be used to match to an actual possible value for the dropdown
      */
     public void iInputAsValueContaining(String description, String value) {
-        WebElement inputField = TestInstance.getStepsUtil().findFormElementByDescription(description);
+        WebElement inputField = stepsUtil.findFormElementByDescription(description);
         assertTrue("Input found was not a select", HTMLFormElement.select.toString().equals(inputField.getTagName()));
         Select select = new Select(inputField);
         List<WebElement> options = select.getOptions();
         for (WebElement option : options) {
             if (option.getText().contains(value)) {
-                TestInstance.getStepsUtil().handleFormElementInput(inputField, option.getText());
+                stepsUtil.handleFormElementInput(inputField, option.getText());
                 break;
             }
         }
@@ -114,10 +182,10 @@ public class CoreStepHandler {
      * @param endValue    the max value to enter
      */
     public void iInputRangeAsTo(String description, String startValue, String endValue) {
-        WebElement startInputField = TestInstance.getStepsUtil().findFormElementByDescription(description);
-        TestInstance.getStepsUtil().handleFormElementInput(startInputField, startValue);
+        WebElement startInputField = stepsUtil.findFormElementByDescription(description);
+        stepsUtil.handleFormElementInput(startInputField, startValue);
         WebElement endInputField = startInputField.findElement(By.xpath("./following-sibling::*[@name]"));
-        TestInstance.getStepsUtil().handleFormElementInput(endInputField, endValue);
+        stepsUtil.handleFormElementInput(endInputField, endValue);
     }
 
     /**
@@ -127,7 +195,7 @@ public class CoreStepHandler {
      * @param value       the value to to check the form element against
      */
     public void iSeeHasValueOf(String description, String value) {
-        TestInstance.getStepsUtil().verifyDescriptionValueCombination(description, value, true);
+        stepsUtil.verifyDescriptionValueCombination(description, value, true);
     }
 
     /**
@@ -137,7 +205,7 @@ public class CoreStepHandler {
      * @param value       the partial value to to check the form element against
      */
     public void iSeeHasValueContaining(String description, String value) {
-        TestInstance.getStepsUtil().verifyDescriptionValueCombination(description, value, false);
+        stepsUtil.verifyDescriptionValueCombination(description, value, false);
     }
 
     /**
@@ -148,8 +216,8 @@ public class CoreStepHandler {
      * @param description           the description of the form element to use
      */
     public void iInTheDropdown(String verificationToPerform, String value, String description) {
-        WebElement inputField = TestInstance.getStepsUtil().findFormElementByDescription(description);
-        TestInstance.getStepsUtil().verifySelectOption(verificationToPerform, new Select(inputField), description, value, true);
+        WebElement inputField = stepsUtil.findFormElementByDescription(description);
+        stepsUtil.verifySelectOption(verificationToPerform, new Select(inputField), description, value, true);
     }
 
     /**
@@ -160,8 +228,8 @@ public class CoreStepHandler {
      * @param description the description of the form element to use
      */
     public void iAnOptionContainingInTheDropdown(String action, String value, String description) {
-        WebElement inputField = TestInstance.getStepsUtil().findFormElementByDescription(description);
-        TestInstance.getStepsUtil().verifySelectOption(action, new Select(inputField), description, value, false);
+        WebElement inputField = stepsUtil.findFormElementByDescription(description);
+        stepsUtil.verifySelectOption(action, new Select(inputField), description, value, false);
     }
 
     /**
@@ -181,8 +249,8 @@ public class CoreStepHandler {
      * @param searchString the string to search for
      */
     public void iSeeTheMessage(String searchString) {
-        String messageTextToUse = TestInstance.getStepsUtil().resolveText(searchString);
-        List<WebElement> webElements = TestInstance.getStepsUtil().findMatchingChildElementsWithText(messageTextToUse);
+        String messageTextToUse = stepsUtil.resolveText(searchString);
+        List<WebElement> webElements = stepsUtil.findMatchingChildElementsWithText(messageTextToUse);
         boolean isDisplayed = false;
         for (WebElement webElement : webElements) {
             if (webElement.isDisplayed()) {
@@ -199,8 +267,8 @@ public class CoreStepHandler {
      * @param searchString the string to search for
      */
     public void iDoNotSeeTheMessage(String searchString) {
-        String messageTextToUse = TestInstance.getStepsUtil().resolveText(searchString);
-        List<WebElement> webElements = TestInstance.getStepsUtil().findMatchingChildElementsWithText(messageTextToUse);
+        String messageTextToUse = stepsUtil.resolveText(searchString);
+        List<WebElement> webElements = stepsUtil.findMatchingChildElementsWithText(messageTextToUse);
         boolean isDisplayed = false;
         for (WebElement webElement : webElements) {
             if (webElement.isDisplayed()) {
@@ -217,11 +285,11 @@ public class CoreStepHandler {
      * @param errorMessage error message to look for
      */
     public void iSeeTheErrorMessage(String errorMessage) {
-        String errorTextToUse = TestInstance.getStepsUtil().resolveText(errorMessage);
-        List<WebElement> webElements = TestInstance.getStepsUtil().findMatchingChildElementsWithText(errorTextToUse);
+        String errorTextToUse = stepsUtil.resolveText(errorMessage);
+        List<WebElement> webElements = stepsUtil.findMatchingChildElementsWithText(errorTextToUse);
         boolean errorMessageFound = false;
         for (WebElement webElement : webElements) {
-            if (webElement.isDisplayed() && TestInstance.getAppConfig().webElementHasErrorClass(webElement)) {
+            if (webElement.isDisplayed() && testInstance.getAppConfig().webElementHasErrorClass(webElement)) {
                 errorMessageFound = true;
                 break;
             }
@@ -235,10 +303,10 @@ public class CoreStepHandler {
      * @param errorMessage error message to look for
      */
     public void iDoNotSeeTheErrorMessage(String errorMessage) {
-        String errorTextToUse = TestInstance.getStepsUtil().resolveText(errorMessage);
-        List<WebElement> webElements = TestInstance.getStepsUtil().findMatchingChildElementsWithText(errorTextToUse);
+        String errorTextToUse = stepsUtil.resolveText(errorMessage);
+        List<WebElement> webElements = stepsUtil.findMatchingChildElementsWithText(errorTextToUse);
         for (WebElement webElement : webElements) {
-            if (webElement.isDisplayed() && TestInstance.getAppConfig().webElementHasErrorClass(webElement)) {
+            if (webElement.isDisplayed() && testInstance.getAppConfig().webElementHasErrorClass(webElement)) {
                 fail(String.format("Error message should not be displayed: \"%s\"", errorTextToUse));
                 break;
             }
@@ -253,9 +321,9 @@ public class CoreStepHandler {
      */
     public void iSeeTheElementIs(String description, HTMLElementState htmlElementState) {
         String errorDescription = description.startsWith("[") && description.endsWith("]") ? description.substring(1, description.length() - 1) : description;
-        for (WebElement webElement : TestInstance.getStepsUtil().findFormElementsByDescription(description)) {
+        for (WebElement webElement : stepsUtil.findFormElementsByDescription(description)) {
             assertTrue(String.format("%s element does not have expected state of: %s", errorDescription, htmlElementState.toString()),
-                    TestInstance.getStepsUtil().elementHasCorrectState(webElement, htmlElementState));
+                    stepsUtil.elementHasCorrectState(webElement, htmlElementState));
         }
     }
 
@@ -268,12 +336,12 @@ public class CoreStepHandler {
     public void iSeeTheButtonIs(String buttonText, HTMLElementState htmlElementState) {
         // Determine what parent locator to use based on what is currently
         // displayed on the UI
-        String parentLocatorToUse = TestInstance.getStepsUtil().isModalDisplayed() ? TestInstance.getAppConfig().getModalLocator().getLocator() : "";
+        String parentLocatorToUse = stepsUtil.isModalDisplayed() ? testInstance.getAppConfig().getModalLocator().getLocator() : "";
         String locator = String.format("%s//input[@value='%s'][@type='submit' or @type='button']|%s//button[.='%s']", parentLocatorToUse, buttonText, parentLocatorToUse, buttonText);
-        List<WebElement> buttons = TestInstance.getWebDriverWait().until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.xpath(locator)));
+        List<WebElement> buttons = testInstance.getWebDriverWait().until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.xpath(locator)));
         for (WebElement button : buttons) {
             assertTrue(String.format("%s button does not have expected state of: %s", buttonText, htmlElementState.toString()),
-                    TestInstance.getStepsUtil().elementHasCorrectState(button, htmlElementState));
+                    stepsUtil.elementHasCorrectState(button, htmlElementState));
         }
     }
 
@@ -281,7 +349,7 @@ public class CoreStepHandler {
      * Method to verify no load masks/indicators are visible on the page
      */
     public void iWaitForAllLoadMasksToDisappear() {
-        TestInstance.getStepsUtil().waitForLoadMasks();
+        stepsUtil.waitForLoadMasks();
     }
 
     /**
@@ -295,19 +363,19 @@ public class CoreStepHandler {
          * Parse description to see if it is surrounded by []. If it is then look up the element from the App Config. If it isn't then look for matching text on the screen.
 		 */
         if (description.startsWith("[") && description.endsWith("]")) {
-            AppElement appElement = TestInstance.getAppConfig().findAppWebElement(description.substring(1, description.length() - 1));
-            webElements = TestInstance.getWebDriverWait().until(ExpectedConditions.presenceOfAllElementsLocatedBy(appElement.getByLocator()));
+            AppElement appElement = testInstance.getAppConfig().findAppWebElement(description.substring(1, description.length() - 1));
+            webElements = testInstance.getWebDriverWait().until(ExpectedConditions.presenceOfAllElementsLocatedBy(appElement.getByLocator()));
         } else {
             // Determine what parent locator to use based on what is currently displayed on the UI
-            String parentLocatorToUse = TestInstance.getStepsUtil().isModalDisplayed() ? TestInstance.getAppConfig().getModalLocator().getLocator() : "";
+            String parentLocatorToUse = stepsUtil.isModalDisplayed() ? testInstance.getAppConfig().getModalLocator().getLocator() : "";
             String locator = String.format("%s//*[.='%s']", parentLocatorToUse, description);
-            webElements = TestInstance.getWebDriverWait().until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.xpath(locator)));
+            webElements = testInstance.getWebDriverWait().until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.xpath(locator)));
         }
         // Iterate through elements and hover over the first visible one
         boolean visibleItemWasHovered = false;
         for (WebElement webElement : webElements) {
             if (webElement.isDisplayed()) {
-                new Actions(TestInstance.getWebDriver()).moveToElement(webElement).build().perform();
+                new Actions(testInstance.getWebDriver()).moveToElement(webElement).build().perform();
                 visibleItemWasHovered = true;
                 break;
             }
@@ -324,22 +392,22 @@ public class CoreStepHandler {
     public void iHoverOverTheTooltipElementISeeATooltipThatSays(String tooltipDescription, String tooltipText) {
         // Lookup the element that has the tooltip from the App Config to find
         // out how to locate it
-        ElementWithTooltip appWebElement = (ElementWithTooltip) TestInstance.getAppConfig().findAppWebElement(tooltipDescription, ElementWithTooltip.class);
+        ElementWithTooltip appWebElement = (ElementWithTooltip) testInstance.getAppConfig().findAppWebElement(tooltipDescription, ElementWithTooltip.class);
         if (appWebElement == null) {
-            fail(String.format("Bad tooltip description.  Valid descriptions are: %s", TestInstance.getAppConfig().getValidKnownDescriptions(ElementWithTooltip.class)));
+            fail(String.format("Bad tooltip description.  Valid descriptions are: %s", testInstance.getAppConfig().getValidKnownDescriptions(ElementWithTooltip.class)));
         }
-        WebElement elementWithToolTip = TestInstance.getWebDriverWait().until(ExpectedConditions.visibilityOfElementLocated(appWebElement.getByLocator()));
+        WebElement elementWithToolTip = testInstance.getWebDriverWait().until(ExpectedConditions.visibilityOfElementLocated(appWebElement.getByLocator()));
         /*
          * Hover over the element with the tooltip. Move to a far enough offset. This should be far enough to hide an an existing visible tooltip that could be covering up another element with a
 		 * tooltip that we want to hover over.
 		 */
-        new Actions(TestInstance.getWebDriver()).moveByOffset(200, 200).build().perform();
-        new Actions(TestInstance.getWebDriver()).moveToElement(elementWithToolTip).build().perform();
+        new Actions(testInstance.getWebDriver()).moveByOffset(200, 200).build().perform();
+        new Actions(testInstance.getWebDriver()).moveToElement(elementWithToolTip).build().perform();
         // Ensures we have focus.
         elementWithToolTip.click();
         // Confirm that a tooltip is displayed and that its description matches what is expected
-        String tooltipTextToUse = TestInstance.getStepsUtil().resolveText(tooltipText);
-        WebElement tooltip = TestInstance.getWebDriverWait().until(ExpectedConditions.visibilityOfElementLocated(appWebElement.getTooltipElement().getByLocator()));
+        String tooltipTextToUse = stepsUtil.resolveText(tooltipText);
+        WebElement tooltip = testInstance.getWebDriverWait().until(ExpectedConditions.visibilityOfElementLocated(appWebElement.getTooltipElement().getByLocator()));
         assertTrue(String.format("Tooltip should be displayed: \"%s\"", tooltipTextToUse), tooltip.getText().contains(tooltipTextToUse));
     }
 
@@ -349,15 +417,14 @@ public class CoreStepHandler {
      * @param modalDescription the description of the modal to use
      */
     public void iWaitForTheModalToAppear(String modalDescription) {
-        // Lookup the modal from the app configuration to find out how to locate
-        // it
-        Modal modal = (Modal) TestInstance.getAppConfig().findAppWebElement(modalDescription, Modal.class);
+        // Lookup the modal from the app configuration to find out how to locate it
+        Modal modal = (Modal) testInstance.getAppConfig().findAppWebElement(modalDescription, Modal.class);
         if (modal == null) {
-            fail(String.format("Bad modal description.  Valid descriptions are: %s", TestInstance.getAppConfig().getValidKnownDescriptions(Modal.class)));
+            fail(String.format("Bad modal description.  Valid descriptions are: %s", testInstance.getAppConfig().getValidKnownDescriptions(Modal.class)));
         }
         // Wait for modal to appear and no load masks to be visible
-        TestInstance.getWebDriverWait().until(ExpectedConditions.visibilityOfElementLocated(modal.getByLocator()));
-        TestInstance.getStepsUtil().waitForLoadMasks();
+        testInstance.getWebDriverWait().until(ExpectedConditions.visibilityOfElementLocated(modal.getByLocator()));
+        stepsUtil.waitForLoadMasks();
     }
 
     /**
@@ -366,13 +433,12 @@ public class CoreStepHandler {
      * @param modalDescription the description of the modal to use
      */
     public void iWaitForTheModalToDisappear(String modalDescription) {
-        // Lookup the modal from the app configuration to find out how to locate
-        // it
-        Modal modal = (Modal) TestInstance.getAppConfig().findAppWebElement(modalDescription, Modal.class);
+        // Lookup the modal from the app configuration to find out how to locate it
+        Modal modal = (Modal) testInstance.getAppConfig().findAppWebElement(modalDescription, Modal.class);
         if (modal == null) {
-            fail(String.format("Bad modal description.  Valid descriptions are: %s", TestInstance.getAppConfig().getValidKnownDescriptions(Modal.class)));
+            fail(String.format("Bad modal description.  Valid descriptions are: %s", testInstance.getAppConfig().getValidKnownDescriptions(Modal.class)));
         }
-        TestInstance.getWebDriverWait().until(ExpectedConditions.invisibilityOfElementLocated(modal.getByLocator()));
+        testInstance.getWebDriverWait().until(ExpectedConditions.invisibilityOfElementLocated(modal.getByLocator()));
     }
 
     /**
@@ -389,75 +455,75 @@ public class CoreStepHandler {
         List<WebElement> actionableRowElements;
         switch (rowAction) {
             case SELECT:
-                actionableRowElements = TestInstance.getStepsUtil().findActionableRowElements(rowAction, criteria, null);
+                actionableRowElements = stepsUtil.findActionableRowElements(rowAction, criteria, null);
                 assertTrue("No matching rows found", !actionableRowElements.isEmpty());
                 for (WebElement actionableRowElement : actionableRowElements) {
                     if (!actionableRowElement.isSelected()) {
-                        TestInstance.getWebDriverWait().until(ExpectedConditions.elementToBeClickable(actionableRowElement)).click();
+                        testInstance.getWebDriverWait().until(ExpectedConditions.elementToBeClickable(actionableRowElement)).click();
                     }
                 }
                 break;
             case DESELECT:
-                actionableRowElements = TestInstance.getStepsUtil().findActionableRowElements(rowAction, criteria, null);
+                actionableRowElements = stepsUtil.findActionableRowElements(rowAction, criteria, null);
                 assertTrue("No matching rows found", !actionableRowElements.isEmpty());
                 for (WebElement actionableRowElement : actionableRowElements) {
                     if (actionableRowElement.isSelected()) {
-                        TestInstance.getWebDriverWait().until(ExpectedConditions.elementToBeClickable(actionableRowElement)).click();
+                        testInstance.getWebDriverWait().until(ExpectedConditions.elementToBeClickable(actionableRowElement)).click();
                     }
                 }
                 break;
             case CLICK:
-                actionableRowElements = TestInstance.getStepsUtil().findActionableRowElements(rowAction, criteria, null);
+                actionableRowElements = stepsUtil.findActionableRowElements(rowAction, criteria, null);
                 assertTrue("No matching rows found", !actionableRowElements.isEmpty());
-                if (TestInstance.getTestEnvironmentConfig().isScreenshotBeforeClick()) {
-                    TestInstance.getStepsUtil().takeAScreenShot();
+                if (testEnvironmentConfig.isScreenshotBeforeClick()) {
+                    stepsUtil.takeAScreenShot();
                 }
                 for (WebElement actionableRowElement : actionableRowElements) {
-                    TestInstance.getWebDriverWait().until(ExpectedConditions.elementToBeClickable(actionableRowElement)).click();
+                    testInstance.getWebDriverWait().until(ExpectedConditions.elementToBeClickable(actionableRowElement)).click();
                 }
                 break;
             case EXPAND:
-                actionableRowElements = TestInstance.getStepsUtil().findActionableRowElements(rowAction, criteria, null);
+                actionableRowElements = stepsUtil.findActionableRowElements(rowAction, criteria, null);
                 assertTrue("No matching rows found", !actionableRowElements.isEmpty());
                 for (WebElement actionableRowElement : actionableRowElements) {
-                    TestInstance.getWebDriverWait().until(ExpectedConditions.elementToBeClickable(actionableRowElement)).click();
+                    testInstance.getWebDriverWait().until(ExpectedConditions.elementToBeClickable(actionableRowElement)).click();
                 }
-                TestInstance.getStepsUtil().waitForLoadMasks();
+                stepsUtil.waitForLoadMasks();
                 break;
             case COLLAPSE:
-                actionableRowElements = TestInstance.getStepsUtil().findActionableRowElements(rowAction, criteria, null);
+                actionableRowElements = stepsUtil.findActionableRowElements(rowAction, criteria, null);
                 assertTrue("No matching rows found", !actionableRowElements.isEmpty());
                 for (WebElement actionableRowElement : actionableRowElements) {
-                    TestInstance.getWebDriverWait().until(ExpectedConditions.elementToBeClickable(actionableRowElement)).click();
+                    testInstance.getWebDriverWait().until(ExpectedConditions.elementToBeClickable(actionableRowElement)).click();
                 }
                 break;
             case CAN_SELECT:
-                actionableRowElements = TestInstance.getStepsUtil().findActionableRowElements(rowAction, criteria, null);
+                actionableRowElements = stepsUtil.findActionableRowElements(rowAction, criteria, null);
                 assertTrue("No matching rows found", !actionableRowElements.isEmpty());
                 for (WebElement actionableRowElement : actionableRowElements) {
                     assertTrue("An expected row is not selectable", actionableRowElement.isEnabled());
                 }
                 break;
             case CANNOT_SELECT:
-                actionableRowElements = TestInstance.getStepsUtil().findActionableRowElements(rowAction, criteria, null);
+                actionableRowElements = stepsUtil.findActionableRowElements(rowAction, criteria, null);
                 for (WebElement actionableRowElement : actionableRowElements) {
                     assertTrue("An expected row is selectable", !actionableRowElement.isEnabled());
                 }
                 break;
             case SEE:
-                TestInstance.getStepsUtil().findTableRowsWithMatchingCriteria(rowAction, criteria);
+                stepsUtil.findTableRowsWithMatchingCriteria(rowAction, criteria);
                 break;
             case DO_NOT_SEE:
-                TestInstance.getStepsUtil().findTableRowsWithMatchingCriteria(rowAction, criteria);
+                stepsUtil.findTableRowsWithMatchingCriteria(rowAction, criteria);
                 break;
             case SEE_SELECTED:
-                actionableRowElements = TestInstance.getStepsUtil().findActionableRowElements(rowAction, criteria, null);
+                actionableRowElements = stepsUtil.findActionableRowElements(rowAction, criteria, null);
                 for (WebElement actionableRowElement : actionableRowElements) {
                     assertTrue("An expected row is not selected", actionableRowElement.isSelected());
                 }
                 break;
             case SEE_DESELECTED:
-                actionableRowElements = TestInstance.getStepsUtil().findActionableRowElements(rowAction, criteria, null);
+                actionableRowElements = stepsUtil.findActionableRowElements(rowAction, criteria, null);
                 for (WebElement actionableRowElement : actionableRowElements) {
                     assertTrue("An expected row is not deselected", !actionableRowElement.isSelected());
                 }

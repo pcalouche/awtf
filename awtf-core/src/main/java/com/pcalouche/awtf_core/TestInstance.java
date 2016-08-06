@@ -2,10 +2,7 @@ package com.pcalouche.awtf_core;
 
 import com.pcalouche.awtf_core.util.appConfig.AppConfig;
 import cucumber.api.Scenario;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.StopWatch;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Point;
@@ -19,6 +16,9 @@ import org.openqa.selenium.phantomjs.PhantomJSDriverService;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.safari.SafariDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -29,144 +29,62 @@ import java.util.Map;
  * @author Philip Calouche
  */
 public class TestInstance {
-    protected static TestEnvironmentConfig testEnvironmentConfig;
-    protected static CoreStepHandler coreStepHandler;
-    protected static StepsUtil stepsUtil;
-    protected static AppConfig appConfig;
-    protected static WebDriver webDriver;
-    protected static WebDriverWait webDriverWait;
-    protected static JavascriptExecutor jsExecutor;
-    protected static Scenario currentScenario;
-    protected static StopWatch stopWatch = new StopWatch();
+    private static final Logger logger = LoggerFactory.getLogger(TestInstance.class);
+    private final TestEnvironmentConfig testEnvironmentConfig;
+    private final StopWatch stopWatch = new StopWatch();
+    private final AppConfig appConfig;
+    private WebDriver webDriver;
+    private WebDriverWait webDriverWait;
+    private JavascriptExecutor jsExecutor;
+    private Scenario currentScenario;
     /*
      * Used to store temporary values that subsequent steps may later need. A good use case is storing a confirmation ID that comes from a form submission, and then retrieving it later to verify that
      * is appears on the screen to the user.
      */
-    private static Map<String, String> tempMap = new HashMap<>();
-    protected Logger logger = LogManager.getLogger();
+    private Map<String, String> tempMap = new HashMap<>();
 
-    public TestInstance() {
-        // If test instance is extend this can be overridden to allow for custom loading of the test environment setup
-        this.loadTestEnvironmentConfig();
-        // If test instance is extend this can be overridden to allow for custom loading of the application config
-        this.loadApplicationConfig();
-
-		/*
-         * Create an instance of the class that will handle the core steps. This defaults to com.pcalouche.awtf_core.CoreStepHandler. This class can be extended with your own version if you need to
-		 * override or add to what is in CoreStepHandler
-		 */
-        if (StringUtils.isEmpty(testEnvironmentConfig.getCoreStepHandlerClass())) {
-            coreStepHandler = new CoreStepHandler();
-        } else {
-            try {
-                Class<?> c = Class.forName(testEnvironmentConfig.getCoreStepHandlerClass());
-                coreStepHandler = (CoreStepHandler) c.newInstance();
-                c = Class.forName(testEnvironmentConfig.getStepsUtilClass());
-                stepsUtil = (StepsUtil) c.newInstance();
-            } catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
-                e.printStackTrace();
-                System.exit(1);
-            }
-        }
+    @Autowired
+    public TestInstance(TestEnvironmentConfig testEnvironmentConfig, AppConfig appConfig) {
+        this.testEnvironmentConfig = testEnvironmentConfig;
+        this.appConfig = appConfig;
         // If test instance is extended this can be overridden to allow for custom browser setup
         this.setupWebDriver();
     }
 
-    /**
-     * @return the testEnvironmentConfig
-     */
-    public static TestEnvironmentConfig getTestEnvironmentConfig() {
+    public TestEnvironmentConfig getTestEnvironmentConfig() {
         return testEnvironmentConfig;
     }
 
-    /**
-     * @return the coreStepHandler
-     */
-    public static CoreStepHandler getCoreStepHandler() {
-        return coreStepHandler;
-    }
-
-    /**
-     * @return the stepsUtils
-     */
-    public static StepsUtil getStepsUtil() {
-        return stepsUtil;
-    }
-
-    /**
-     * @return the appConfig
-     */
-    public static AppConfig getAppConfig() {
+    public AppConfig getAppConfig() {
         return appConfig;
     }
 
-    /**
-     * @return the webDriver
-     */
-    public static WebDriver getWebDriver() {
+    public WebDriver getWebDriver() {
         return webDriver;
     }
 
-    /**
-     * @return the webDriverWait
-     */
-    public static WebDriverWait getWebDriverWait() {
+    public WebDriverWait getWebDriverWait() {
         return webDriverWait;
     }
 
-    /**
-     * @return the jsExecutor
-     */
-    public static JavascriptExecutor getJsExecutor() {
+    public JavascriptExecutor getJsExecutor() {
         return jsExecutor;
     }
 
-    /**
-     * @return the currentScenario
-     */
-    public static Scenario getCurrentScenario() {
+    public Scenario getCurrentScenario() {
         return currentScenario;
     }
 
-    /**
-     * @param currentScenario the currentScenario to set
-     */
-    public static void setCurrentScenario(Scenario currentScenario) {
-        TestInstance.currentScenario = currentScenario;
+    public void setCurrentScenario(Scenario currentScenario) {
+        this.currentScenario = currentScenario;
     }
 
-    /**
-     * @return the stopWatch
-     */
-    public static StopWatch getStopWatch() {
+    public StopWatch getStopWatch() {
         return stopWatch;
     }
 
-    /**
-     * @return the tempMap
-     */
-    public static Map<String, String> getTempMap() {
+    public Map<String, String> getTempMap() {
         return tempMap;
-    }
-
-    protected void loadTestEnvironmentConfig() {
-        String testEnvironment;
-        if (System.getProperty("testEnvironment") != null) {
-            testEnvironment = System.getProperty("testEnvironment");
-            logger.info("Test environment received from System Property as: " + testEnvironment);
-        } else if (System.getenv("testEnvironment") != null) {
-            testEnvironment = System.getenv("testEnvironment");
-            logger.info("Test environment received from Enviroment Variable as: " + testEnvironment);
-        } else {
-            logger.info("Test enviroment not specified in Command Line or Enviroment Variable, defaulting to localhost test environment");
-            testEnvironment = "localhost";
-        }
-
-        testEnvironmentConfig = (TestEnvironmentConfig) YamlHelper.loadFromInputStream(String.format("/yaml/testEnvironments/TestEnvironmentConfig.%s.yml", testEnvironment));
-    }
-
-    protected void loadApplicationConfig() {
-        appConfig = (AppConfig) YamlHelper.loadFromInputStream("/yaml/appConfig.yml");
     }
 
     protected void setupWebDriver() {
@@ -175,7 +93,8 @@ public class TestInstance {
         desiredCapabilities.setJavascriptEnabled(true);
         desiredCapabilities.setCapability("takesScreenshot", true);
         desiredCapabilities.setCapability("acceptSslCerts", true);
-        switch (testEnvironmentConfig.getBrowser()) {
+        logger.info("in setupWebDriver->" + testEnvironmentConfig.getBrowserType());
+        switch (testEnvironmentConfig.getBrowserType()) {
             case phantomJS:
                 desiredCapabilities.setCapability(PhantomJSDriverService.PHANTOMJS_CLI_ARGS, new String[]{"--web-security=no", "--ignore-ssl-errors=yes", "--webdriver-loglevel=NONE"});
                 webDriver = new PhantomJSDriver(desiredCapabilities);

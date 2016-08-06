@@ -8,12 +8,13 @@ import com.pcalouche.awtf_core.util.enums.RowAction;
 import cucumber.api.DataTable;
 import gherkin.formatter.model.DataTableRow;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
-import org.springframework.stereotype.Component;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -26,15 +27,26 @@ import static org.junit.Assert.*;
  *
  * @author Philip Calouche
  */
-@Component("coreStepsUtil")
-public class StepsUtilSpring {
-    protected Logger logger = LogManager.getLogger();
+public class CoreStepsUtil {
+    private static final Logger logger = LoggerFactory.getLogger(CoreStepsUtil.class);
+    private final TestInstance testInstance;
+    @Autowired
+    private Environment environment;
+
+    @Autowired
+    public CoreStepsUtil(TestInstance testInstance) {
+        this.testInstance = testInstance;
+    }
+
+    public TestInstance getTestInstance() {
+        return testInstance;
+    }
 
     /**
      * Helper method that take a screenshot
      */
     public void takeAScreenShot() {
-        TestInstance.getCurrentScenario().embed(((TakesScreenshot) TestInstance.getWebDriver()).getScreenshotAs(OutputType.BYTES), "image/png");
+        testInstance.getCurrentScenario().embed(((TakesScreenshot) testInstance.getWebDriver()).getScreenshotAs(OutputType.BYTES), "image/png");
     }
 
     /**
@@ -45,7 +57,7 @@ public class StepsUtilSpring {
      */
     public boolean elementExists(By locator) {
         try {
-            TestInstance.getWebDriver().findElement(locator);
+            testInstance.getWebDriver().findElement(locator);
             return true;
         } catch (NoSuchElementException e) {
             return false;
@@ -96,19 +108,19 @@ public class StepsUtilSpring {
 		 * attribute. The input that has an ID that matches the for attribute value will be returned.
 		 */
         if (description.startsWith("[") && description.endsWith("]")) {
-            AppElement appElement = TestInstance.getAppConfig().findAppWebElement(description.substring(1, description.length() - 1));
-            return TestInstance.getWebDriverWait().until(ExpectedConditions.presenceOfElementLocated(appElement.getByLocator()));
+            AppElement appElement = testInstance.getAppConfig().findAppWebElement(description.substring(1, description.length() - 1));
+            return testInstance.getWebDriverWait().until(ExpectedConditions.presenceOfElementLocated(appElement.getByLocator()));
         } else {
             // Determine what parent locator to use based on what is currently displayed on the UI
-            String parentLocatorToUse = TestInstance.getStepsUtil().isModalDisplayed() ? TestInstance.getAppConfig().getModalLocator().getLocator() : "";
+            String parentLocatorToUse = isModalDisplayed() ? testInstance.getAppConfig().getModalLocator().getLocator() : "";
             String locator = String.format("%s//label[contains(normalize-space(string()),'%s')][@for!='']", parentLocatorToUse, description);
             // Find all matching label elements on the page
-            List<WebElement> fieldLabels = TestInstance.getWebDriverWait().until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.xpath(locator)));
+            List<WebElement> fieldLabels = testInstance.getWebDriverWait().until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.xpath(locator)));
             WebElement inputField = null;
             for (WebElement fieldLabel : fieldLabels) {
                 // Act on the first non hidden label and return the form input it is associated with
                 if (fieldLabel.isDisplayed()) {
-                    inputField = TestInstance.getWebDriver().findElement(By.id(fieldLabel.getAttribute("for")));
+                    inputField = testInstance.getWebDriver().findElement(By.id(fieldLabel.getAttribute("for")));
                     break;
                 }
             }
@@ -129,17 +141,17 @@ public class StepsUtilSpring {
 		 * attribute. The input that has an ID that matches the for attribute value will be returned.
 		 */
         if (description.startsWith("[") && description.endsWith("]")) {
-            AppElement appElement = TestInstance.getAppConfig().findAppWebElement(description.substring(1, description.length() - 1));
-            return TestInstance.getWebDriverWait().until(ExpectedConditions.presenceOfAllElementsLocatedBy(appElement.getByLocator()));
+            AppElement appElement = testInstance.getAppConfig().findAppWebElement(description.substring(1, description.length() - 1));
+            return testInstance.getWebDriverWait().until(ExpectedConditions.presenceOfAllElementsLocatedBy(appElement.getByLocator()));
         } else {
             // Determine what parent locator to use based on what is currently displayed on the UI
-            String parentLocatorToUse = TestInstance.getStepsUtil().isModalDisplayed() ? TestInstance.getAppConfig().getModalLocator().getLocator() : "";
+            String parentLocatorToUse = isModalDisplayed() ? testInstance.getAppConfig().getModalLocator().getLocator() : "";
             String locator = String.format("%s//label[contains(normalize-space(string()),'%s')][@for!='']", parentLocatorToUse, description);
             // Find all matching label elements on the page
-            List<WebElement> fieldLabels = TestInstance.getWebDriverWait().until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.xpath(locator)));
+            List<WebElement> fieldLabels = testInstance.getWebDriverWait().until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.xpath(locator)));
             List<WebElement> webElements = new ArrayList<>();
             for (WebElement fieldLabel : fieldLabels) {
-                webElements.add(TestInstance.getWebDriver().findElement(By.id(fieldLabel.getAttribute("for"))));
+                webElements.add(testInstance.getWebDriver().findElement(By.id(fieldLabel.getAttribute("for"))));
             }
             return webElements;
         }
@@ -160,7 +172,7 @@ public class StepsUtilSpring {
             return;
         }
         // Make sure it is enabled before setting any values. This is useful for things like a select that is disabled until an AJAX call to load its data has finished.
-        TestInstance.getWebDriverWait().until(ExpectedConditions.elementToBeClickable(formElement));
+        testInstance.getWebDriverWait().until(ExpectedConditions.elementToBeClickable(formElement));
         HTMLFormElement htmlFormElement = HTMLFormElement.valueOf(formElement.getTagName());
         switch (htmlFormElement) {
             case input:
@@ -208,7 +220,7 @@ public class StepsUtilSpring {
 		 * these types of inputs.
 		 */
         try {
-            TestInstance.getJsExecutor().executeScript("arguments[0].blur()", formElement);
+            testInstance.getJsExecutor().executeScript("arguments[0].blur()", formElement);
         } catch (StaleElementReferenceException e) {
 
         }
@@ -231,7 +243,7 @@ public class StepsUtilSpring {
         }
 
         // Make sure it is visible before verifying any values.
-        TestInstance.getWebDriverWait().until(ExpectedConditions.visibilityOf(formElement));
+        testInstance.getWebDriverWait().until(ExpectedConditions.visibilityOf(formElement));
         HTMLFormElement htmlTag = HTMLFormElement.valueOf(formElement.getTagName());
         switch (htmlTag) {
             case input:
@@ -303,7 +315,7 @@ public class StepsUtilSpring {
      * @param matchValueExactly     true to match the value exactly
      */
     public void verifySelectOption(String verificationToPerform, Select select, String description, String value, boolean matchValueExactly) {
-        String parsedValue = TestInstance.getStepsUtil().resolveText(value);
+        String parsedValue = resolveText(value);
         boolean valueFound = false;
         for (WebElement webElement : select.getOptions()) {
             if (matchValueExactly) {
@@ -334,7 +346,7 @@ public class StepsUtilSpring {
      */
     public void verifyDescriptionValueCombination(String description, String value, boolean matchValueExactly) {
         // Get parsed value for locators and testing
-        String parsedValue = TestInstance.getStepsUtil().resolveText(value);
+        String parsedValue = resolveText(value);
         AppElement appElement = null;
         List<WebElement> webElements = null;
         String matchExactlyErrorFormat = "Could not find %s with value of %s";
@@ -344,11 +356,11 @@ public class StepsUtilSpring {
 		 * attribute. The input that has an ID that matches the for attribute value will be returned.
 		 */
         if (description.startsWith("[") && description.endsWith("]")) {
-            appElement = TestInstance.getAppConfig().findAppWebElement(description.substring(1, description.length() - 1));
-            webElements = TestInstance.getWebDriverWait().until(ExpectedConditions.presenceOfAllElementsLocatedBy(appElement.getByLocator()));
+            appElement = testInstance.getAppConfig().findAppWebElement(description.substring(1, description.length() - 1));
+            webElements = testInstance.getWebDriverWait().until(ExpectedConditions.presenceOfAllElementsLocatedBy(appElement.getByLocator()));
         } else {
             // Determine what parent locator to use based on what is currently displayed on the UI
-            String parentLocatorToUse = TestInstance.getStepsUtil().isModalDisplayed() ? TestInstance.getAppConfig().getModalLocator().getLocator() : "";
+            String parentLocatorToUse = isModalDisplayed() ? testInstance.getAppConfig().getModalLocator().getLocator() : "";
             String labelWithForAttributeLocator = String.format("%s//label[contains(normalize-space(string()), '%s')][@for!='']", parentLocatorToUse, description);
             String basicNameWithValueLocator;
             if (matchValueExactly) {
@@ -359,7 +371,7 @@ public class StepsUtilSpring {
                         description, parsedValue);
             }
             String locator = String.format("%s|%s", labelWithForAttributeLocator, basicNameWithValueLocator);
-            webElements = TestInstance.getWebDriverWait().until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.xpath(locator)));
+            webElements = testInstance.getWebDriverWait().until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.xpath(locator)));
         }
 
         // Now go through the web element results, check if it is displayed, and then depending on its properties perform additional verification
@@ -368,7 +380,7 @@ public class StepsUtilSpring {
             if (webElement.isDisplayed()) {
                 isDisplayed = true;
                 if (StringUtils.isNotBlank(webElement.getAttribute("for"))) {
-                    verifyFormElementValue(TestInstance.getWebDriver().findElement(By.id(webElement.getAttribute("for"))), parsedValue, matchValueExactly);
+                    verifyFormElementValue(testInstance.getWebDriver().findElement(By.id(webElement.getAttribute("for"))), parsedValue, matchValueExactly);
                 } else if (appElement != null) {
                     // Test if appElement is a form element and handle accordingly. If then try and match its text against the expected value as a last resort.
                     try {
@@ -431,7 +443,7 @@ public class StepsUtilSpring {
         } else {
             locator = String.format("//td[contains(normalize-space(string()), '%s')]/ancestor::tr", text);
         }
-        return TestInstance.getWebDriverWait().until(ExpectedConditions.visibilityOfElementLocated(By.xpath(locator)));
+        return testInstance.getWebDriverWait().until(ExpectedConditions.visibilityOfElementLocated(By.xpath(locator)));
     }
 
     public WebElement findTableRowContainingText(String text) {
@@ -448,15 +460,15 @@ public class StepsUtilSpring {
      */
     public List<WebElement> findTableRowsWithMatchingCriteria(RowAction rowAction, DataTable criteria, String tableId) {
         // Wait for any load masks to be gone
-        TestInstance.getStepsUtil().waitForLoadMasks();
+        waitForLoadMasks();
         List<WebElement> matchedRows = new ArrayList<>();
         List<DataTableRow> dataTableRowList = criteria.getGherkinRows();
         for (int i = 1; i < dataTableRowList.size(); i++) {
             // First find matching cells that meet the first criterion to narrow things down faster
             List<String> rowCriteria = dataTableRowList.get(i).getCells();
-            String firstCriterion = TestInstance.getStepsUtil().resolveText(rowCriteria.get(0));
+            String firstCriterion = resolveText(rowCriteria.get(0));
             // Determine what parent locator to use based on what is currently displayed on the UI
-            String parentLocatorToUse = TestInstance.getStepsUtil().isModalDisplayed() ? TestInstance.getAppConfig().getModalLocator().getLocator() : "";
+            String parentLocatorToUse = isModalDisplayed() ? testInstance.getAppConfig().getModalLocator().getLocator() : "";
             String locator;
             if (StringUtils.isNotEmpty(tableId)) {
                 locator = String.format("%s//table[@id='%s']//tr//td[normalize-space(string())='%s']", parentLocatorToUse, tableId, firstCriterion);
@@ -465,7 +477,7 @@ public class StepsUtilSpring {
             }
             List<WebElement> matchedCells;
             try {
-                matchedCells = TestInstance.getWebDriverWait().until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.xpath(locator)));
+                matchedCells = testInstance.getWebDriverWait().until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.xpath(locator)));
             } catch (TimeoutException e) {
                 matchedCells = new ArrayList<>();
             }
@@ -489,7 +501,7 @@ public class StepsUtilSpring {
                 for (int j = 1; j < dataTableRowList.get(i).getCells().size(); j++) {
                     try {
                         WebElement rowCell = initiallyMatchedRow
-                                .findElement(By.xpath(String.format(".//td[normalize-space(string())='%s']", TestInstance.getStepsUtil().resolveText(rowCriteria.get(j)))));
+                                .findElement(By.xpath(String.format(".//td[normalize-space(string())='%s']", resolveText(rowCriteria.get(j)))));
                         // logger.debug(rowCell.getText() + " found");
                         // Have to check if this is displayed because the old UI likes to put data that could match in hidden cells.
                         if (!rowCell.isDisplayed()) {
@@ -561,8 +573,8 @@ public class StepsUtilSpring {
      * @return the matching checkable items in the table
      */
     public List<WebElement> findActionableRowElements(RowAction rowAction, DataTable criteria, String tableId) {
-        List<WebElement> matchedRows = TestInstance.getStepsUtil().findTableRowsWithMatchingCriteria(rowAction, criteria, tableId);
-        By locator = TestInstance.getAppConfig().findRowActionLocator(rowAction).getByLocator();
+        List<WebElement> matchedRows = findTableRowsWithMatchingCriteria(rowAction, criteria, tableId);
+        By locator = testInstance.getAppConfig().findRowActionLocator(rowAction).getByLocator();
         List<WebElement> actionableRowElements = new ArrayList<>();
         for (WebElement matchedRow : matchedRows) {
             try {
@@ -603,8 +615,8 @@ public class StepsUtilSpring {
     public boolean isModalDisplayed() {
         boolean modalDisplayed = false;
         // Assumption is modals will always pre-exist on the page even though they may not be visible.
-        if (TestInstance.getAppConfig().getModalLocator() != null) {
-            List<WebElement> modals = TestInstance.getWebDriver().findElements(TestInstance.getAppConfig().getModalLocator().getByLocator());
+        if (testInstance.getAppConfig().getModalLocator() != null) {
+            List<WebElement> modals = testInstance.getWebDriver().findElements(testInstance.getAppConfig().getModalLocator().getByLocator());
             for (WebElement modal : modals) {
                 if (modal.isDisplayed()) {
                     modalDisplayed = true;
@@ -619,19 +631,18 @@ public class StepsUtilSpring {
      * Helper method that waits for all load masks to be gone from the page.
      */
     public void waitForLoadMasks() {
-        By locator = TestInstance.getAppConfig().getLoadingIndicatorLocator().getByLocator();
+        By locator = testInstance.getAppConfig().getLoadingIndicatorLocator().getByLocator();
         List<WebElement> loadMasks = null;
         try {
-            loadMasks = TestInstance.getWebDriverWait().until(ExpectedConditions.presenceOfAllElementsLocatedBy(locator));
+            loadMasks = testInstance.getWebDriverWait().until(ExpectedConditions.presenceOfAllElementsLocatedBy(locator));
         } catch (TimeoutException e) {
-            logger.info("here");
             // If not loading on the page, just return
             return;
         }
         // Have to check for state element in case load mask is removed from page during a page transition
         for (WebElement loadMask : loadMasks) {
             try {
-                TestInstance.getWebDriverWait().until(ExpectedConditions.not(ExpectedConditions.visibilityOf(loadMask)));
+                testInstance.getWebDriverWait().until(ExpectedConditions.not(ExpectedConditions.visibilityOf(loadMask)));
             } catch (StaleElementReferenceException e) {
                 return;
             }
@@ -649,7 +660,7 @@ public class StepsUtilSpring {
         // This will return the parents elements that have the text as well.
         List<WebElement> webElements;
         try {
-            webElements = TestInstance.getWebDriverWait().until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.xpath(locator)));
+            webElements = testInstance.getWebDriverWait().until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.xpath(locator)));
         } catch (TimeoutException e) {
             logger.debug(String.format("No matching web elements found with text: %s", messageTextToUse));
             return new ArrayList<>();
@@ -680,10 +691,10 @@ public class StepsUtilSpring {
         String returnText = null;
         // See if message needs to pulled from resource bundle or not
         if (text.startsWith("[") && text.endsWith("]")) {
-            returnText = TestInstance.getAppConfig().getMessageBundle().getString(text.substring(1, text.length() - 1));
+            returnText = environment.getProperty(text.substring(1, text.length() - 1));
             // Log to scenario to help with review
-            if (TestInstance.getCurrentScenario() != null) {
-                TestInstance.getCurrentScenario().write(String.format("%s is: %s<br>", text, returnText));
+            if (testInstance.getCurrentScenario() != null) {
+                testInstance.getCurrentScenario().write(String.format("%s is: %s<br>", text, returnText));
             }
         } else {
             returnText = text;

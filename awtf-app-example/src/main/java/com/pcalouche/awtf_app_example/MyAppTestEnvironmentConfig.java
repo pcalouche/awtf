@@ -1,44 +1,37 @@
 package com.pcalouche.awtf_app_example;
 
 import com.pcalouche.awtf_core.TestEnvironmentConfig;
+import com.pcalouche.awtf_core.util.enums.BrowserType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This class creates a test instance to encapsulate all that is needed to run a test.
  *
  * @author Philip Calouche
- *
  */
 public class MyAppTestEnvironmentConfig extends TestEnvironmentConfig {
-	private String loginID;
-	private String password;
+    private static final Logger logger = LoggerFactory.getLogger(MyAppTestEnvironmentConfig.class);
+    private final String loginID;
+    private final String password;
 
-	/**
-	 * @return the loginID
-	 */
-	public String getLoginID() {
-		return loginID;
-	}
+    public MyAppTestEnvironmentConfig(BrowserType browserType,
+                                      int secondsToWait,
+                                      String url,
+                                      boolean screenshotBeforeClick,
+                                      boolean screenshotOnScenarioCompletion,
+                                      String loginID,
+                                      String password) {
+        super(browserType, secondsToWait, url, screenshotBeforeClick, screenshotOnScenarioCompletion);
+        this.loginID = loginID;
+        this.password = password;
+    }
 
-	/**
-	 * @param loginID
-	 *            the loginID to set
-	 */
-	public void setLoginID(String loginID) {
-		this.loginID = loginID;
-	}
+    public String getLoginID() {
+        return loginID;
+    }
 
-	/**
-	 * @return the password
-	 */
-	public String getPassword() {
-		return password;
-	}
-
-	/**
-	 * @param password
-	 *            the password to set
-	 */
-	public void setPassword(String password) {
-		this.password = password;
-	}
+    public String getPassword() {
+        return password;
+    }
 }

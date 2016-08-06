@@ -1,4 +1,4 @@
-Feature: Provide steps to test if text is visible or not on the screen.
+Feature: Provide steps to test if text is visible or not on the screen
   The step can use text/message/label interchangeably, and common code is executed for both.
   The text match does just a partial match when evaluating HTML text nodes.
   Because of this the given text to test for should be unique enough for the current state of the page.

@@ -1,125 +1,46 @@
 package com.pcalouche.awtf_core;
 
 import com.pcalouche.awtf_core.util.enums.BrowserType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class TestEnvironmentConfig {
+    private static final Logger logger = LoggerFactory.getLogger(TestEnvironmentConfig.class);
+    private final BrowserType browserType;
+    private final int secondsToWait;
+    private final String url;
+    private final boolean screenshotBeforeClick;
+    private final boolean screenshotOnScenarioCompletion;
 
-	private BrowserType browser = BrowserType.phantomJS;
-	private int secondsToWait = 15;
-	private String url;
-	private boolean screenshotBeforeClick = false;
-	private boolean screenshotOnScenarioCompletion = true;
-	private String coreStepHandlerClass = "com.pcalouche.awtf_core.CoreStepHandler";
-	private String stepsUtilClass = "com.pcalouche.awtf_core.StepsUtil";
+    public TestEnvironmentConfig(BrowserType browserType,
+                                 int secondsToWait,
+                                 String url,
+                                 boolean screenshotBeforeClick,
+                                 boolean screenshotOnScenarioCompletion) {
+        this.browserType = browserType;
+        this.secondsToWait = secondsToWait;
+        this.url = url;
+        this.screenshotBeforeClick = screenshotBeforeClick;
+        this.screenshotOnScenarioCompletion = screenshotOnScenarioCompletion;
+    }
 
-	/**
-	 * Needed for YAML loading of this object, but not useful for anything else
-	 */
-	public TestEnvironmentConfig() {
-	}
+    public BrowserType getBrowserType() {
+        return browserType;
+    }
 
-	/**
-	 * @return the browser
-	 */
-	public BrowserType getBrowser() {
-		return browser;
-	}
+    public int getSecondsToWait() {
+        return secondsToWait;
+    }
 
-	/**
-	 * @param browser
-	 *            the browser to set
-	 */
-	public void setBrowser(BrowserType browser) {
-		this.browser = browser;
-	}
+    public String getUrl() {
+        return url;
+    }
 
-	/**
-	 * @return the url
-	 */
-	public String getUrl() {
-		return url;
-	}
+    public boolean isScreenshotBeforeClick() {
+        return screenshotBeforeClick;
+    }
 
-	/**
-	 * @param url
-	 *            the url to set
-	 */
-	public void setUrl(String url) {
-		this.url = url;
-	}
-
-	/**
-	 * @return the secondsToWait
-	 */
-	public int getSecondsToWait() {
-		return secondsToWait;
-	}
-
-	/**
-	 * @param secondsToWait
-	 *            the secondsToWait to set
-	 */
-	public void setSecondsToWait(int secondsToWait) {
-		this.secondsToWait = secondsToWait;
-	}
-
-	/**
-	 * @return the screenshotBeforeClick
-	 */
-	public boolean isScreenshotBeforeClick() {
-		return screenshotBeforeClick;
-	}
-
-	/**
-	 * @param screenshotBeforeClick
-	 *            the screenshotBeforeClick to set
-	 */
-	public void setScreenshotBeforeClick(boolean screenshotBeforeClick) {
-		this.screenshotBeforeClick = screenshotBeforeClick;
-	}
-
-	/**
-	 * @return the screenshotOnScenarioCompletion
-	 */
-	public boolean isScreenshotOnScenarioCompletion() {
-		return screenshotOnScenarioCompletion;
-	}
-
-	/**
-	 * @param screenshotOnScenarioCompletion
-	 *            the screenshotOnScenarioCompletion to set
-	 */
-	public void setScreenshotOnScenarioCompletion(boolean screenshotOnScenarioCompletion) {
-		this.screenshotOnScenarioCompletion = screenshotOnScenarioCompletion;
-	}
-
-	/**
-	 * @return the coreStepHandlerClass
-	 */
-	public String getCoreStepHandlerClass() {
-		return coreStepHandlerClass;
-	}
-
-	/**
-	 * @param coreStepHandlerClass
-	 *            the coreStepHandlerClass to set
-	 */
-	public void setCoreStepHandlerClass(String coreStepHandlerClass) {
-		this.coreStepHandlerClass = coreStepHandlerClass;
-	}
-
-	/**
-	 * @return the stepsUtilClass
-	 */
-	public String getStepsUtilClass() {
-		return stepsUtilClass;
-	}
-
-	/**
-	 * @param stepsUtilClass
-	 *            the stepsUtilClass to set
-	 */
-	public void setStepsUtilClass(String stepsUtilClass) {
-		this.stepsUtilClass = stepsUtilClass;
-	}
+    public boolean isScreenshotOnScenarioCompletion() {
+        return screenshotOnScenarioCompletion;
+    }
 }

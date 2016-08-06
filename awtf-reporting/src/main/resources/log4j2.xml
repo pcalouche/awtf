@@ -9,8 +9,9 @@
         </Console>
     </Appenders>
     <Loggers>
-        <Logger name="com.pcalouche" level="DEBUG">
+        <Logger name="com.pcalouche" level="DEBUG"></Logger>
+        <Root level="INFO">
             <AppenderRef ref="Console"/>
-        </Logger>
+        </Root>
     </Loggers>
 </Configuration>

@@ -1,12 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="WARN">
+    <Properties>
+        <Property name="logPattern">[%d{yyyy-MM-dd HH:mm:ss.SSS}] [%t] %p Line %L %c - %msg%n</Property>
+    </Properties>
     <Appenders>
         <Console name="Console" target="SYSTEM_OUT">
-            <PatternLayout pattern="%highlight{%d{HH:mm:ss.SSS} [%t] %-5level Line %L %logger{36} - %msg%n}"/>
+            <PatternLayout pattern="%highlight{${logPattern}}"/>
         </Console>
     </Appenders>
     <Loggers>
-        <Root level="debug">
+        <Logger name="com.pcalouche" level="DEBUG"></Logger>
+        <Root level="INFO">
             <AppenderRef ref="Console"/>
         </Root>
     </Loggers>

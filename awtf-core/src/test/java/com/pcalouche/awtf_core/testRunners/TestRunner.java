@@ -11,8 +11,10 @@ import org.junit.runner.RunWith;
  * @author Philip Calouche
  */
 @RunWith(Cucumber.class)
-@CucumberOptions(glue = {"classpath:"}, plugin = {"html:target/cucumber/testRunner", "json:target/cucumber/testRunner.json", "rerun:target/cucumber/testRunnerRerun.txt"}, features = {
-        "classpath:features/"}, tags = {"~@pending", "@formInputAndVerification"}, snippets = SnippetType.CAMELCASE)
+@CucumberOptions(glue = {"com.pcalouche.awtf_core"},
+        plugin = {"html:target/cucumber/testRunner", "json:target/cucumber/testRunner.json", "rerun:target/cucumber/testRunnerRerun.txt"},
+        features = {"classpath:features/"},
+        tags = {"~@pending"},
+        snippets = SnippetType.CAMELCASE)
 public class TestRunner {
-
 }

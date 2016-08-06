@@ -9,9 +9,4 @@ public enum HTMLFormElement {
     input,
     textarea,
     select
-    //;
-
-//    public static boolean isFormElement(String tag) {
-//        return true;
-//    }
 }
