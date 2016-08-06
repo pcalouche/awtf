@@ -28,7 +28,6 @@ public class CoreConfig {
 
     @Bean
     public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
-        logger.info(String.format("Detected testEnvironment was->%s", System.getenv("testEnvironment")));
         return new PropertySourcesPlaceholderConfigurer();
     }
 
@@ -47,8 +46,8 @@ public class CoreConfig {
         return new CoreStepHandler(testEnvironmentConfig(), testInstance(), coreStepsUtil());
     }
 
-    //    @Bean
     private TestEnvironmentConfig testEnvironmentConfig() {
+        logger.info("Detected test environment was->" + environment.getProperty("testEnvironment"));
         BrowserType browserType = BrowserType.valueOf(environment.getProperty("browserType"));
         int secondsToWait = Integer.valueOf(environment.getProperty("secondsToWait"));
         String url = environment.getProperty("url");
@@ -57,7 +56,6 @@ public class CoreConfig {
         return new TestEnvironmentConfig(browserType, secondsToWait, url, screenshotBeforeClick, screenshotOnScenarioCompletion);
     }
 
-    //    @Bean
     private AppConfig appConfig() {
         // Create the AppConfig as needed
         AppConfig appConfig = new AppConfig();

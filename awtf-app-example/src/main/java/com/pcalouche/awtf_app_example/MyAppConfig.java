@@ -26,7 +26,6 @@ public class MyAppConfig {
 
     @Bean
     public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
-        logger.info(String.format("Detected testEnvironment was->%s", System.getenv("testEnvironment")));
         return new PropertySourcesPlaceholderConfigurer();
     }
 
@@ -46,6 +45,7 @@ public class MyAppConfig {
     }
 
     private MyAppTestEnvironmentConfig myAppTestEnvironmentConfig() {
+        logger.info("Detected test environment was->" + environment.getProperty("testEnvironment"));
         BrowserType browserType = BrowserType.valueOf(environment.getProperty("browserType"));
         int secondsToWait = Integer.valueOf(environment.getProperty("secondsToWait"));
         String url = environment.getProperty("url");
