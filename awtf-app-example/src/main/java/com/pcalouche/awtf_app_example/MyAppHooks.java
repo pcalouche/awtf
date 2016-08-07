@@ -20,6 +20,17 @@ public class MyAppHooks {
 
     @Autowired
     public MyAppHooks(MyAppStepHandler myAppStepHandler) {
+        Thread CLOSE_THREAD = new Thread() {
+            @Override
+            public void run() {
+                try {
+                    logger.info("Shutting down web driver now that all tests are done");
+                    myAppStepHandler.getTestInstance().getWebDriver().quit();
+                } catch (Exception e) {
+                }
+            }
+        };
+        Runtime.getRuntime().addShutdownHook(CLOSE_THREAD);
         this.myAppStepHandler = myAppStepHandler;
     }
 

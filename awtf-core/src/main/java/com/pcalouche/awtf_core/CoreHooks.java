@@ -20,6 +20,17 @@ public class CoreHooks {
 
     @Autowired
     public CoreHooks(CoreStepHandler coreStepHandler) {
+        Thread CLOSE_THREAD = new Thread() {
+            @Override
+            public void run() {
+                try {
+                    logger.info("Shutting down web driver now that all tests are done");
+                    coreStepHandler.getTestInstance().getWebDriver().quit();
+                } catch (Exception e) {
+                }
+            }
+        };
+        Runtime.getRuntime().addShutdownHook(CLOSE_THREAD);
         this.coreStepHandler = coreStepHandler;
     }
 
