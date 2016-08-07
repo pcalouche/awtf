@@ -18,7 +18,6 @@ import org.openqa.selenium.safari.SafariDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -43,7 +42,6 @@ public class TestInstance {
      */
     private Map<String, String> tempMap = new HashMap<>();
 
-    @Autowired
     public TestInstance(TestEnvironmentConfig testEnvironmentConfig, AppConfig appConfig) {
         this.testEnvironmentConfig = testEnvironmentConfig;
         this.appConfig = appConfig;
@@ -89,29 +87,35 @@ public class TestInstance {
 
     protected void setupWebDriver() {
         // Set common desired capabilities for our browsers
-        DesiredCapabilities desiredCapabilities = new DesiredCapabilities();
-        desiredCapabilities.setJavascriptEnabled(true);
-        desiredCapabilities.setCapability("takesScreenshot", true);
-        desiredCapabilities.setCapability("acceptSslCerts", true);
+        DesiredCapabilities desiredCapabilities;
         logger.info("in setupWebDriver->" + testEnvironmentConfig.getBrowserType());
         switch (testEnvironmentConfig.getBrowserType()) {
             case phantomJS:
+                desiredCapabilities = DesiredCapabilities.phantomjs();
+                desiredCapabilities.setJavascriptEnabled(true);
+                desiredCapabilities.setCapability("takesScreenshot", true);
+                desiredCapabilities.setCapability("acceptSslCerts", true);
                 desiredCapabilities.setCapability(PhantomJSDriverService.PHANTOMJS_CLI_ARGS, new String[]{"--web-security=no", "--ignore-ssl-errors=yes", "--webdriver-loglevel=NONE"});
                 webDriver = new PhantomJSDriver(desiredCapabilities);
                 break;
             case firefox:
+                desiredCapabilities = DesiredCapabilities.firefox();
                 webDriver = new FirefoxDriver(desiredCapabilities);
                 break;
             case internetExplorer:
+                desiredCapabilities = DesiredCapabilities.internetExplorer();
                 webDriver = new InternetExplorerDriver(desiredCapabilities);
                 break;
             case edge:
+                desiredCapabilities = DesiredCapabilities.edge();
                 webDriver = new EdgeDriver(desiredCapabilities);
                 break;
             case chrome:
+                desiredCapabilities = DesiredCapabilities.chrome();
                 webDriver = new ChromeDriver(desiredCapabilities);
                 break;
             case safari:
+                desiredCapabilities = DesiredCapabilities.safari();
                 webDriver = new SafariDriver(desiredCapabilities);
                 break;
             default:
