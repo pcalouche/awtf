@@ -13,8 +13,8 @@
         <!-- Dependency Versions -->
         <awtf-core.version>2.0.0</awtf-core.version>
         <!-- Plugin Versions -->
-        <maven.compiler.version>3.3</maven.compiler.version><!-- Mar 2015 -->
-        <maven.surefire.version>2.18.1</maven.surefire.version><!-- Dec 2014 -->
+        <maven.compiler.version>3.5.1</maven.compiler.version><!-- Feb 2016 -->
+        <maven.surefire.version>2.19.1</maven.surefire.version><!-- Dec 2015 -->
     </properties>
     <dependencies>
         <dependency>

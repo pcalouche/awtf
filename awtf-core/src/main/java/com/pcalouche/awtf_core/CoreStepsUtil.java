@@ -168,7 +168,7 @@ public class CoreStepsUtil {
          * Sometimes hidden fields are used to store the value of a disabled field since disabled field values are not submitted. One example is a disabled select because there is only one option to
 		 * choose. Selenium will throw an exception if we interact with a hidden input, so don't try and set it if the input is one.
 		 */
-        if (formElement.getAttribute("type").equalsIgnoreCase("hidden")) {
+        if (StringUtils.equalsIgnoreCase(formElement.getAttribute("type"), "hidden")) {
             return;
         }
         // Make sure it is enabled before setting any values. This is useful for things like a select that is disabled until an AJAX call to load its data has finished.
@@ -188,11 +188,11 @@ public class CoreStepsUtil {
                     // Radios and checkboxes are set the same way so let the case fall through
                     case radio:
                     case checkbox:
-                        if (((String) value).equals("select")) {
+                        if (value.equals("select")) {
                             if (!formElement.isSelected()) {
                                 formElement.click();
                             }
-                        } else if (((String) value).equals("deselect")) {
+                        } else if (value.equals("deselect")) {
                             if (formElement.isSelected()) {
                                 formElement.click();
                             }
@@ -238,7 +238,7 @@ public class CoreStepsUtil {
          * Sometimes hidden fields are used to store the value of a disabled field since disabled field values are not submitted. One example is a disabled select because there is only one option to
 		 * choose. Selenium will throw an exception if we interact with a hidden input, so don't try and set it if the input is one.
 		 */
-        if (formElement.getAttribute("type").equalsIgnoreCase("hidden")) {
+        if (StringUtils.equalsIgnoreCase(formElement.getAttribute("type"), "hidden")) {
             return;
         }
 
@@ -262,9 +262,9 @@ public class CoreStepsUtil {
                     // Radios and checkboxes are verified the same way so let the case fall through
                     case radio:
                     case checkbox:
-                        if (((String) value).equals("selected")) {
+                        if (value.equals("selected")) {
                             assertTrue("Radio/Checkbox is not selected as expected", formElement.isSelected());
-                        } else if (((String) value).equals("deselected")) {
+                        } else if (value.equals("deselected")) {
                             assertTrue("Radio/Checkbox is unexpectedly selected", !formElement.isSelected());
                         } else {
                             fail("Invalid radio button or checkbox value to verify.  Must be either selected or deselected");
@@ -348,7 +348,7 @@ public class CoreStepsUtil {
         // Get parsed value for locators and testing
         String parsedValue = resolveText(value);
         AppElement appElement = null;
-        List<WebElement> webElements = null;
+        List<WebElement> webElements;
         String matchExactlyErrorFormat = "Could not find %s with value of %s";
         String matchPartialErrorFormat = "Could not find %s with value that contains %s";
         /*

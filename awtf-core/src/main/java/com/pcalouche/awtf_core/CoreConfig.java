@@ -23,8 +23,13 @@ import java.util.List;
 })
 public class CoreConfig {
     private static final Logger logger = LoggerFactory.getLogger(CoreConfig.class);
+    //    @Autowired
+    private final Environment environment;
+
     @Autowired
-    private Environment environment;
+    public CoreConfig(Environment environment) {
+        this.environment = environment;
+    }
 
     @Bean
     public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {

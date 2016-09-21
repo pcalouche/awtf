@@ -30,12 +30,6 @@ public class CoreStepHandler {
     private final TestInstance testInstance;
     private final CoreStepsUtil stepsUtil;
 
-//    public CoreStepHandler(CoreStepsUtil stepsUtil) {
-//        this.stepsUtil = stepsUtil;
-//        this.testInstance = stepsUtil.getTestInstance();
-//        this.testEnvironmentConfig = stepsUtil.getTestInstance().getTestEnvironmentConfig();
-//    }
-
     public CoreStepHandler(TestEnvironmentConfig testEnvironmentConfig,
                            TestInstance testInstance,
                            CoreStepsUtil stepsUtil) {
@@ -63,6 +57,7 @@ public class CoreStepHandler {
                     break;
                 }
             }
+            logger.info("setting wait to " + secondsToWait);
             // Update the web driver wait time for the scenario
             testInstance.getWebDriverWait().withTimeout(secondsToWait, TimeUnit.SECONDS);
             testInstance.getStopWatch().reset();
