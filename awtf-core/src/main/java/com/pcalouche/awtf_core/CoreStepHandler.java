@@ -83,7 +83,8 @@ public class CoreStepHandler {
         } catch (Exception e) {
             logger.error("Failed to tearDown scenario", e);
         } finally {
-            testInstance.getWebDriver().navigate().refresh();
+//            testInstance.getWebDriver().navigate().refresh();
+            testInstance.getWebDriver().quit();
         }
     }
 

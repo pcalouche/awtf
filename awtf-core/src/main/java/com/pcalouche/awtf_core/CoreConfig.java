@@ -3,13 +3,20 @@ package com.pcalouche.awtf_core;
 import com.pcalouche.awtf_core.util.appConfig.*;
 import com.pcalouche.awtf_core.util.enums.BrowserType;
 import com.pcalouche.awtf_core.util.enums.RowAction;
+import cucumber.runtime.java.spring.GlueCodeScopeConifg;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.edge.EdgeDriver;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.ie.InternetExplorerDriver;
+import org.openqa.selenium.phantomjs.PhantomJSDriver;
+import org.openqa.selenium.phantomjs.PhantomJSDriverService;
+import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.safari.SafariDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.context.annotation.PropertySources;
+import org.springframework.context.annotation.*;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.env.Environment;
 
@@ -21,9 +28,9 @@ import java.util.List;
         @PropertySource("classpath:/testEnvironmentConfigs/test_environment_config.${testEnvironment:localhost}.properties"),
         @PropertySource("classpath:/messages_en.properties")
 })
+@Import({GlueCodeScopeConifg.class})
 public class CoreConfig {
     private static final Logger logger = LoggerFactory.getLogger(CoreConfig.class);
-    //    @Autowired
     private final Environment environment;
 
     @Autowired
@@ -37,21 +44,7 @@ public class CoreConfig {
     }
 
     @Bean
-    public TestInstance testInstance() {
-        return new TestInstance(this.testEnvironmentConfig(), this.appConfig());
-    }
-
-    @Bean
-    public CoreStepsUtil coreStepsUtil() {
-        return new CoreStepsUtil(testInstance());
-    }
-
-    @Bean
-    public CoreStepHandler coreStepHandler() {
-        return new CoreStepHandler(testEnvironmentConfig(), testInstance(), coreStepsUtil());
-    }
-
-    private TestEnvironmentConfig testEnvironmentConfig() {
+    public TestEnvironmentConfig testEnvironmentConfig() {
         logger.info("Detected test environment was->" + environment.getProperty("testEnvironment"));
         BrowserType browserType = BrowserType.valueOf(environment.getProperty("browserType"));
         int secondsToWait = Integer.valueOf(environment.getProperty("secondsToWait"));
@@ -61,7 +54,8 @@ public class CoreConfig {
         return new TestEnvironmentConfig(browserType, secondsToWait, url, screenshotBeforeClick, screenshotOnScenarioCompletion);
     }
 
-    private AppConfig appConfig() {
+    @Bean
+    public AppConfig appConfig() {
         // Create the AppConfig as needed
         AppConfig appConfig = new AppConfig();
         // Global Locators
@@ -103,5 +97,72 @@ public class CoreConfig {
         errorMessageClasses.add("invalid");
         appConfig.setErrorMessageClasses(errorMessageClasses);
         return appConfig;
+    }
+
+    @Bean
+    @Scope(value = "cucumber-glue")
+    public WebDriver webDriver() {
+        // Set common desired capabilities for our browsers
+        DesiredCapabilities desiredCapabilities;
+        logger.info("in setupWebDriver->" + environment.getProperty("browserType"));
+        BrowserType browserType = BrowserType.valueOf(environment.getProperty("browserType"));
+        WebDriver webDriver = null;
+        switch (browserType) {
+            case phantomJS:
+                desiredCapabilities = DesiredCapabilities.phantomjs();
+                desiredCapabilities.setCapability("acceptSslCerts", true);
+                desiredCapabilities.setCapability(PhantomJSDriverService.PHANTOMJS_CLI_ARGS, new String[]{"--web-security=no", "--ignore-ssl-errors=yes", "--webdriver-loglevel=NONE"});
+                webDriver = new PhantomJSDriver(desiredCapabilities);
+                break;
+            case firefox:
+                System.setProperty("webdriver.gecko.driver", "C:\\webdrivers\\geckodriver0.10.0.exe");
+                desiredCapabilities = DesiredCapabilities.firefox();
+//                desiredCapabilities.setCapability("marionette", true);
+                webDriver = new FirefoxDriver(desiredCapabilities);
+//                webDriver = new MarionetteDriver();
+                break;
+            case internetExplorer:
+                desiredCapabilities = DesiredCapabilities.internetExplorer();
+                webDriver = new InternetExplorerDriver(desiredCapabilities);
+                break;
+            case edge:
+                desiredCapabilities = DesiredCapabilities.edge();
+                webDriver = new EdgeDriver(desiredCapabilities);
+                break;
+            case chrome:
+                desiredCapabilities = DesiredCapabilities.chrome();
+                webDriver = new ChromeDriver(desiredCapabilities);
+                break;
+            case safari:
+                desiredCapabilities = DesiredCapabilities.safari();
+                webDriver = new SafariDriver(desiredCapabilities);
+                break;
+            default:
+                break;
+        }
+        return webDriver;
+    }
+
+    @Bean
+    @Scope(value = "cucumber-glue")
+    public TestInstance testInstance(TestEnvironmentConfig testEnvironmentConfig,
+                                     AppConfig appConfig,
+                                     WebDriver webDriver) {
+        return new TestInstance(testEnvironmentConfig, appConfig, webDriver);
+    }
+
+    @Bean
+    @Scope(value = "cucumber-glue")
+    public CoreStepsUtil coreStepsUtil(TestInstance testInstance) {
+        logger.info(this.environment.getProperty("helpIconTooltipMessage"));
+        return new CoreStepsUtil(this.environment, testInstance);
+    }
+
+    @Bean
+    @Scope(value = "cucumber-glue")
+    public CoreStepHandler coreStepHandler(TestEnvironmentConfig testEnvironmentConfig,
+                                           TestInstance testInstance,
+                                           CoreStepsUtil coreStepsUtil) {
+        return new CoreStepHandler(testEnvironmentConfig, testInstance, coreStepsUtil);
     }
 }

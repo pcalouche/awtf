@@ -3,6 +3,7 @@ package com.pcalouche.awtf_app_example;
 import com.pcalouche.awtf_core.CoreStepsUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.env.Environment;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -15,10 +16,13 @@ import java.util.TimeZone;
  */
 public class MyAppStepsUtil extends CoreStepsUtil {
     private static final Logger logger = LoggerFactory.getLogger(MyAppStepsUtil.class);
+    private final Environment environment;
     private final MyAppTestInstance myAppTestInstance;
 
-    public MyAppStepsUtil(MyAppTestInstance myAppTestInstance) {
-        super(myAppTestInstance);
+    public MyAppStepsUtil(Environment environment,
+                          MyAppTestInstance myAppTestInstance) {
+        super(environment, myAppTestInstance);
+        this.environment = environment;
         this.myAppTestInstance = myAppTestInstance;
     }
 

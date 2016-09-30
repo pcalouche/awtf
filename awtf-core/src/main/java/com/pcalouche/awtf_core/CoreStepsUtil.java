@@ -29,12 +29,13 @@ import static org.junit.Assert.*;
  */
 public class CoreStepsUtil {
     private static final Logger logger = LoggerFactory.getLogger(CoreStepsUtil.class);
+    private final Environment environment;
     private final TestInstance testInstance;
-    @Autowired
-    private Environment environment;
 
     @Autowired
-    public CoreStepsUtil(TestInstance testInstance) {
+    public CoreStepsUtil(Environment environment,
+                         TestInstance testInstance) {
+        this.environment = environment;
         this.testInstance = testInstance;
     }
 
