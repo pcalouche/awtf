@@ -1,5 +1,6 @@
-package com.pcalouche.awtf_core;
+package com.pcalouche.awtf_core.util;
 
+import com.pcalouche.awtf_core.TestInstance;
 import com.pcalouche.awtf_core.util.appConfig.AppElement;
 import com.pcalouche.awtf_core.util.enums.HTMLElementState;
 import com.pcalouche.awtf_core.util.enums.HTMLFormElement;
@@ -14,7 +15,9 @@ import org.openqa.selenium.support.ui.Select;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.core.env.Environment;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -27,20 +30,18 @@ import static org.junit.Assert.*;
  *
  * @author Philip Calouche
  */
-public class CoreStepsUtil {
-    private static final Logger logger = LoggerFactory.getLogger(CoreStepsUtil.class);
+@Component
+@Scope(value = "cucumber-glue")
+public class StepsUtil {
+    private static final Logger logger = LoggerFactory.getLogger(StepsUtil.class);
     private final Environment environment;
     private final TestInstance testInstance;
 
     @Autowired
-    public CoreStepsUtil(Environment environment,
-                         TestInstance testInstance) {
+    public StepsUtil(Environment environment,
+                     TestInstance testInstance) {
         this.environment = environment;
         this.testInstance = testInstance;
-    }
-
-    public TestInstance getTestInstance() {
-        return testInstance;
     }
 
     /**
@@ -328,12 +329,16 @@ public class CoreStepsUtil {
                 break;
             }
         }
-        if (verificationToPerform.equals("see")) {
-            assertTrue(String.format("Expected value: %s was not found in any of the the %s dropdown options.", parsedValue, description), valueFound);
-        } else if (verificationToPerform.equals("do not see")) {
-            assertTrue(String.format("Unexpected value: %s was found in the %s dropdown options.", parsedValue, description), !valueFound);
-        } else {
-            fail(String.format("Bad action.  Valid actions are: %s", "see, do not see"));
+        switch (verificationToPerform) {
+            case "see":
+                assertTrue(String.format("Expected value: %s was not found in any of the the %s dropdown options.", parsedValue, description), valueFound);
+                break;
+            case "do not see":
+                assertTrue(String.format("Unexpected value: %s was found in the %s dropdown options.", parsedValue, description), !valueFound);
+                break;
+            default:
+                fail(String.format("Bad action.  Valid actions are: %s", "see, do not see"));
+                break;
         }
     }
 
@@ -525,9 +530,9 @@ public class CoreStepsUtil {
             if (!matchedRows.isEmpty()) {
                 StringBuilder sb = new StringBuilder();
                 for (WebElement matchingRow : matchedRows) {
-                    sb.append("\t" + matchingRow.getText() + "\n");
+                    sb.append("\t").append(matchingRow.getText()).append("\n");
                 }
-                logger.debug("\nMatching rows found (" + matchedRows.size() + " total):\n" + sb.substring(0, sb.length() - 1).toString());
+                logger.debug("\nMatching rows found (" + matchedRows.size() + " total):\n" + sb.substring(0, sb.length() - 1));
             } else {
                 logger.info("No matching rows found.");
             }

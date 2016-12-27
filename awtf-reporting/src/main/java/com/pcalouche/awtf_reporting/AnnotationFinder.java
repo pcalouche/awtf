@@ -1,7 +1,7 @@
 package com.pcalouche.awtf_reporting;
 
 
-import com.pcalouche.awtf_core.TdStepInfo;
+import com.pcalouche.awtf_core.util.StepDoc;
 import cucumber.api.java.en.Then;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
@@ -30,12 +30,12 @@ public class AnnotationFinder {
                         if (annotation instanceof Then) {
                             Then myAnnotation = (Then) annotation;
                             System.out.println("value: " + myAnnotation.value());
-                            TdStepInfo x = method.getAnnotation(TdStepInfo.class);
+                            StepDoc x = method.getAnnotation(StepDoc.class);
                             if (x == null) {
                                 System.out.println("null needs to be added");
                             } else {
                                 System.out.println("not null->" + x.description() + " " + x.gherkinString());
-                                System.out.println("!!!! " + TdStepInfo.class.getSimpleName());
+                                System.out.println("!!!! " + StepDoc.class.getSimpleName());
                             }
                         }
                     }

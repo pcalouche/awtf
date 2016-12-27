@@ -3,7 +3,7 @@ package com.pcalouche.awtf_core;
 import com.pcalouche.awtf_core.util.appConfig.*;
 import com.pcalouche.awtf_core.util.enums.BrowserType;
 import com.pcalouche.awtf_core.util.enums.RowAction;
-import cucumber.runtime.java.spring.GlueCodeScopeConifg;
+import cucumber.runtime.java.spring.GlueCodeScopeConfig;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.edge.EdgeDriver;
@@ -12,7 +12,6 @@ import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriverService;
 import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.safari.SafariDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +27,8 @@ import java.util.List;
         @PropertySource("classpath:/testEnvironmentConfigs/test_environment_config.${testEnvironment:localhost}.properties"),
         @PropertySource("classpath:/messages_en.properties")
 })
-@Import({GlueCodeScopeConifg.class})
+@ComponentScan("com.pcalouche.awtf_core")
+@Import({GlueCodeScopeConfig.class})
 public class CoreConfig {
     private static final Logger logger = LoggerFactory.getLogger(CoreConfig.class);
     private final Environment environment;
@@ -108,34 +108,32 @@ public class CoreConfig {
         BrowserType browserType = BrowserType.valueOf(environment.getProperty("browserType"));
         WebDriver webDriver = null;
         switch (browserType) {
-            case phantomJS:
+            case phantomjs:
                 desiredCapabilities = DesiredCapabilities.phantomjs();
+                desiredCapabilities.setCapability(PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY, environment.getProperty("phantomjsDriverPath"));
                 desiredCapabilities.setCapability("acceptSslCerts", true);
                 desiredCapabilities.setCapability(PhantomJSDriverService.PHANTOMJS_CLI_ARGS, new String[]{"--web-security=no", "--ignore-ssl-errors=yes", "--webdriver-loglevel=NONE"});
                 webDriver = new PhantomJSDriver(desiredCapabilities);
                 break;
             case firefox:
-                System.setProperty("webdriver.gecko.driver", "C:\\webdrivers\\geckodriver0.10.0.exe");
+                System.setProperty("webdriver.gecko.driver", environment.getProperty("geckoDriverPath"));
                 desiredCapabilities = DesiredCapabilities.firefox();
-//                desiredCapabilities.setCapability("marionette", true);
                 webDriver = new FirefoxDriver(desiredCapabilities);
-//                webDriver = new MarionetteDriver();
                 break;
             case internetExplorer:
+                System.setProperty("webdriver.ie.driver", environment.getProperty("internetExplorerDriverPath"));
                 desiredCapabilities = DesiredCapabilities.internetExplorer();
                 webDriver = new InternetExplorerDriver(desiredCapabilities);
                 break;
             case edge:
+                System.setProperty("webdriver.edge.driver", environment.getProperty("edgeDriverPath"));
                 desiredCapabilities = DesiredCapabilities.edge();
                 webDriver = new EdgeDriver(desiredCapabilities);
                 break;
             case chrome:
+                System.setProperty("webdriver.chrome.driver", environment.getProperty("chromeDriverPath"));
                 desiredCapabilities = DesiredCapabilities.chrome();
                 webDriver = new ChromeDriver(desiredCapabilities);
-                break;
-            case safari:
-                desiredCapabilities = DesiredCapabilities.safari();
-                webDriver = new SafariDriver(desiredCapabilities);
                 break;
             default:
                 break;
@@ -151,18 +149,16 @@ public class CoreConfig {
         return new TestInstance(testEnvironmentConfig, appConfig, webDriver);
     }
 
-    @Bean
-    @Scope(value = "cucumber-glue")
-    public CoreStepsUtil coreStepsUtil(TestInstance testInstance) {
-        logger.info(this.environment.getProperty("helpIconTooltipMessage"));
-        return new CoreStepsUtil(this.environment, testInstance);
-    }
-
-    @Bean
-    @Scope(value = "cucumber-glue")
-    public CoreStepHandler coreStepHandler(TestEnvironmentConfig testEnvironmentConfig,
-                                           TestInstance testInstance,
-                                           CoreStepsUtil coreStepsUtil) {
-        return new CoreStepHandler(testEnvironmentConfig, testInstance, coreStepsUtil);
-    }
+//    @Bean
+//    @Scope(value = "cucumber-glue")
+//    public StepsUtil coreStepsUtil(TestInstance testInstance) {
+//        return new StepsUtil(this.environment, testInstance);
+//    }
+//
+//    @Bean
+//    @Scope(value = "cucumber-glue")
+//    public CoreStepsHandler coreStepHandler(TestInstance testInstance,
+//                                            StepsUtil stepsUtil) {
+//        return new CoreStepsHandler(testInstance, stepsUtil);
+//    }
 }

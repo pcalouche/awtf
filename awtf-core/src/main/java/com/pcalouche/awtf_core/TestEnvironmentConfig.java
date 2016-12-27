@@ -1,11 +1,8 @@
 package com.pcalouche.awtf_core;
 
 import com.pcalouche.awtf_core.util.enums.BrowserType;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class TestEnvironmentConfig {
-    private static final Logger logger = LoggerFactory.getLogger(TestEnvironmentConfig.class);
     private final BrowserType browserType;
     private final int secondsToWait;
     private final String url;

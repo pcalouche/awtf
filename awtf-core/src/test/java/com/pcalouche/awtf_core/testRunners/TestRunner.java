@@ -15,7 +15,8 @@ import org.junit.runner.RunWith;
         plugin = {"html:target/cucumber/testRunner", "json:target/cucumber/testRunner.json", "rerun:target/cucumber/testRunnerRerun.txt"},
         features = {"classpath:features/"},
 //        tags = {"~@pending", "@elementState"},
-        tags = {"~@pending"},
+        tags = {"~@pending", "@appSpecificFeature"},
+//        tags = {"~@pending"},
         snippets = SnippetType.CAMELCASE)
 public class TestRunner {
 }

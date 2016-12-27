@@ -6,10 +6,9 @@ package com.pcalouche.awtf_core.util.enums;
  * @author Philip Calouche
  */
 public enum BrowserType {
-    phantomJS,
+    chrome,
+    edge,
     firefox,
     internetExplorer,
-    edge,
-    safari,
-    chrome
+    phantomjs
 }

@@ -73,7 +73,6 @@ public class AppConfig {
     public AppElement findAppWebElement(String description, Class<?> clazz) {
         AppElement foundBaseWebElement = null;
         for (AppElement appWebElement : appWebElements) {
-//            if ((clazz == null || appWebElement.getClass().equals(clazz)) && appWebElement.getDescription().equals(description)) {
             if (appWebElement.getDescription().equals(description)) {
                 return appWebElement;
             }

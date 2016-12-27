@@ -1,91 +1,40 @@
-package com.pcalouche.awtf_core;
+package com.pcalouche.awtf_core.stepHandlers;
 
+import com.pcalouche.awtf_core.TestInstance;
+import com.pcalouche.awtf_core.util.StepsUtil;
 import com.pcalouche.awtf_core.util.appConfig.AppElement;
 import com.pcalouche.awtf_core.util.appConfig.ElementWithTooltip;
 import com.pcalouche.awtf_core.util.appConfig.Modal;
 import com.pcalouche.awtf_core.util.enums.HTMLElementState;
 import com.pcalouche.awtf_core.util.enums.HTMLFormElement;
 import com.pcalouche.awtf_core.util.enums.RowAction;
-import com.pcalouche.awtf_core.util.enums.WaitTag;
 import cucumber.api.DataTable;
-import cucumber.api.Scenario;
 import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-public class CoreStepHandler {
-    private static final Logger logger = LoggerFactory.getLogger(CoreStepHandler.class);
-    private final TestEnvironmentConfig testEnvironmentConfig;
+@Component
+@Scope(value = "cucumber-glue")
+public class CoreStepsHandler {
     private final TestInstance testInstance;
-    private final CoreStepsUtil stepsUtil;
+    private final StepsUtil stepsUtil;
 
-    public CoreStepHandler(TestEnvironmentConfig testEnvironmentConfig,
-                           TestInstance testInstance,
-                           CoreStepsUtil stepsUtil) {
-        this.testEnvironmentConfig = testEnvironmentConfig;
+    @Autowired
+    public CoreStepsHandler(TestInstance testInstance,
+                            StepsUtil stepsUtil) {
         this.testInstance = testInstance;
         this.stepsUtil = stepsUtil;
-    }
-
-    public TestInstance getTestInstance() {
-        return testInstance;
-    }
-
-    protected void handleScenarioSetup(Scenario scenario) {
-        // Set the currentScenario of the test instance, so it can be used if needed
-        testInstance.setCurrentScenario(scenario);
-        // Always check if a the web driver wait needs to be changed from the default for a scenario based on its tags. Also reset the stop watch and current scenario.
-        try {
-            // Set seconds to wait. Will use what is in the default Test Environment Config if wait tag is not found
-            int secondsToWait = testEnvironmentConfig.getSecondsToWait();
-            boolean displayWaitTag = false;
-            for (WaitTag waitTag : WaitTag.values()) {
-                if (scenario.getSourceTagNames().contains(waitTag.getTagName())) {
-                    displayWaitTag = true;
-                    secondsToWait = waitTag.getSecondsToWait();
-                    break;
-                }
-            }
-            logger.info("setting wait to " + secondsToWait);
-            // Update the web driver wait time for the scenario
-            testInstance.getWebDriverWait().withTimeout(secondsToWait, TimeUnit.SECONDS);
-            testInstance.getStopWatch().reset();
-            testInstance.getStopWatch().start();
-            logger.info(String.format("Starting Scenario: \"%s\"", scenario.getName()));
-            if (displayWaitTag) {
-                logger.info(String.format("Wait Tag was set to: %d seconds based on given tag.", secondsToWait));
-            }
-        } catch (Exception e) {
-            logger.error("Failed to initialize scenario", e);
-            this.handleScenarioTearDown(scenario);
-        }
-    }
-
-    protected void handleScenarioTearDown(Scenario scenario) {
-        try {
-            testInstance.getStopWatch().stop();
-            logger.info(String.format("Scenario: \"%s\" completed in %.3f seconds", scenario.getName(), testInstance.getStopWatch().getTime() / 1000.0));
-            testInstance.getCurrentScenario().write(String.format("Completed in %.3f seconds.", testInstance.getStopWatch().getTime() / 1000.0));
-            if (testEnvironmentConfig.isScreenshotOnScenarioCompletion() || scenario.isFailed()) {
-                iTakeAScreenshot();
-            }
-        } catch (Exception e) {
-            logger.error("Failed to tearDown scenario", e);
-        } finally {
-//            testInstance.getWebDriver().navigate().refresh();
-            testInstance.getWebDriver().quit();
-        }
     }
 
     /**
@@ -101,7 +50,7 @@ public class CoreStepHandler {
      * @param text the text of the link or button
      */
     public void iClickOn(String text) {
-        if (testEnvironmentConfig.isScreenshotBeforeClick()) {
+        if (testInstance.getTestEnvironmentConfig().isScreenshotBeforeClick()) {
             stepsUtil.takeAScreenShot();
         }
         // Determine what parent locator to use based on what is currently displayed on the UI
@@ -471,7 +420,7 @@ public class CoreStepHandler {
             case CLICK:
                 actionableRowElements = stepsUtil.findActionableRowElements(rowAction, criteria, null);
                 assertTrue("No matching rows found", !actionableRowElements.isEmpty());
-                if (testEnvironmentConfig.isScreenshotBeforeClick()) {
+                if (testInstance.getTestEnvironmentConfig().isScreenshotBeforeClick()) {
                     stepsUtil.takeAScreenShot();
                 }
                 for (WebElement actionableRowElement : actionableRowElements) {
