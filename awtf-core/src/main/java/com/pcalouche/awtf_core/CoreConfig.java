@@ -148,17 +148,4 @@ public class CoreConfig {
                                      WebDriver webDriver) {
         return new TestInstance(testEnvironmentConfig, appConfig, webDriver);
     }
-
-//    @Bean
-//    @Scope(value = "cucumber-glue")
-//    public StepsUtil coreStepsUtil(TestInstance testInstance) {
-//        return new StepsUtil(this.environment, testInstance);
-//    }
-//
-//    @Bean
-//    @Scope(value = "cucumber-glue")
-//    public CoreStepsHandler coreStepHandler(TestInstance testInstance,
-//                                            StepsUtil stepsUtil) {
-//        return new CoreStepsHandler(testInstance, stepsUtil);
-//    }
 }
