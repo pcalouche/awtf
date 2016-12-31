@@ -12,6 +12,7 @@ import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriverService;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.RemoteWebDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,8 @@ import org.springframework.context.annotation.*;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.env.Environment;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,12 +49,11 @@ public class CoreConfig {
     @Bean
     public TestEnvironmentConfig testEnvironmentConfig() {
         logger.info("Detected test environment was->" + environment.getProperty("testEnvironment"));
-        BrowserType browserType = BrowserType.valueOf(environment.getProperty("browserType"));
         int secondsToWait = Integer.valueOf(environment.getProperty("secondsToWait"));
         String url = environment.getProperty("url");
         boolean screenshotBeforeClick = Boolean.valueOf(environment.getProperty("screenshotBeforeClick"));
         boolean screenshotOnScenarioCompletion = Boolean.valueOf(environment.getProperty("screenshotOnScenarioCompletion"));
-        return new TestEnvironmentConfig(browserType, secondsToWait, url, screenshotBeforeClick, screenshotOnScenarioCompletion);
+        return new TestEnvironmentConfig(secondsToWait, url, screenshotBeforeClick, screenshotOnScenarioCompletion);
     }
 
     @Bean
@@ -101,39 +103,59 @@ public class CoreConfig {
 
     @Bean
     @Scope(value = "cucumber-glue")
-    public WebDriver webDriver() {
-        // Set common desired capabilities for our browsers
-        DesiredCapabilities desiredCapabilities;
-        logger.info("in setupWebDriver->" + environment.getProperty("browserType"));
-        BrowserType browserType = BrowserType.valueOf(environment.getProperty("browserType"));
+    public WebDriver webDriver() throws MalformedURLException {
         WebDriver webDriver = null;
+        BrowserType browserType = BrowserType.valueOf(environment.getProperty("browserType"));
+        boolean runRemote = Boolean.valueOf(environment.getProperty("runRemote"));
+        logger.info("Browser type->" + browserType.name() + " Run Remote->" + runRemote);
+        DesiredCapabilities desiredCapabilities;
         switch (browserType) {
+            case chrome:
+                desiredCapabilities = DesiredCapabilities.chrome();
+                if (runRemote) {
+                    webDriver = new RemoteWebDriver(new URL(environment.getProperty("seleniumGridUrl")), desiredCapabilities);
+                } else {
+                    System.setProperty("webdriver.chrome.driver", environment.getProperty("chromeDriverPath"));
+                    webDriver = new ChromeDriver(desiredCapabilities);
+                }
+                break;
+            case firefox:
+                desiredCapabilities = DesiredCapabilities.firefox();
+                if (runRemote) {
+                    webDriver = new RemoteWebDriver(new URL(environment.getProperty("seleniumGridUrl")), desiredCapabilities);
+                } else {
+                    System.setProperty("webdriver.gecko.driver", environment.getProperty("geckoDriverPath"));
+                    webDriver = new FirefoxDriver(desiredCapabilities);
+                }
+                break;
             case phantomjs:
                 desiredCapabilities = DesiredCapabilities.phantomjs();
                 desiredCapabilities.setCapability(PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY, environment.getProperty("phantomjsDriverPath"));
                 desiredCapabilities.setCapability("acceptSslCerts", true);
                 desiredCapabilities.setCapability(PhantomJSDriverService.PHANTOMJS_CLI_ARGS, new String[]{"--web-security=no", "--ignore-ssl-errors=yes", "--webdriver-loglevel=NONE"});
-                webDriver = new PhantomJSDriver(desiredCapabilities);
-                break;
-            case firefox:
-                System.setProperty("webdriver.gecko.driver", environment.getProperty("geckoDriverPath"));
-                desiredCapabilities = DesiredCapabilities.firefox();
-                webDriver = new FirefoxDriver(desiredCapabilities);
-                break;
-            case internetExplorer:
-                System.setProperty("webdriver.ie.driver", environment.getProperty("internetExplorerDriverPath"));
-                desiredCapabilities = DesiredCapabilities.internetExplorer();
-                webDriver = new InternetExplorerDriver(desiredCapabilities);
+                if (runRemote) {
+                    webDriver = new RemoteWebDriver(new URL(environment.getProperty("seleniumGridUrl")), desiredCapabilities);
+                } else {
+                    webDriver = new PhantomJSDriver(desiredCapabilities);
+                }
                 break;
             case edge:
-                System.setProperty("webdriver.edge.driver", environment.getProperty("edgeDriverPath"));
                 desiredCapabilities = DesiredCapabilities.edge();
-                webDriver = new EdgeDriver(desiredCapabilities);
+                if (runRemote) {
+                    webDriver = new RemoteWebDriver(new URL(environment.getProperty("seleniumGridUrl")), desiredCapabilities);
+                } else {
+                    System.setProperty("webdriver.edge.driver", environment.getProperty("edgeDriverPath"));
+                    webDriver = new EdgeDriver(desiredCapabilities);
+                }
                 break;
-            case chrome:
-                System.setProperty("webdriver.chrome.driver", environment.getProperty("chromeDriverPath"));
-                desiredCapabilities = DesiredCapabilities.chrome();
-                webDriver = new ChromeDriver(desiredCapabilities);
+            case internetExplorer:
+                desiredCapabilities = DesiredCapabilities.internetExplorer();
+                if (runRemote) {
+                    webDriver = new RemoteWebDriver(new URL(environment.getProperty("seleniumGridUrl")), desiredCapabilities);
+                } else {
+                    System.setProperty("webdriver.ie.driver", environment.getProperty("internetExplorerDriverPath"));
+                    webDriver = new InternetExplorerDriver(desiredCapabilities);
+                }
                 break;
             default:
                 break;

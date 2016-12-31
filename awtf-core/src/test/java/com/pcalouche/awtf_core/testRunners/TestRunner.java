@@ -12,7 +12,7 @@ import org.junit.runner.RunWith;
  */
 @RunWith(Cucumber.class)
 @CucumberOptions(glue = {"com.pcalouche.awtf_core"},
-        plugin = {"html:target/cucumber/testRunner", "json:target/cucumber/testRunner.json", "rerun:target/cucumber/testRunnerRerun.txt"},
+        plugin = {"html:target/cucumber/htmlReports/testRunner", "json:target/cucumber/jsonReports/testRunner.json", "rerun:target/cucumber/reRun/testRunnerRerun.txt"},
         features = {"classpath:features/"},
 //        tags = {"~@pending", "@elementState"},
         tags = {"~@pending", "@appSpecificFeature"},

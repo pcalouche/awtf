@@ -8,6 +8,7 @@ import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.ContextHierarchy;
 
@@ -25,6 +26,7 @@ public class Hooks {
     private static final Logger logger = LoggerFactory.getLogger(Hooks.class);
     private final TestInstance testInstance;
 
+    @Autowired
     public Hooks(TestInstance testInstance) {
         this.testInstance = testInstance;
     }

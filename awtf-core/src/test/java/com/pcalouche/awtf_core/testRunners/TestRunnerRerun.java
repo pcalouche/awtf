@@ -12,8 +12,8 @@ import org.junit.runner.RunWith;
  */
 @RunWith(Cucumber.class)
 @CucumberOptions(glue = {"classpath:"},
-        plugin = {"html:target/cucumber/testRunnerRerun", "json:target/cucumber/testRunnerRerun.json"},
-        features = {"@target/cucumber/testRunnerRerun.txt"},
+        plugin = {"html:target/cucumber/htmlReports/testRunnerRerun", "json:target/cucumber/jsonReports/testRunnerRerun.json"},
+        features = {"@target/cucumber/reRun/testRunnerRerun.txt"},
         snippets = SnippetType.CAMELCASE)
 public class TestRunnerRerun {
 }
