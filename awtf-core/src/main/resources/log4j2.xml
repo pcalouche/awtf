@@ -9,7 +9,7 @@
         </Console>
     </Appenders>
     <Loggers>
-        <Logger name="com.pcalouche.awtf_core" level="DEBUG"/>
+        <Logger name="com.pcalouche.awtf_core" level="INFO"/>
         <Root level="INFO">
             <AppenderRef ref="Console"/>
         </Root>

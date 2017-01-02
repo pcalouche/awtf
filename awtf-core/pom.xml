@@ -10,6 +10,8 @@
     <properties>
         <!-- Misc Properties -->
         <java.version>1.8</java.version>
+        <surefire.forkCount>10</surefire.forkCount>
+        <testEnvironment>localhost</testEnvironment>
         <!-- Dependency Versions -->
         <log4j.version>2.7</log4j.version> <!-- Oct 2016 -->
         <apache.commons.version>3.5</apache.commons.version><!-- Oct 2016 -->
@@ -21,6 +23,7 @@
         <phantomjsdriver.version>1.3.0</phantomjsdriver.version><!-- Apr 2016 -->
         <!-- Plugin Versions -->
         <maven.compiler.version>3.6.0</maven.compiler.version><!-- Oct 2016 -->
+        <cucumber.jvm.parallel.version>2.2.0</cucumber.jvm.parallel.version><!-- Dec 2016-->
         <maven.surefire.version>2.19.1</maven.surefire.version><!-- Dec 2015 -->
         <maven.cucumber.reporting.version>3.3.0</maven.cucumber.reporting.version><!-- Dec 2016-->
     </properties>
@@ -118,9 +121,73 @@
                 </configuration>
             </plugin>
             <plugin>
+                <groupId>com.github.temyers</groupId>
+                <artifactId>cucumber-jvm-parallel-plugin</artifactId>
+                <version>${cucumber.jvm.parallel.version}</version>
+                <executions>
+                    <execution>
+                        <id>generateRunners</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>generateRunners</goal>
+                        </goals>
+                        <configuration>
+                            <!-- Mandatory -->
+                            <!-- comma separated list of package names to scan for glue code -->
+                            <glue>com.pcalouche.awtf_core</glue>
+                            <!-- These are the default values -->
+                            <!-- Where to output the generated Junit tests -->
+                            <outputDirectory>${project.build.directory}/generated-test-sources/cucumber</outputDirectory>
+                            <!-- The directory containing your feature files.  -->
+                            <featuresDirectory>src/test/resources/features/</featuresDirectory>
+                            <!-- Directory where the cucumber report files shall be written  -->
+                            <cucumberOutputDir>target/cucumber-parallel</cucumberOutputDir>
+                            <!-- comma separated list of output formats -->
+                            <format>json</format>
+                            <!-- CucumberOptions.strict property -->
+                            <strict>true</strict>
+                            <!-- CucumberOptions.monochrome property -->
+                            <monochrome>true</monochrome>
+                            <!-- The tags to run, maps to CucumberOptions.tags property -->
+                            <tags></tags>
+                            <parallelScheme>FEATURE</parallelScheme>
+                            <!-- If set to true, only feature files containing the required tags shall be generated. -->
+                            <!-- Excluded tags (~@notMe) are ignored. -->
+                            <filterFeaturesByTags>true</filterFeaturesByTags>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <!--For forked JUnit Tests-->
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>${maven.surefire.version}</version>
+                <executions>
+                    <execution>
+                        <id>acceptance-test</id>
+                        <phase>integration-test</phase>
+                        <goals>
+                            <goal>test</goal>
+                        </goals>
+                        <configuration>
+                            <forkCount>${surefire.forkCount}</forkCount>
+                            <reuseForks>true</reuseForks>
+                            <argLine>-Xmx2048m</argLine>
+                            <includes>
+                                <include>**/*IT.class</include>
+                            </includes>
+                            <excludes>
+                                <exclude>**/*DevTestRunner.class</exclude>
+                            </excludes>
+                            <testFailureIgnore>true</testFailureIgnore>
+                            <systemPropertyVariables>
+                                <testEnvironment>${testEnvironment}</testEnvironment>
+                            </systemPropertyVariables>
+                        </configuration>
+                    </execution>
+                </executions>
+
             </plugin>
             <!--For Cucumber Reports-->
             <plugin>
@@ -137,8 +204,7 @@
                         <configuration>
                             <projectName>acceptance-tests</projectName>
                             <outputDirectory>${project.build.directory}</outputDirectory>
-                            <cucumberOutput>${project.build.directory}/cucumber/jsonReports</cucumberOutput>
-                            <skippedFails>true</skippedFails>
+                            <cucumberOutput>${project.build.directory}/cucumber-parallel</cucumberOutput>
                         </configuration>
                     </execution>
                 </executions>
