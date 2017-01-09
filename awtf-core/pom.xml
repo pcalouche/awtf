@@ -25,7 +25,7 @@
         <maven.compiler.version>3.6.0</maven.compiler.version><!-- Oct 2016 -->
         <cucumber.jvm.parallel.version>2.2.0</cucumber.jvm.parallel.version><!-- Dec 2016-->
         <maven.surefire.version>2.19.1</maven.surefire.version><!-- Dec 2015 -->
-        <maven.cucumber.reporting.version>3.1.0</maven.cucumber.reporting.version><!-- Oct 2016-->
+        <maven.cucumber.reporting.version>3.4.0</maven.cucumber.reporting.version><!-- Jan 2017-->
     </properties>
 
     <dependencies>
@@ -150,10 +150,10 @@
                             <monochrome>true</monochrome>
                             <!-- The tags to run, maps to CucumberOptions.tags property -->
                             <tags></tags>
-                            <parallelScheme>FEATURE</parallelScheme>
                             <!-- If set to true, only feature files containing the required tags shall be generated. -->
                             <!-- Excluded tags (~@notMe) are ignored. -->
                             <filterFeaturesByTags>true</filterFeaturesByTags>
+                            <parallelScheme>SCENARIO</parallelScheme>
                         </configuration>
                     </execution>
                 </executions>

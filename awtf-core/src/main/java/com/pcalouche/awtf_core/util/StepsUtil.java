@@ -694,7 +694,7 @@ public class StepsUtil {
      * @return the text to use
      */
     public String resolveText(String text) {
-        String returnText = null;
+        String returnText;
         // See if message needs to pulled from resource bundle or not
         if (text.startsWith("[") && text.endsWith("]")) {
             returnText = environment.getProperty(text.substring(1, text.length() - 1));

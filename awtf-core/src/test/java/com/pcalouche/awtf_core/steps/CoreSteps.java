@@ -144,4 +144,9 @@ public class CoreSteps {
     public void iTheRowWithTheFollowingCriteria(String rowActionDescription, DataTable criteria) {
         coreStepsHandler.iTheRowWithTheFollowingCriteria(rowActionDescription, criteria);
     }
+
+    @Then("^A file named \"([^\"]*)\" is downloaded$")
+    public void aFileNamedIsDownloaded(String filename) {
+        coreStepsHandler.aFileNamedIsDownloaded(filename);
+    }
 }

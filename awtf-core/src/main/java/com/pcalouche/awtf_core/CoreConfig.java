@@ -1,5 +1,6 @@
 package com.pcalouche.awtf_core;
 
+import com.pcalouche.awtf_core.util.FileDownloadUtils;
 import com.pcalouche.awtf_core.util.appConfig.*;
 import com.pcalouche.awtf_core.util.enums.BrowserType;
 import com.pcalouche.awtf_core.util.enums.RowAction;
@@ -8,6 +9,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriverService;
@@ -120,7 +122,23 @@ public class CoreConfig {
                 }
                 break;
             case firefox:
+                FirefoxProfile firefoxProfile = new FirefoxProfile();
+                firefoxProfile.setPreference("browser.download.folderList", 2);
+                firefoxProfile.setPreference("browser.download.manager.showWhenStarting", false);
+                firefoxProfile.setPreference("browser.download.dir", FileDownloadUtils.DOWNLOAD_PATH.toString());
+                firefoxProfile.setPreference("browser.helperApps.neverAsk.openFile",
+                        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,text/csv,application/x-msexcel,application/excel,application/x-excel,application/vnd.ms-excel,image/png,image/jpeg,text/html,text/plain,application/msword,application/xml");
+                firefoxProfile.setPreference("browser.helperApps.neverAsk.saveToDisk",
+                        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,text/csv,application/x-msexcel,application/excel,application/x-excel,application/vnd.ms-excel,image/png,image/jpeg,text/html,text/plain,application/msword,application/xml");
+                firefoxProfile.setPreference("browser.helperApps.alwaysAsk.force", false);
+                firefoxProfile.setPreference("browser.download.manager.alertOnEXEOpen", false);
+                firefoxProfile.setPreference("browser.download.manager.focusWhenStarting", false);
+                firefoxProfile.setPreference("browser.download.manager.useWindow", false);
+                firefoxProfile.setPreference("browser.download.manager.showAlertOnComplete", false);
+                firefoxProfile.setPreference("browser.download.manager.closeWhenDone", false);
                 desiredCapabilities = DesiredCapabilities.firefox();
+                desiredCapabilities.setCapability(FirefoxDriver.PROFILE, firefoxProfile);
+
                 if (runRemote) {
                     webDriver = new RemoteWebDriver(new URL(environment.getProperty("seleniumGridUrl")), desiredCapabilities);
                 } else {
