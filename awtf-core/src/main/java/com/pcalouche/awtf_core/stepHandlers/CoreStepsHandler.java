@@ -1,6 +1,7 @@
 package com.pcalouche.awtf_core.stepHandlers;
 
 import com.pcalouche.awtf_core.TestInstance;
+import com.pcalouche.awtf_core.util.FileDownloadUtils;
 import com.pcalouche.awtf_core.util.StepsUtil;
 import com.pcalouche.awtf_core.util.appConfig.AppElement;
 import com.pcalouche.awtf_core.util.appConfig.ElementWithTooltip;
@@ -19,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
 import java.util.List;
 
 import static org.junit.Assert.assertTrue;
@@ -475,6 +477,16 @@ public class CoreStepsHandler {
                 break;
             default:
                 break;
+        }
+    }
+
+    public void aFileNamedIsDownloaded(String filename) {
+        try {
+            FileDownloadUtils.waitForFile(filename);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 }

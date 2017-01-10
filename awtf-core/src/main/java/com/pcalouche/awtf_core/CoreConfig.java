@@ -1,13 +1,16 @@
 package com.pcalouche.awtf_core;
 
+import com.pcalouche.awtf_core.util.FileDownloadUtils;
 import com.pcalouche.awtf_core.util.appConfig.*;
 import com.pcalouche.awtf_core.util.enums.BrowserType;
 import com.pcalouche.awtf_core.util.enums.RowAction;
 import cucumber.runtime.java.spring.GlueCodeScopeConfig;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriverService;
@@ -23,7 +26,9 @@ import org.springframework.core.env.Environment;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Configuration
 @PropertySources({
@@ -111,7 +116,14 @@ public class CoreConfig {
         DesiredCapabilities desiredCapabilities;
         switch (browserType) {
             case chrome:
+                Map<String, Object> prefs = new HashMap<>();
+                prefs.put("download.default_directory", FileDownloadUtils.DOWNLOAD_PATH.toString());
+
+                ChromeOptions chromeOptions = new ChromeOptions();
+                chromeOptions.setExperimentalOption("prefs", prefs);
+
                 desiredCapabilities = DesiredCapabilities.chrome();
+                desiredCapabilities.setCapability(ChromeOptions.CAPABILITY, chromeOptions);
                 if (runRemote) {
                     webDriver = new RemoteWebDriver(new URL(environment.getProperty("seleniumGridUrl")), desiredCapabilities);
                 } else {
@@ -120,7 +132,23 @@ public class CoreConfig {
                 }
                 break;
             case firefox:
+                FirefoxProfile firefoxProfile = new FirefoxProfile();
+                firefoxProfile.setPreference("browser.download.folderList", 2);
+                firefoxProfile.setPreference("browser.download.manager.showWhenStarting", false);
+                firefoxProfile.setPreference("browser.download.dir", FileDownloadUtils.DOWNLOAD_PATH.toString());
+                firefoxProfile.setPreference("browser.helperApps.neverAsk.openFile",
+                        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,text/csv,application/x-msexcel,application/excel,application/x-excel,application/vnd.ms-excel,image/png,image/jpeg,text/html,text/plain,application/msword,application/xml");
+                firefoxProfile.setPreference("browser.helperApps.neverAsk.saveToDisk",
+                        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,text/csv,application/x-msexcel,application/excel,application/x-excel,application/vnd.ms-excel,image/png,image/jpeg,text/html,text/plain,application/msword,application/xml");
+                firefoxProfile.setPreference("browser.helperApps.alwaysAsk.force", false);
+                firefoxProfile.setPreference("browser.download.manager.alertOnEXEOpen", false);
+                firefoxProfile.setPreference("browser.download.manager.focusWhenStarting", false);
+                firefoxProfile.setPreference("browser.download.manager.useWindow", false);
+                firefoxProfile.setPreference("browser.download.manager.showAlertOnComplete", false);
+                firefoxProfile.setPreference("browser.download.manager.closeWhenDone", false);
                 desiredCapabilities = DesiredCapabilities.firefox();
+                desiredCapabilities.setCapability(FirefoxDriver.PROFILE, firefoxProfile);
+
                 if (runRemote) {
                     webDriver = new RemoteWebDriver(new URL(environment.getProperty("seleniumGridUrl")), desiredCapabilities);
                 } else {

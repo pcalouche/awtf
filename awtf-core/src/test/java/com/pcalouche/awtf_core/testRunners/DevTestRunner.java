@@ -14,7 +14,8 @@ import org.junit.runner.RunWith;
 @CucumberOptions(glue = {"com.pcalouche.awtf_core"},
         plugin = {"html:target/cucumber/htmlReports/devTestRunner", "json:target/cucumber/jsonReports/devTestRunner.json"},
         features = {"classpath:features/"},
-        tags = {"~@pending", "@appSpecificFeature"},
+        tags = {"~@pending", "@fileDownload"},
+//        tags = {"~@pending", "@appSpecificFeature"},
         snippets = SnippetType.CAMELCASE)
 public class DevTestRunner {
 }
