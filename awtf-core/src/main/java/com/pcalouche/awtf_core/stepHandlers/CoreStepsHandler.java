@@ -482,7 +482,6 @@ public class CoreStepsHandler {
 
     public void aFileNamedIsDownloaded(String filename) {
         try {
-//            FileDownloadUtils.waitForFile(filename + "fake");
             FileDownloadUtils.waitForFile(filename);
         } catch (IOException e) {
             e.printStackTrace();

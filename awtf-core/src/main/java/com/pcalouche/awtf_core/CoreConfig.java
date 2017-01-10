@@ -7,6 +7,7 @@ import com.pcalouche.awtf_core.util.enums.RowAction;
 import cucumber.runtime.java.spring.GlueCodeScopeConfig;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxProfile;
@@ -25,7 +26,9 @@ import org.springframework.core.env.Environment;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Configuration
 @PropertySources({
@@ -113,7 +116,14 @@ public class CoreConfig {
         DesiredCapabilities desiredCapabilities;
         switch (browserType) {
             case chrome:
+                Map<String, Object> prefs = new HashMap<>();
+                prefs.put("download.default_directory", FileDownloadUtils.DOWNLOAD_PATH.toString());
+
+                ChromeOptions chromeOptions = new ChromeOptions();
+                chromeOptions.setExperimentalOption("prefs", prefs);
+
                 desiredCapabilities = DesiredCapabilities.chrome();
+                desiredCapabilities.setCapability(ChromeOptions.CAPABILITY, chromeOptions);
                 if (runRemote) {
                     webDriver = new RemoteWebDriver(new URL(environment.getProperty("seleniumGridUrl")), desiredCapabilities);
                 } else {

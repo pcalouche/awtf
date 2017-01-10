@@ -11,12 +11,26 @@ public class FileDownloadUtils {
     public static final Path DOWNLOAD_PATH = Paths.get(System.getProperty("user.home")).resolve("Downloads").resolve("awtf_files");
     private static final Logger logger = LoggerFactory.getLogger(FileDownloadUtils.class);
 
-    public static void waitForFile(String filenameToLookFor) throws IOException, InterruptedException {
-        logger.info("filename to look for is " + filenameToLookFor);
+    public static void deleteDownloadedFiles(Path path) throws IOException {
+        Files.walk(path).forEach(currentPath -> {
+            try {
+                if (Files.isDirectory(currentPath)) {
+                    deleteDownloadedFiles(currentPath);
+                } else {
+                    Files.delete(currentPath);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+    }
+
+    public static void waitForFile(String downloadFilename) throws IOException, InterruptedException {
+        logger.info("filename to look for is " + downloadFilename);
         WatchService watchService = FileSystems.getDefault().newWatchService();
         DOWNLOAD_PATH.register(watchService, StandardWatchEventKinds.ENTRY_CREATE);
 
-        Runnable runnable = () -> {
+        Runnable downloadTimeoutRunnable = () -> {
             try {
                 logger.info("Sleeping for 2 seconds");
                 TimeUnit.SECONDS.sleep(2);
@@ -29,9 +43,8 @@ public class FileDownloadUtils {
             }
         };
 
-        Thread thread = new Thread(runnable);
-        thread.start();
-
+        Thread downloadTimeoutThread = new Thread(downloadTimeoutRunnable);
+        downloadTimeoutThread.start();
 
         boolean valid;
         boolean fileFound = false;
@@ -42,7 +55,7 @@ public class FileDownloadUtils {
                     if (StandardWatchEventKinds.ENTRY_CREATE.equals(event.kind())) {
                         String filename = event.context().toString();
                         logger.info("File Created:" + filename);
-                        if (filename.equals(filenameToLookFor)) {
+                        if (filename.equals(downloadFilename)) {
                             logger.info("file found!");
                             fileFound = true;
                             break;
@@ -52,6 +65,7 @@ public class FileDownloadUtils {
                 if (fileFound) {
                     logger.info("file found so cancelling watch key");
                     watchKey.cancel();
+                    downloadTimeoutThread.join();
                 }
                 valid = watchKey.reset();
                 logger.info("valid->" + valid);
