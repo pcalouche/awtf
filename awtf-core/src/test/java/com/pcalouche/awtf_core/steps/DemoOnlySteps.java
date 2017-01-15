@@ -1,7 +1,7 @@
 package com.pcalouche.awtf_core.steps;
 
-import com.pcalouche.awtf_core.CoreConfig;
-import com.pcalouche.awtf_core.TestInstance;
+import com.pcalouche.awtf_core.config.spring.CoreConfig;
+import com.pcalouche.awtf_core.config.spring.TestInstance;
 import cucumber.api.java.en.Given;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;

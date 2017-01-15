@@ -1,7 +1,7 @@
 package com.pcalouche.awtf_core.stepHandlers;
 
-import com.pcalouche.awtf_core.TestInstance;
-import com.pcalouche.awtf_core.util.FileDownloadUtils;
+import com.pcalouche.awtf_core.config.spring.TestInstance;
+import com.pcalouche.awtf_core.util.FileDownloadHelper;
 import com.pcalouche.awtf_core.util.StepsUtil;
 import com.pcalouche.awtf_core.util.appConfig.AppElement;
 import com.pcalouche.awtf_core.util.appConfig.ElementWithTooltip;
@@ -480,13 +480,11 @@ public class CoreStepsHandler {
         }
     }
 
-    public void aFileNamedIsDownloaded(String filename) {
-        try {
-            FileDownloadUtils.waitForFile(filename);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+    public void iWaitUpToSecondsForAFileNameToDownload(String filename, int maxSecondsToWait) throws IOException, InterruptedException {
+        assertTrue("Expected file was not download", FileDownloadHelper.waitForFile(filename, maxSecondsToWait));
+    }
+
+    public void iDeleteTheFileNamedIfItExists(String filename) throws IOException {
+        FileDownloadHelper.deletePath(FileDownloadHelper.getDownloadedFilePath(filename));
     }
 }
