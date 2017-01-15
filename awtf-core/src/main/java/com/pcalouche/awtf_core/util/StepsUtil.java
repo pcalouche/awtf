@@ -1,6 +1,6 @@
 package com.pcalouche.awtf_core.util;
 
-import com.pcalouche.awtf_core.TestInstance;
+import com.pcalouche.awtf_core.config.spring.TestInstance;
 import com.pcalouche.awtf_core.util.appConfig.AppElement;
 import com.pcalouche.awtf_core.util.enums.HTMLElementState;
 import com.pcalouche.awtf_core.util.enums.HTMLFormElement;

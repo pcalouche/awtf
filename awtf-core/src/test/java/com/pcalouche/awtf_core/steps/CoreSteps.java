@@ -1,13 +1,16 @@
 package com.pcalouche.awtf_core.steps;
 
-import com.pcalouche.awtf_core.CoreConfig;
+import com.pcalouche.awtf_core.config.spring.CoreConfig;
 import com.pcalouche.awtf_core.stepHandlers.CoreStepsHandler;
 import com.pcalouche.awtf_core.util.enums.HTMLElementState;
 import cucumber.api.DataTable;
+import cucumber.api.java.en.And;
 import cucumber.api.java.en.Then;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.ContextHierarchy;
+
+import java.io.IOException;
 
 /**
  * The core step definitions for the framework.
@@ -145,8 +148,13 @@ public class CoreSteps {
         coreStepsHandler.iTheRowWithTheFollowingCriteria(rowActionDescription, criteria);
     }
 
-    @Then("^A file named \"([^\"]*)\" is downloaded$")
-    public void aFileNamedIsDownloaded(String filename) {
-        coreStepsHandler.aFileNamedIsDownloaded(filename);
+    @And("^I wait up to \"([^\"]*)\" seconds a file named \"([^\"]*)\" to download$")
+    public void iWaitUpToSecondsForAFileNameToDownload(int maxSecondsToWait, String filename) throws IOException, InterruptedException {
+        coreStepsHandler.iWaitUpToSecondsForAFileNameToDownload(filename, maxSecondsToWait);
+    }
+
+    @And("^I delete the file named \"([^\"]*)\" if it exists$")
+    public void iDeleteTheFileNamedIfItExists(String filename) throws IOException {
+        coreStepsHandler.iDeleteTheFileNamedIfItExists(filename);
     }
 }
