@@ -24,16 +24,10 @@ public class WebDriverFactory {
                     return new RemoteWebDriver(new URL(seleniumGridUrl), DesiredCapabilitiesFactory.getDesiredCapabilities(browserType, localOperatingSystem));
                 } else {
                     Path basePath = WebDriverFactory.WEB_DRIVERS_PATH.resolve("chrome/2.27");
-                    switch (localOperatingSystem) {
-                        case "windows":
-                            System.setProperty("webdriver.chrome.driver", basePath.resolve("windows/chromedriver.exe").toString());
-                            break;
-                        case "mac":
-                            System.setProperty("webdriver.chrome.driver", basePath.resolve("mac/chromedriver").toString());
-                            break;
-                        case "linux":
-                            System.setProperty("webdriver.chrome.driver", basePath.resolve("linux/chromedriver").toString());
-                            break;
+                    if (localOperatingSystem.equals("windows")) {
+                        System.setProperty("webdriver.chrome.driver", basePath.resolve(localOperatingSystem).resolve("chromedriver.exe").toString());
+                    } else {
+                        System.setProperty("webdriver.chrome.driver", basePath.resolve(localOperatingSystem).resolve("chromedriver").toString());
                     }
                     return new ChromeDriver(DesiredCapabilitiesFactory.getDesiredCapabilities(browserType, localOperatingSystem));
                 }
@@ -42,16 +36,10 @@ public class WebDriverFactory {
                     return new RemoteWebDriver(new URL(seleniumGridUrl), DesiredCapabilitiesFactory.getDesiredCapabilities(browserType, localOperatingSystem));
                 } else {
                     Path basePath = WebDriverFactory.WEB_DRIVERS_PATH.resolve("gecko/0.13.0");
-                    switch (localOperatingSystem) {
-                        case "windows":
-                            System.setProperty("webdriver.gecko.driver", basePath.resolve("windows/geckodriver.exe").toString());
-                            break;
-                        case "mac":
-                            System.setProperty("webdriver.gecko.driver", basePath.resolve("mac/geckodriver").toString());
-                            break;
-                        case "linux":
-                            System.setProperty("webdriver.gecko.driver", basePath.resolve("linux/geckodriver").toString());
-                            break;
+                    if (localOperatingSystem.equals("windows")) {
+                        System.setProperty("webdriver.gecko.driver", basePath.resolve(localOperatingSystem).resolve("geckodriver.exe").toString());
+                    } else {
+                        System.setProperty("webdriver.gecko.driver", basePath.resolve(localOperatingSystem).resolve("geckodriver").toString());
                     }
                     return new FirefoxDriver(DesiredCapabilitiesFactory.getDesiredCapabilities(browserType, localOperatingSystem));
                 }

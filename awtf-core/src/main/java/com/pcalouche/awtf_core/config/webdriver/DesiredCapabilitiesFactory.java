@@ -85,16 +85,10 @@ public class DesiredCapabilitiesFactory {
     private static DesiredCapabilities getPhantomJsDesiredCapabilities(String localOperatingSystem) {
         DesiredCapabilities desiredCapabilities = DesiredCapabilities.phantomjs();
         Path basePath = WebDriverFactory.WEB_DRIVERS_PATH.resolve("phantomjs/2.1.1");
-        switch (localOperatingSystem) {
-            case "windows":
-                desiredCapabilities.setCapability(PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY, basePath.resolve("windows/phantomjs.exe").toString());
-                break;
-            case "mac":
-                desiredCapabilities.setCapability(PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY, basePath.resolve("mac/phantomjs").toString());
-                break;
-            case "linux":
-                desiredCapabilities.setCapability(PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY, basePath.resolve("linux/phantomjs").toString());
-                break;
+        if (localOperatingSystem.equals("windows")) {
+            desiredCapabilities.setCapability(PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY, basePath.resolve(localOperatingSystem).resolve("phantomjs.exe").toString());
+        } else {
+            desiredCapabilities.setCapability(PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY, basePath.resolve(localOperatingSystem).resolve("phantomjs").toString());
         }
         desiredCapabilities.setCapability("acceptSslCerts", true);
         desiredCapabilities.setCapability(PhantomJSDriverService.PHANTOMJS_CLI_ARGS, new String[]{"--web-security=no", "--ignore-ssl-errors=yes", "--webdriver-loglevel=NONE"});
