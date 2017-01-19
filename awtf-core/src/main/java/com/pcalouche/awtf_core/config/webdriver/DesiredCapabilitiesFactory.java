@@ -8,6 +8,7 @@ import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.phantomjs.PhantomJSDriverService;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -27,14 +28,14 @@ public class DesiredCapabilitiesFactory {
             "application/xml"
     };
 
-    public static DesiredCapabilities getDesiredCapabilities(BrowserType browserType) {
+    public static DesiredCapabilities getDesiredCapabilities(BrowserType browserType, String localOperatingSystem) {
         switch (browserType) {
             case chrome:
                 return getChromeDesiredCapabilities();
             case firefox:
                 return getFirefoxDesiredCapabilities();
             case phantomjs:
-                return getPhantomJsDesiredCapabilities();
+                return getPhantomJsDesiredCapabilities(localOperatingSystem);
             case edge:
                 return getEdgeDesiredCapabilities();
             case internetExplorer:
@@ -81,9 +82,20 @@ public class DesiredCapabilitiesFactory {
         return desiredCapabilities;
     }
 
-    private static DesiredCapabilities getPhantomJsDesiredCapabilities() {
+    private static DesiredCapabilities getPhantomJsDesiredCapabilities(String localOperatingSystem) {
         DesiredCapabilities desiredCapabilities = DesiredCapabilities.phantomjs();
-        desiredCapabilities.setCapability(PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY, WebDriverFactory.WEB_DRIVERS_PATH.resolve("phantomjs/2.1.1/phantomjs.exe"));
+        Path basePath = WebDriverFactory.WEB_DRIVERS_PATH.resolve("phantomjs/2.1.1");
+        switch (localOperatingSystem) {
+            case "windows":
+                desiredCapabilities.setCapability(PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY, basePath.resolve("windows/phantomjs.exe").toString());
+                break;
+            case "mac":
+                desiredCapabilities.setCapability(PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY, basePath.resolve("mac/phantomjs").toString());
+                break;
+            case "linux":
+                desiredCapabilities.setCapability(PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY, basePath.resolve("linux/phantomjs").toString());
+                break;
+        }
         desiredCapabilities.setCapability("acceptSslCerts", true);
         desiredCapabilities.setCapability(PhantomJSDriverService.PHANTOMJS_CLI_ARGS, new String[]{"--web-security=no", "--ignore-ssl-errors=yes", "--webdriver-loglevel=NONE"});
         return desiredCapabilities;
