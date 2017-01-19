@@ -26,13 +26,13 @@ public class WebDriverFactory {
                     Path basePath = WebDriverFactory.WEB_DRIVERS_PATH.resolve("chrome/2.27");
                     switch (localOperatingSystem) {
                         case "windows":
-                            System.setProperty("webdriver.chrome.driver", WEB_DRIVERS_PATH.resolve("chrome/2.27/windows/chromedriver.exe").toString());
+                            System.setProperty("webdriver.chrome.driver", basePath.resolve("windows/chromedriver.exe").toString());
                             break;
                         case "mac":
-                            System.setProperty("webdriver.chrome.driver", WEB_DRIVERS_PATH.resolve("chrome/2.27/mac/chromedriver").toString());
+                            System.setProperty("webdriver.chrome.driver", basePath.resolve("mac/chromedriver").toString());
                             break;
                         case "linux":
-                            System.setProperty("webdriver.chrome.driver", WEB_DRIVERS_PATH.resolve("chrome/2.27/linux/chromedriver").toString());
+                            System.setProperty("webdriver.chrome.driver", basePath.resolve("linux/chromedriver").toString());
                             break;
                     }
                     return new ChromeDriver(DesiredCapabilitiesFactory.getDesiredCapabilities(browserType, localOperatingSystem));
