@@ -187,7 +187,6 @@
                         </configuration>
                     </execution>
                 </executions>
-
             </plugin>
             <!--For Cucumber Reports-->
             <plugin>
@@ -202,7 +201,7 @@
                             <goal>generate</goal>
                         </goals>
                         <configuration>
-                            <projectName>acceptance-tests</projectName>
+                            <projectName>AWTF Results</projectName>
                             <outputDirectory>${project.build.directory}</outputDirectory>
                             <cucumberOutput>${project.build.directory}/cucumber-parallel</cucumberOutput>
                         </configuration>

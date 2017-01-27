@@ -1,6 +1,7 @@
 package com.pcalouche.awtf_core.config.webdriver;
 
 import com.pcalouche.awtf_core.util.FileDownloadHelper;
+import com.pcalouche.awtf_core.util.OsTypeUtil;
 import com.pcalouche.awtf_core.util.enums.BrowserType;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
@@ -28,14 +29,14 @@ public class DesiredCapabilitiesFactory {
             "application/xml"
     };
 
-    public static DesiredCapabilities getDesiredCapabilities(BrowserType browserType, String localOperatingSystem) {
+    public static DesiredCapabilities getDesiredCapabilities(BrowserType browserType) {
         switch (browserType) {
             case chrome:
                 return getChromeDesiredCapabilities();
             case firefox:
                 return getFirefoxDesiredCapabilities();
             case phantomjs:
-                return getPhantomJsDesiredCapabilities(localOperatingSystem);
+                return getPhantomJsDesiredCapabilities();
             case edge:
                 return getEdgeDesiredCapabilities();
             case internetExplorer:
@@ -82,13 +83,17 @@ public class DesiredCapabilitiesFactory {
         return desiredCapabilities;
     }
 
-    private static DesiredCapabilities getPhantomJsDesiredCapabilities(String localOperatingSystem) {
+    private static DesiredCapabilities getPhantomJsDesiredCapabilities() {
         DesiredCapabilities desiredCapabilities = DesiredCapabilities.phantomjs();
         Path basePath = WebDriverFactory.WEB_DRIVERS_PATH.resolve("phantomjs/2.1.1");
-        if (localOperatingSystem.equals("windows")) {
-            desiredCapabilities.setCapability(PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY, basePath.resolve(localOperatingSystem).resolve("phantomjs.exe").toString());
+        if (OsTypeUtil.isWindows()) {
+            desiredCapabilities.setCapability(PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY, basePath.resolve("windows").resolve("phantomjs.exe").toString());
+        } else if (OsTypeUtil.isMac()) {
+            desiredCapabilities.setCapability(PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY, basePath.resolve("mac").resolve("phantomjs").toString());
+        } else if (OsTypeUtil.isLinux()) {
+            desiredCapabilities.setCapability(PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY, basePath.resolve("linux").resolve("phantomjs").toString());
         } else {
-            desiredCapabilities.setCapability(PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY, basePath.resolve(localOperatingSystem).resolve("phantomjs").toString());
+            throw new RuntimeException(OsTypeUtil.UNKNOWN_OS_ERROR_MESSAGE);
         }
         desiredCapabilities.setCapability("acceptSslCerts", true);
         desiredCapabilities.setCapability(PhantomJSDriverService.PHANTOMJS_CLI_ARGS, new String[]{"--web-security=no", "--ignore-ssl-errors=yes", "--webdriver-loglevel=NONE"});

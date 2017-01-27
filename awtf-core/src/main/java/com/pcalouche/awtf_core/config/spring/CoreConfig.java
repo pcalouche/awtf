@@ -97,7 +97,6 @@ public class CoreConfig {
     @Scope(value = "cucumber-glue")
     public WebDriver webDriver() throws MalformedURLException {
         return WebDriverFactory.getWebDriver(BrowserType.valueOf(environment.getProperty("browserType")),
-                environment.getProperty("localOperatingSystem"),
                 Boolean.valueOf(environment.getProperty("runRemote")),
                 environment.getProperty("seleniumGridUrl"));
     }
