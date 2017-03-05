@@ -93,7 +93,7 @@ public class CoreConfig {
         return appConfig;
     }
 
-    @Bean
+    @Bean(destroyMethod = "quit")
     @Scope(value = "cucumber-glue")
     public WebDriver webDriver() throws MalformedURLException {
         return WebDriverFactory.getWebDriver(BrowserType.valueOf(environment.getProperty("browserType")),

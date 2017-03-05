@@ -11,6 +11,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.ContextHierarchy;
+import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
+import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
 
 import java.util.concurrent.TimeUnit;
 
@@ -22,6 +25,7 @@ import java.util.concurrent.TimeUnit;
 @ContextHierarchy({
         @ContextConfiguration(classes = {CoreConfig.class})
 })
+@TestExecutionListeners(listeners = {DependencyInjectionTestExecutionListener.class, DirtiesContextTestExecutionListener.class})
 public class Hooks {
     private static final Logger logger = LoggerFactory.getLogger(Hooks.class);
     private final TestInstance testInstance;
@@ -73,8 +77,6 @@ public class Hooks {
             }
         } catch (Exception e) {
             logger.error("Failed to tear down scenario", e);
-        } finally {
-            testInstance.getWebDriver().quit();
         }
     }
 }

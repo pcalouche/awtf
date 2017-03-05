@@ -47,7 +47,7 @@
             <artifactId>commons-lang3</artifactId>
             <version>${apache.commons.version}</version>
         </dependency>
-        <!-- Cucumber JVM: Java8 -->
+        <!-- Cucumber JVM: Java -->
         <dependency>
             <groupId>info.cukes</groupId>
             <artifactId>cucumber-java</artifactId>

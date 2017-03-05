@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Configuration;
 public class GlueCodeScopeConfig {
 
     @Bean
-    public CustomScopeConfigurer glueScopeConfigurer() {
+    public static CustomScopeConfigurer glueScopeConfigurer() {
         CustomScopeConfigurer toReturn = new CustomScopeConfigurer();
         toReturn.addScope("cucumber-glue", new GlueCodeScope());
         return toReturn;

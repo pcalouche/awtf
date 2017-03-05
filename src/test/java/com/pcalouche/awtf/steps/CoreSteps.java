@@ -9,6 +9,9 @@ import cucumber.api.java.en.Then;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.ContextHierarchy;
+import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
+import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
 
 import java.io.IOException;
 
@@ -20,6 +23,7 @@ import java.io.IOException;
 @ContextHierarchy({
         @ContextConfiguration(classes = {CoreConfig.class})
 })
+@TestExecutionListeners(listeners = {DependencyInjectionTestExecutionListener.class, DirtiesContextTestExecutionListener.class,})
 public class CoreSteps {
     private final CoreStepsHandler coreStepsHandler;
 

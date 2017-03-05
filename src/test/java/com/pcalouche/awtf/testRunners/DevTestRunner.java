@@ -4,6 +4,8 @@ import cucumber.api.CucumberOptions;
 import cucumber.api.SnippetType;
 import cucumber.api.junit.Cucumber;
 import org.junit.runner.RunWith;
+import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 
 /**
  * This is an example test runner that demonstrates the core framework.
@@ -16,5 +18,6 @@ import org.junit.runner.RunWith;
         features = {"classpath:features/"},
         tags = {"~@pending", "@fileDownload"},
         snippets = SnippetType.CAMELCASE)
+@TestExecutionListeners(listeners = DependencyInjectionTestExecutionListener.class)
 public class DevTestRunner {
 }
