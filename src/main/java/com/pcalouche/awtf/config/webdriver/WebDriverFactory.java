@@ -24,7 +24,7 @@ public class WebDriverFactory {
                 if (runRemote) {
                     return new RemoteWebDriver(new URL(seleniumGridUrl), DesiredCapabilitiesFactory.getDesiredCapabilities(browserType));
                 } else {
-                    Path basePath = WebDriverFactory.WEB_DRIVERS_PATH.resolve("chrome/2.27");
+                    Path basePath = WebDriverFactory.WEB_DRIVERS_PATH.resolve("chrome/2.28");
                     if (OsTypeUtil.isWindows()) {
                         System.setProperty("webdriver.chrome.driver", basePath.resolve("windows").resolve("chromedriver.exe").toString());
                     } else if (OsTypeUtil.isMac()) {
@@ -40,7 +40,7 @@ public class WebDriverFactory {
                 if (runRemote) {
                     return new RemoteWebDriver(new URL(seleniumGridUrl), DesiredCapabilitiesFactory.getDesiredCapabilities(browserType));
                 } else {
-                    Path basePath = WebDriverFactory.WEB_DRIVERS_PATH.resolve("gecko/0.14.0");
+                    Path basePath = WebDriverFactory.WEB_DRIVERS_PATH.resolve("gecko/0.15.0");
                     if (OsTypeUtil.isWindows()) {
                         System.setProperty("webdriver.gecko.driver", basePath.resolve("windows").resolve("geckodriver.exe").toString());
                     } else if (OsTypeUtil.isMac()) {
