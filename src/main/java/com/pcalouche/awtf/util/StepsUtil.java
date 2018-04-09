@@ -10,6 +10,7 @@ import cucumber.api.DataTable;
 import gherkin.formatter.model.DataTableRow;
 import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.*;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.slf4j.Logger;
@@ -211,7 +212,21 @@ public class StepsUtil {
                 formElement.sendKeys((String) value);
                 break;
             case select:
-                new Select(formElement).selectByVisibleText((String) value);
+                Select select = new Select(formElement);
+                if (select.isMultiple()) {
+                    Actions builder = new Actions(testInstance.getWebDriver());
+                    for (WebElement option : select.getOptions()) {
+                        if (option.getText().equals((String) value)) {
+                            builder.keyDown(Keys.CONTROL)
+                                    .click(option)
+                                    .keyUp(Keys.CONTROL);
+                            builder.build().perform();
+                        }
+                    }
+                    builder.build().perform();
+                } else {
+                    select.selectByVisibleText((String) value);
+                }
                 break;
             default:
                 break;

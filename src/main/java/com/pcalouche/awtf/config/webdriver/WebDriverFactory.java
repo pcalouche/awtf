@@ -62,7 +62,7 @@ public class WebDriverFactory {
                 if (runRemote) {
                     return new RemoteWebDriver(new URL(seleniumGridUrl), DesiredCapabilitiesFactory.getDesiredCapabilities(browserType));
                 } else {
-                    System.setProperty("webdriver.edge.driver", WEB_DRIVERS_PATH.resolve("edge/14393/MicrosoftWebDriver.exe").toString());
+                    System.setProperty("webdriver.edge.driver", WEB_DRIVERS_PATH.resolve("edge/15063/MicrosoftWebDriver.exe").toString());
                     return new EdgeDriver(DesiredCapabilitiesFactory.getDesiredCapabilities(browserType));
                 }
             case internetExplorer:

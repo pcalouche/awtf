@@ -16,7 +16,7 @@ import org.springframework.test.context.support.DependencyInjectionTestExecution
 @CucumberOptions(glue = {"com.pcalouche.awtf"},
         plugin = {"html:target/cucumber/htmlReports/devTestRunner", "json:target/cucumber/jsonReports/devTestRunner.json"},
         features = {"classpath:features/"},
-        tags = {"~@pending", "@fileDownload"},
+        tags = {"~@pending", "@formInputAndVerification"},
         snippets = SnippetType.CAMELCASE)
 @TestExecutionListeners(listeners = DependencyInjectionTestExecutionListener.class)
 public class DevTestRunner {

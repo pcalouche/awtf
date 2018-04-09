@@ -13,19 +13,21 @@
         <surefire.forkCount>10</surefire.forkCount>
         <testEnvironment>localhost</testEnvironment>
         <!-- Dependency Versions -->
-        <log4j.version>2.8</log4j.version> <!-- Jan 2017 -->
-        <apache.commons.version>3.5</apache.commons.version><!-- Oct 2016 -->
-        <cucumber.version>1.2.5</cucumber.version><!-- Sep 2016 -->
+        <log4j.version>2.8</log4j.version> <!-- January 2017 -->
+        <!--<apache.commons.version>3.5</apache.commons.version>&lt;!&ndash; Oct 2016 &ndash;&gt;-->
+        <apache.commons.version>3.5</apache.commons.version><!-- June 2017-->
+        <cucumber.version>1.2.5</cucumber.version><!-- September 2016 -->
         <selenium.version>3.3.1</selenium.version><!-- March 2017 -->
         <spring.version>4.3.7.RELEASE</spring.version><!-- March 2017 -->
-        <jackson.version>2.8.7</jackson.version><!-- Feb 2017 -->
-        <json.version>20160810</json.version><!-- Aug 2016 -->
-        <phantomjsdriver.version>1.3.0</phantomjsdriver.version><!-- Apr 2016 -->
+        <jackson.version>2.8.7</jackson.version><!-- February 2017 -->
+        <json.version>20160810</json.version><!-- August 2016 -->
+        <!--<phantomjsdriver.version>1.3.0</phantomjsdriver.version>&lt;!&ndash; April 2016 &ndash;&gt;-->
+        <phantomjsdriver.version>1.4.3</phantomjsdriver.version><!-- May 2017-->
         <!-- Plugin Versions -->
-        <maven.compiler.version>3.6.1</maven.compiler.version><!-- Jan 2017 -->
-        <cucumber.jvm.parallel.version>2.2.0</cucumber.jvm.parallel.version><!-- Dec 2016-->
-        <maven.surefire.version>2.19.1</maven.surefire.version><!-- Dec 2015 -->
-        <maven.cucumber.reporting.version>3.5.0</maven.cucumber.reporting.version><!-- Feb 2017-->
+        <maven.compiler.version>3.6.1</maven.compiler.version><!-- January 2017 -->
+        <cucumber.jvm.parallel.version>2.2.0</cucumber.jvm.parallel.version><!-- December 2016-->
+        <maven.surefire.version>2.19.1</maven.surefire.version><!-- December 2015 -->
+        <maven.cucumber.reporting.version>3.5.0</maven.cucumber.reporting.version><!-- February 2017-->
     </properties>
 
     <dependencies>
