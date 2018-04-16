@@ -13,6 +13,7 @@
         <groupId>com.pcalouche</groupId>
         <artifactId>spring-boot-project-pom</artifactId>
         <version>1.0-SNAPSHOT</version>
+        <relativePath></relativePath>
     </parent>
 
     <properties>
@@ -140,6 +141,9 @@
                                 <package>com.pcalouche.awtf.demotests.steps</package>
                             </glue>
                             <featuresDirectory>src/test/resources/features</featuresDirectory>
+                            <tags>
+                                <tag>@fileDownload</tag>
+                            </tags>
                             <parallelScheme>SCENARIO</parallelScheme>
                         </configuration>
                     </execution>

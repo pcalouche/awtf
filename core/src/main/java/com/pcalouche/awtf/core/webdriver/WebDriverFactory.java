@@ -2,6 +2,7 @@ package com.pcalouche.awtf.core.webdriver;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,7 +20,7 @@ public class WebDriverFactory {
     public static WebDriver getWebDriver(WebDriverType webDriverType, String gridHubUrl, String fileDownloadPath) throws MalformedURLException {
         switch (webDriverType) {
             case CHROME_LOCAL:
-                Path basePath = WebDriverFactory.WEB_DRIVERS_PATH.resolve("chrome/2.36");
+                Path basePath = WebDriverFactory.WEB_DRIVERS_PATH.resolve("chrome/2.37");
                 if (isWindows()) {
                     logger.info("Using Windows Chrome local driver");
                     System.setProperty("webdriver.chrome.driver", basePath.resolve("windows").resolve("chromedriver.exe").toString());
@@ -32,10 +33,10 @@ public class WebDriverFactory {
                 } else {
                     throw new RuntimeException("Unable to determine local operating system for web driver.");
                 }
-                return new ChromeDriver(DesiredCapabilitiesFactory.getChromeOptions(fileDownloadPath));
+                return new ChromeDriver((ChromeOptions) CapabilitiesFactory.getCapabilities(webDriverType, fileDownloadPath));
             case CHROME_REMOTE:
                 logger.info("Using Chrome remote driver");
-                return new RemoteWebDriver(new URL(gridHubUrl), DesiredCapabilitiesFactory.getDesiredCapabilities(webDriverType, fileDownloadPath));
+                return new RemoteWebDriver(new URL(gridHubUrl), CapabilitiesFactory.getCapabilities(webDriverType, fileDownloadPath));
             default:
                 throw new IllegalArgumentException(webDriverType + " is not a supported web driver.  Valid web drivers are: " + WebDriverType.asStringList());
         }

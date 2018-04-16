@@ -4,7 +4,11 @@ import java.util.Arrays;
 
 public enum WebDriverType {
     CHROME_LOCAL(false),
-    CHROME_REMOTE(true);
+    CHROME_REMOTE(true),
+    FIREFOX_LOCAL(false),
+    FIREFOX_REMOTE(true),
+    EDGE_LOCAL(false),
+    EDGE_REMOTE(true);
 
     private boolean remote;
 
